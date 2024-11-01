@@ -7,7 +7,7 @@ set(token lexer/token.cpp lexer/token.hpp)
 
 add_executable (
     upl
-        upl.cpp
+        main.cpp
         ${lexer}
         ${token}
 )

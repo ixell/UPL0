@@ -40,25 +40,25 @@ TokenType char_to_token(wchar_t ch);
 #define END_TOKENS };
 #define DEFAULT
 #define GROUP(NAME, ID) NAME = (ID << 28),
-#define SUBGROUP(NAME, GROUP_ID, ID) NAME = (Token::Type::##GROUP_ID + (ID << 24)),
-#define SUBGROUP_(NAME, ID) NAME = (ID << 24),
+#define SUBGROUP(NAME, GROUP_ID, ID) NAME = ((GROUP_ID << 28) + (ID << 24)),
 
 #define WORD(NAME) NAME,
 #define OPERATOR(NAME) operator_##NAME,
 #define KEYWORD(NAME) keyword_##NAME,
+#define ERROR(NAME) error_##NAME
 
 BEGIN_TOKENS
 	DEFAULT
 		DEFAULT
 			WORD(eof)
 			WORD(none)
-			WORD(variable)
+			WORD(word)
 			WORD(string)
-			WORD(builtinVariable)
-		SUBGROUP_(number, 1)
-			WORD(int_)
+			WORD(variable)
+		SUBGROUP(number, 0, 1)
+			WORD(integer)
 			WORD(float_)
-		SUBGROUP_(endword, 2)
+		SUBGROUP(endword, 0, 2)
 			WORD(endline)
 			WORD(endcommand)
 	GROUP(operator_, 1)
@@ -66,11 +66,11 @@ BEGIN_TOKENS
 			OPERATOR(dot)							// .
 			OPERATOR(comma)							// ,
 			OPERATOR(questionMark)					// ?
-		SUBGROUP(operator_assignable, operator_, 1)
+		SUBGROUP(operator_assignable, 1, 1)
 			OPERATOR(assign)						// =
 			OPERATOR(not)							// ! // not
-			OPERATOR(lessThan)						// <
-			OPERATOR(greaterThan)					// >
+			OPERATOR(less_than)						// <
+			OPERATOR(greater_than)					// >
 			OPERATOR(plus)							// +
 			OPERATOR(minus)							// -
 			OPERATOR(star)							// *
@@ -80,7 +80,9 @@ BEGIN_TOKENS
 			OPERATOR(binary_or)						// |
 			OPERATOR(binary_not)					// ~
 			OPERATOR(binary_xor)					// ^
-		SUBGROUP(operator_assignment, operator_, 2)
+			OPERATOR(left_shift)					// <<
+			OPERATOR(right_shift)					// >>
+		SUBGROUP(operator_assignment, 1, 2)
 			OPERATOR(equal)							// ==
 			OPERATOR(notEqual)						// !=
 			OPERATOR(lessThanEqual)					// <=
@@ -94,13 +96,15 @@ BEGIN_TOKENS
 			OPERATOR(assign_binary_or)				// |=
 			OPERATOR(assign_binary_not)				// ~=
 			OPERATOR(assign_binary_xor)				// ^=
-		SUBGROUP(operator_special, operator_, 3)
+			OPERATOR(assign_left_shift)					// <<=
+			OPERATOR(assign_right_shift)					// >>=
+		SUBGROUP(operator_special, 1, 3)
 			OPERATOR(increment)						// ++
 			OPERATOR(decrement)						// --
 			OPERATOR(arrow)							// ->
 			OPERATOR(and)							// && // and
 			OPERATOR(or)							// || // or
-	GROUP(parentheses, 3)
+	GROUP(parentheses, 2)
 		DEFAULT
 			WORD(leftParenthesis)					// (
 			WORD(rightParenthesis)					// )
@@ -110,8 +114,8 @@ BEGIN_TOKENS
 			WORD(rightBrace)						// }
 			WORD(quote)								// '
 			WORD(double_quotes)						// "
-	GROUP(keyword, 4)
-		SUBGROUP(keyword_statements, keyword, 0)
+	GROUP(keyword, 3)
+		SUBGROUP(keyword_statements, 3, 0)
 			KEYWORD(if)
 			KEYWORD(else)
 			KEYWORD(switch)
@@ -120,28 +124,33 @@ BEGIN_TOKENS
 			KEYWORD(do)
 			KEYWORD(for)
 			KEYWORD(class)
-		SUBGROUP(keyword_types, keyword, 1)
-			KEYWORD(num)
+			KEYWORD(enum)
+			KEYWORD(union)
+			KEYWORD(import)
+		SUBGROUP(keyword_types, 3, 1)
+			KEYWORD(int)
+			KEYWORD(float)
 			KEYWORD(string)
 			KEYWORD(bool)
 			KEYWORD(auto)
-		SUBGROUP(keyword_modificators, keyword, 2)
+		SUBGROUP(keyword_modificators, 3, 2)
 			KEYWORD(const)
 			KEYWORD(friend)
 			KEYWORD(constexpr)
-		SUBGROUP(keyword_values, keyword, 3)
+		SUBGROUP(keyword_values, 3, 3)
 			KEYWORD(true)
 			KEYWORD(false)
-	GROUP(special, 5)
+	GROUP(special, 4)
 		DEFAULT
 			WORD(comment)							// //
 			WORD(sharp)								// #
 			WORD(colon)								// :
 			WORD(backslash)							// \ 
 			WORD(backtick)							// `
-	GROUP(groups, 14)
+			WORD(at)								// @
+	GROUP(error, 5)
 		DEFAULT
-			WORD(word)
+			ERROR(unknown)
 END_TOKENS
 
 #undef BEGIN_TOKENS
@@ -154,3 +163,4 @@ END_TOKENS
 #undef WORD
 #undef OPERATOR
 #undef KEYWORD
+#undef ERROR

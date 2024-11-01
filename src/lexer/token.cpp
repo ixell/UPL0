@@ -65,14 +65,15 @@ constexpr TokenType getSubgroup(TokenType token) {
 case PREFIX##NAME:					\
 	return std::wstring(STRING);	\
 
-#define WORD(NAME) _WORD(NAME ,, L#NAME)
-#define WORD_(NAME, STRING) _WORD(NAME ,, L#NAME " ( " #STRING " ) ")
-#define SPECIAL(NAME, VALUE) _WORD(NAME ,, std::wstring(L#NAME ": ") + VALUE)
+#define WORD(NAME) _WORD(NAME,, L#NAME)
+#define WORD_(NAME, STRING) _WORD(NAME,, L#NAME " ( " #STRING " ) ")
+#define SPECIAL(NAME, VALUE) _WORD(NAME,, std::wstring(L#NAME ": ") + VALUE)
 #define OPERATOR(NAME, STRING) _WORD(NAME, operator_, L"operator: " #NAME " ( " #STRING " )")
 #define KEYWORD(NAME) _WORD(NAME, keyword_, L"keyword: " #NAME)
+#define ERROR(NAME) _WORD(NAME, error_, L"error: " #NAME)
 
 constexpr std::wstring Token::to_string() const {
-	switch (this->type) {
+	BEGIN_CONVERSATION
 		DEFAULT
 			DEFAULT
 				WORD(eof)
@@ -142,7 +143,8 @@ constexpr std::wstring Token::to_string() const {
 				KEYWORD(for)
 				KEYWORD(class)
 			SUBGROUP(types, keyword, 1)
-				KEYWORD(num)
+				KEYWORD(int)
+				KEYWORD(float)
 				KEYWORD(string)
 				KEYWORD(bool)
 				KEYWORD(auto)
@@ -166,12 +168,12 @@ constexpr std::wstring Token::to_string() const {
 #undef DEFAULT
 #undef GROUP
 #undef SUBGROUP
-#undef SUBGROUP_
 #undef _WORD
 #undef WORD
 #undef SPECIAL
 #undef OPERATOR
 #undef KEYWORD
+#undef ERROR
 
 #define T Token::
 
@@ -192,7 +194,7 @@ TokenType conversation_array[0x80] = {
 	T number,				T number,				T number,				T number,
 	T number,				T number,				T colon,				T endcommand,
 	T operator_lessThan,	T operator_equal,		T operator_greaterThan,	T operator_questionMark,
-	T builtinVariable,		T word,					T word,					T word,
+	T at,					T word,					T word,					T word,
 	T word,					T word,					T word,					T word,
 	T word,					T word,					T word,					T word,
 	T word,					T word,					T word,					T word,
