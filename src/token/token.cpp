@@ -5,23 +5,23 @@ extern TokenType conversation_array[0x80];
 Token::Token()
 	: type(none), value() {}
 
-constexpr Token::Token(Token::Type type)
+Token::Token(Type type)
 	: type(type), value() {}
 
-constexpr Token::Token(Type type, const wstring& value)
+Token::Token(Type type, const wstring& value)
 	: type(type), value(value) {}
 
-constexpr Token::Token(Type type, wstring&& value)
+Token::Token(Type type, wstring&& value)
 	: type(type), value(value) {}
 
 Token::Token(wchar_t ch)
 	: type(ch >= 0x80 ? variable : conversation_array[ch]), value(&ch, &ch) {}
 
-[[nodiscard]] constexpr Token::Type Token::get_type() const {
+[[nodiscard]] Token::Type Token::get_type() const {
 	return type;
 }
 
-[[nodiscard]] constexpr const wstring& Token::get_value() const {
+[[nodiscard]] const wstring& Token::get_value() const {
 	return value;
 }
 
@@ -46,10 +46,10 @@ TokenType char_to_token(wchar_t ch) {
 	return ch >= 0x80 ? Token::variable : conversation_array[ch];
 }
 
-constexpr TokenType getGroup(TokenType token) {
+TokenType getGroup(TokenType token) {
 	return (TokenType)(token & 0xf0000000);
 }
-constexpr TokenType getSubgroup(TokenType token) {
+TokenType getSubgroup(TokenType token) {
 	return (TokenType)(token & 0xff000000);
 }
 
@@ -72,67 +72,72 @@ case PREFIX##NAME:					\
 #define KEYWORD(NAME) _WORD(NAME, keyword_, L"keyword: " #NAME)
 #define ERROR(NAME) _WORD(NAME, error_, L"error: " #NAME)
 
-constexpr std::wstring Token::to_string() const {
+std::wstring Token::to_string() const {
 	BEGIN_CONVERSATION
 		DEFAULT
 			DEFAULT
 				WORD(eof)
 				WORD(none)
 				SPECIAL(variable, value)
-				SPECIAL(int_, value)
+				SPECIAL(integer, value)
 				SPECIAL(float_, value)
 				SPECIAL(string, value)
 			SUBGROUP_(endword, 1)
+				WORD(endword)
 				WORD(endline)
 		GROUP(operator_, 1)
 			DEFAULT
-				OPERATOR(dot, ".")					// .
-				OPERATOR(comma, ",")				// ,
+				OPERATOR(dot, ".")							// .
+				OPERATOR(comma, ",")						// ,
 			SUBGROUP(assignable, operator_, 1)
-				OPERATOR(assign, "=")				// =
-				OPERATOR(not, "!")					// ! // not
-				OPERATOR(lessThan, "<")				// <
-				OPERATOR(greaterThan, ">")			// >
-				OPERATOR(plus, "+")					// +
-				OPERATOR(minus, "-")				// -
-				OPERATOR(star, "*")					// *
-				OPERATOR(slash, "/")				// /
-				OPERATOR(procent, "%")				// %
-				OPERATOR(binary_and, "&")			// &
-				OPERATOR(binary_or, "|")			// |
-				OPERATOR(binary_not, "~")			// ~
-				OPERATOR(binary_xor, "^")			// ^
+				OPERATOR(assign, "=")						// =
+				OPERATOR(not, "!")							// ! // not
+				OPERATOR(lessThan, "<")						// <
+				OPERATOR(greaterThan, ">")					// >
+				OPERATOR(plus, "+")							// +
+				OPERATOR(minus, "-")						// -
+				OPERATOR(star, "*")							// *
+				OPERATOR(slash, "/")						// /
+				OPERATOR(procent, "%")						// %
+				OPERATOR(binary_and, "&")					// &
+				OPERATOR(binary_or, "|")					// |
+				OPERATOR(binary_not, "~")					// ~
+				OPERATOR(binary_xor, "^")					// ^
+				OPERATOR(binary_leftShift, "<<")			// ^
+				OPERATOR(binary_rightShift, ">>")			// ^
 			SUBGROUP(assignment, operator_, 2)
-				OPERATOR(equal, "==")				// ==
-				OPERATOR(notEqual, "!=")			// !=
-				OPERATOR(lessThanEqual, "<=")		// <=
-				OPERATOR(greaterThanEqual, ">=")	// >=
-				OPERATOR(assign_plus, "+=")			// +=
-				OPERATOR(assign_minus, "-=")		// -=
-				OPERATOR(assign_star, "*=")			// *=
-				OPERATOR(assign_slash, "/=")		// /=
-				OPERATOR(assign_procent, "%=")		// %=
-				OPERATOR(assign_binary_and, "&=")	// &=
-				OPERATOR(assign_binary_or, "|="	)	// |=
-				OPERATOR(assign_binary_not, "~=")	// ~=
-				OPERATOR(assign_binary_xor, "^=")	// ^=
+				OPERATOR(equal, "==")						// ==
+				OPERATOR(notEqual, "!=")					// !=
+				OPERATOR(lessThanEqual, "<=")				// <=
+				OPERATOR(greaterThanEqual, ">=")			// >=
+				OPERATOR(assign_plus, "+=")					// +=
+				OPERATOR(assign_minus, "-=")				// -=
+				OPERATOR(assign_star, "*=")					// *=
+				OPERATOR(assign_slash, "/=")				// /=
+				OPERATOR(assign_procent, "%=")				// %=
+				OPERATOR(assign_binary_and, "&=")			// &=
+				OPERATOR(assign_binary_or, "|="	)			// |=
+				OPERATOR(assign_binary_not, "~=")			// ~=
+				OPERATOR(assign_binary_xor, "^=")			// ^=
+				OPERATOR(assign_binary_leftShift, "<<=")	// ^=
+				OPERATOR(assign_binary_rightShift, ">>=")	// ^=
 			SUBGROUP(special, operator_, 3)
-				OPERATOR(increment, "++")			// ++
-				OPERATOR(decrement, "--")			// --
-				OPERATOR(arrow, "->")				// ->
-				OPERATOR(and, "&&")					// && // and
-				OPERATOR(or, "||")					// || // or
-		GROUP(parantheses, 3)
+				OPERATOR(increment, "++")					// ++
+				OPERATOR(decrement, "--")					// --
+				OPERATOR(arrow, "->")						// ->
+				OPERATOR(and, "&&")							// && // and
+				OPERATOR(or, "||")							// || // or
+		GROUP(parantheses, 2)
 			DEFAULT
-				WORD_(leftParenthesis, "(")			// (
-				WORD_(rightParenthesis, ")")		// )
-				WORD_(leftSquareBracket, "[")		// [
-				WORD_(rightSquareBracket, "]")		// ]
-				WORD_(leftBrace, "{")				// {
-				WORD_(rightBrace, "}")				// }
-				WORD_(quote, "'")					// '
-				WORD_(double_quotes, "\"")			// "
-		GROUP(keyword, 4)
+				WORD_(leftParenthesis, "(")					// (
+				WORD_(rightParenthesis, ")")				// )
+				WORD_(leftSquareBracket, "[")				// [
+				WORD_(rightSquareBracket, "]")				// ]
+				WORD_(leftBrace, "{")						// {
+				WORD_(rightBrace, "}")						// }
+				WORD_(quote, "'")							// '
+				WORD_(double_quotes, "\"")					// "
+		GROUP(keyword, 3)
 			SUBGROUP(statements, keyword, 0)
 				KEYWORD(if)
 				KEYWORD(else)
@@ -154,9 +159,17 @@ constexpr std::wstring Token::to_string() const {
 			SUBGROUP(values, keyword, 3)
 				KEYWORD(true)
 				KEYWORD(false)
-		GROUP(special, 5)
+		GROUP(special, 4)
 			DEFAULT
-				WORD_(comment, "( // )")			// //
+				WORD_(comment, "//")						// //
+				WORD_(sharp, "#")							// #
+				WORD_(colon, ":")							// :
+				WORD_(backslash, "\\")						// \ 
+				WORD_(backtick, "`")						// `
+				WORD_(at, "@")								// @
+		GROUP(error, 5)
+			DEFAULT
+				ERROR(unknown)
 		default:
 			throw;
 	END_CONVERSATION
@@ -193,7 +206,7 @@ TokenType conversation_array[0x80] = {
 	T number,				T number,				T number,				T number,
 	T number,				T number,				T number,				T number,
 	T number,				T number,				T colon,				T endcommand,
-	T operator_lessThan,	T operator_equal,		T operator_greaterThan,	T operator_questionMark,
+	T operator_lessThan,	T operator_assign,		T operator_greaterThan,	T operator_questionMark,
 	T at,					T word,					T word,					T word,
 	T word,					T word,					T word,					T word,
 	T word,					T word,					T word,					T word,

@@ -11,13 +11,13 @@ private:
 	std::wstring value;
 public:
 	Token();
-	constexpr Token(Type type);
-	constexpr Token(Type type, const std::wstring& value);
-	constexpr Token(Type type, std::wstring&& value);
+	Token(Type type);
+	Token(Type type, const std::wstring& value);
+	Token(Type type, std::wstring&& value);
 	explicit Token(wchar_t ch);
 
-	[[nodiscard]] constexpr Type get_type() const;
-	[[nodiscard]] constexpr const std::wstring& get_value() const;
+	[[nodiscard]] Type get_type() const;
+	[[nodiscard]] const std::wstring& get_value() const;
 
 	void set_type(Type type);
 	void set_value(const std::wstring& value);
@@ -25,15 +25,15 @@ public:
 public:
 	void from_char(wchar_t ch);
 
-	[[nodiscard]] constexpr std::wstring to_string() const;
+	[[nodiscard]] std::wstring to_string() const;
 };
 
 using TokenType = Token::Type;
 
 TokenType char_to_token(wchar_t ch);
 
-[[nodiscard]] constexpr TokenType getGroup(TokenType token);
-[[nodiscard]] constexpr TokenType getSubgroup(TokenType token);
+TokenType getGroup(TokenType token);
+TokenType getSubgroup(TokenType token);
 
 
 #define BEGIN_TOKENS enum Token::Type {
@@ -69,8 +69,8 @@ BEGIN_TOKENS
 		SUBGROUP(operator_assignable, 1, 1)
 			OPERATOR(assign)						// =
 			OPERATOR(not)							// ! // not
-			OPERATOR(less_than)						// <
-			OPERATOR(greater_than)					// >
+			OPERATOR(lessThan)						// <
+			OPERATOR(greaterThan)					// >
 			OPERATOR(plus)							// +
 			OPERATOR(minus)							// -
 			OPERATOR(star)							// *
@@ -80,8 +80,8 @@ BEGIN_TOKENS
 			OPERATOR(binary_or)						// |
 			OPERATOR(binary_not)					// ~
 			OPERATOR(binary_xor)					// ^
-			OPERATOR(left_shift)					// <<
-			OPERATOR(right_shift)					// >>
+			OPERATOR(binary_leftShift)				// <<
+			OPERATOR(binary_rightShift)				// >>
 		SUBGROUP(operator_assignment, 1, 2)
 			OPERATOR(equal)							// ==
 			OPERATOR(notEqual)						// !=
@@ -96,8 +96,8 @@ BEGIN_TOKENS
 			OPERATOR(assign_binary_or)				// |=
 			OPERATOR(assign_binary_not)				// ~=
 			OPERATOR(assign_binary_xor)				// ^=
-			OPERATOR(assign_left_shift)					// <<=
-			OPERATOR(assign_right_shift)					// >>=
+			OPERATOR(assign_binary_leftShift)		// <<=
+			OPERATOR(assign_binary_rightShift)		// >>=
 		SUBGROUP(operator_special, 1, 3)
 			OPERATOR(increment)						// ++
 			OPERATOR(decrement)						// --
@@ -136,7 +136,6 @@ BEGIN_TOKENS
 		SUBGROUP(keyword_modificators, 3, 2)
 			KEYWORD(const)
 			KEYWORD(friend)
-			KEYWORD(constexpr)
 		SUBGROUP(keyword_values, 3, 3)
 			KEYWORD(true)
 			KEYWORD(false)

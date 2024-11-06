@@ -16,7 +16,7 @@ public:
 	explicit Lexer(std::wistream* code);
     ~Lexer();
 
-    void open(std::wistream *code);
+    void open(std::wistream* code);
 
 public:
 	void tokenize(std::vector<Token>* tokens);
