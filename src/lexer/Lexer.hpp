@@ -10,6 +10,7 @@ class Lexer {
 private:
 	std::vector<Token>* tokens{ nullptr };
 	std::wistream* code;
+	std::wstring buffer;
 	wchar_t ch{ 0 };
 public:
 	Lexer();
@@ -23,7 +24,7 @@ public:
 
 private:
 	void tokenize_word();
-	void tokenize_num();
+	void tokenize_number();
 	void tokenize_operator();
 	void tokenize_parentheses();
 

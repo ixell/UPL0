@@ -11,6 +11,12 @@ add_library (
 
 target_include_directories (token INTERFACE token)
 
+target_compile_definitions (
+	token
+	PUBLIC
+		$IF:<$<CONFIG:Debug>,DEBUG,NDEBUG>
+)
+
 add_library (
 	lexer
 	STATIC

@@ -14,10 +14,10 @@ void Lexer::open(std::wistream* code) {
 
 void Lexer::tokenize(std::vector<Token>* tokens) {
 	this->tokens = tokens;
-#ifdef NDEBUG
+#ifdef DEBUG
 	while (true) {
 #else
-	for (int TIME = 10'000; TIME != 0; ++TIME) {
+	for (int TIME = 10'000; TIME != 0; --TIME) {
 #endif
 		if (ch >= 0x80) {
 			if (ch == 0xffff) {
@@ -33,7 +33,7 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 			tokenize_word();
 			break;
 		case Token::number:
-			tokenize_num();
+			tokenize_number();
 			break;
 		case Token::none:
 			next();
@@ -60,12 +60,10 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 }
 
 void Lexer::tokenize_word() {
-	wstring buffer;
-
-#ifdef NDEBUG
+#ifdef DEBUG
 	while (true) {
 #else
-	for (int TIME = 1'000; TIME != 0; ++TIME) {
+	for (int TIME = 1'000; TIME != 0; --TIME) {
 #endif
 		if (
 			'a' <= ch && ch <= 'z'	||
@@ -82,30 +80,34 @@ void Lexer::tokenize_word() {
 	}
 
 	Token token(Token::variable, buffer);
+	buffer.clear();
 	typify_word(token);
 	add(token);
 }
 
-void Lexer::tokenize_num() {
-	TokenType type = Token::integer;
+void Lexer::tokenize_number() {
+	TokenType type;
+	if (buffer.empty()) type = Token::integer;
+	else type = Token::float_;
 	int base = 10;
-
-	std::wstring buffer;
 	
-#ifdef NDEBUG
+#ifdef DEBUG
 	while (true) {
 #else
-	for (int TIME = 1'000; TIME != 0; ++TIME) {
+	for (int TIME = 1'000; TIME != 0; --TIME) {
 #endif
 		TokenType token = char_to_token(ch);
 		if (base == 16 && ('a' <= ch && ch <= 'f' || 'A' <= ch && ch <= 'F')) {
+			if ('A' <= ch && ch <= 'F')
+				ch += ('a' - 'A');
 			buffer.push_back(ch);
 			next();
 			continue;
 		}
 		if ('0' <= ch && ch <= '9') {
 			if (ch > base + '0') {
-				tokens->emplace_back(Token::error_unknown);
+				add(Token::error_unknown);
+				buffer.clear();
 				return;
 			}
 			buffer.push_back(ch);
@@ -116,17 +118,15 @@ void Lexer::tokenize_num() {
 			next();
 			continue;
 		}
-		if (ch == 'x' && buffer.size() == 1 && buffer[0] == '0') {
+		if ((ch == 'x' || ch == 'X') && buffer.size() == 1 && buffer[0] == '0') {
 			base = 16;
-			buffer.clear();
-			buffer.push_back(ch);
+			buffer = L'x';
 			next();
 			continue;
 		}
-		if (ch == 'b' && buffer.size() == 1 && buffer[0] == '0') {
+		if ((ch == 'b' || ch == 'B') && buffer.size() == 1 && buffer[0] == '0') {
 			base = 2;
-			buffer.clear();
-			buffer.push_back(ch);
+			buffer = L"b";
 			next();
 			continue;
 		}
@@ -149,12 +149,14 @@ void Lexer::tokenize_num() {
 				break;
 			else {
 				add(TokenType::error);
+				buffer.clear();
 				return;
 			}
 		}
 	}
 	
 	add(type, buffer);
+	buffer.clear();
 	next();
 }
 
@@ -164,6 +166,11 @@ void Lexer::tokenize_operator() {
 	next();
 	TokenType type1 = char_to_token(ch),
 			subgroup1 = getSubgroup(type1);
+	if (type0 == Token::operator_dot && type1 == Token::number) {
+		buffer = L"0.";
+		tokenize_number();
+		return;
+	}
 
 	if (subgroup0 == Token::operator_assignable) {
 		TokenType type1 = char_to_token(ch);
@@ -176,10 +183,10 @@ void Lexer::tokenize_operator() {
 	if (type0 == type1) {
 		TokenType type;
 		switch (type0) {
-		case Token::operator_plus:				type = Token::operator_increment;	next();	break;
-		case Token::operator_minus:				type = Token::operator_decrement;	next();	break;
-		case Token::operator_binary_and:		type = Token::operator_and;			next();	break;
-		case Token::operator_binary_or:			type = Token::operator_or;			next();	break;
+		case Token::operator_plus:			type = Token::operator_increment;	next();		break;
+		case Token::operator_minus:			type = Token::operator_decrement;	next();		break;
+		case Token::operator_binary_and:	type = Token::operator_and;			next();		break;
+		case Token::operator_binary_or:		type = Token::operator_or;			next();		break;
 		case Token::operator_greaterThan:
 			type = Token::operator_binary_rightShift;
 			next();
@@ -214,7 +221,6 @@ void Lexer::tokenize_operator() {
 void Lexer::tokenize_parentheses() {
 	TokenType token = char_to_token(ch);
 	if (token == Token::quote || token == Token::double_quotes) {
-		std::wstring buffer(L"");
 		next();
 		while (ch != '\'') {
 			if (ch == 0xffff) {
@@ -225,6 +231,7 @@ void Lexer::tokenize_parentheses() {
 			next();
 		}
 		add(Token::string, buffer);
+		buffer.clear();
 	}
 }
 

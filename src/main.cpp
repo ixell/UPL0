@@ -3,13 +3,16 @@
 #include <iostream>
 
 int main() {
-    std::wstring code(L"- + / ==");
-    std::wistringstream input(code);
+#ifdef DEBUG
+	std::cout << "DEBUG\n";
+#endif
+	std::wstring code(L".1");
+	std::wistringstream input(code);
 	Lexer lexer;
-    lexer.open(&input);
-    std::vector<Token> tokens;
-    lexer.tokenize(&tokens);
-    for (const Token& token : tokens) {
-        std::wclog << token.to_string() << L'\n';
-    }
+	lexer.open(&input);
+	std::vector<Token> tokens;
+	lexer.tokenize(&tokens);
+	for (const Token& token : tokens) {
+		std::wclog << token.to_string() << L'\n';
+	}
 }
