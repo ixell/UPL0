@@ -88,7 +88,7 @@ TEST(Operators, SpecialOperators) {
 }
 
 TEST(Operators, Groups) {
-	SET_CODE("+++++ -----");
+	SET_CODE("+++++ ----- ++-++");
 	SET_CORRECT(
 		T(operator_increment),
 		T(operator_plus),
@@ -96,6 +96,9 @@ TEST(Operators, Groups) {
 		T(operator_decrement),
 		T(operator_minus),
 		T(operator_decrement),
+		T(operator_increment),
+		T(operator_minus),
+		T(operator_increment),
 		T(eof)
 	);
 	PREPARE();
@@ -103,13 +106,14 @@ TEST(Operators, Groups) {
 }
 
 TEST(Words, Variables) {
-	SET_CODE("a abcdefghijklmopqrstuvwxyz _ d_0 _0123456789");
+	SET_CODE("a abcdefghijklmnopqrstuvwxyz _ d_0 _0123456789 $1");
 	SET_CORRECT(
 		T(variable, L"a"),
 		T(variable, L"abcdefghijklmnopqrstuvwxyz"),
 		T(variable, L"_"),
 		T(variable, L"d_0"),
 		T(variable, L"_0123456789"),
+		T(variable, L"$1"),
 		T(eof)
 	);
 	PREPARE();
@@ -224,6 +228,49 @@ TEST(Numbers, Float) {
 		T(float_, L"1.1"),
 		T(float_, L"123456789.123456789"),
 		T(float_, L"0.123456789"),
+		T(eof)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Other, Strings) {
+	SET_CODE("\"abcdefghijklmnopqrstuvwxyz1234567890.,/+-*/=&^%$#@!?<>(){}[]|'\" '123' \"\\\\ \\40\\x20 \\n\\t\\v\\'\\\"\\r\\f\\a\"");
+	SET_CORRECT(
+		T(string, L"\"abcdefghijklmnopqrstuvwxyz1234567890.,/+-*/=&^%$#@!?<>(){}[]|\""),
+		T(string, L"123"),
+		T(string, L"\\ \40\x20 \n\t\v\'\"\r\f\a"),
+		T(eof)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Other, Parentheses) {
+	SET_CODE("(){}[]<>");
+	SET_CORRECT(
+		T(leftParenthesis),
+		T(rightParenthesis),
+		T(leftSquareBracket),
+		T(rightSquareBracket),
+		T(leftBrace),
+		T(rightBrace),
+		T(operator_lessThan),
+		T(operator_greaterThan),
+		T(eof)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Other, Other) {
+	SET_CODE("#:\\`@//");
+	SET_CORRECT(
+		T(sharp),
+		T(colon),
+		T(backslash),
+		T(backtick),
+		T(at),
 		T(eof)
 	);
 	PREPARE();

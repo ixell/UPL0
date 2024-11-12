@@ -6,7 +6,7 @@ int main() {
 #ifdef DEBUG
 	std::cout << "DEBUG\n";
 #endif
-	std::wstring code(L".1");
+	std::wstring code(L"abc");
 	std::wistringstream input(code);
 	Lexer lexer;
 	lexer.open(&input);

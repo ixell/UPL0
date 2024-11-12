@@ -66,11 +66,9 @@ void Lexer::tokenize_word() {
 	for (int TIME = 1'000; TIME != 0; --TIME) {
 #endif
 		if (
-			'a' <= ch && ch <= 'z'	||
-			'A' <= ch && ch <= 'Z'	||
-			'0' <= ch && ch <= '9'	||
-			ch == '_'				||
-			ch >= 0x80
+			ch >= 0x80 && ch != 0xffff			||
+			'0' <= ch && ch <= '9'				||
+			char_to_token(ch) == Token::word
 		) {
 			buffer.push_back(ch);
 			next();
@@ -166,12 +164,6 @@ void Lexer::tokenize_operator() {
 	next();
 	TokenType type1 = char_to_token(ch),
 			subgroup1 = getSubgroup(type1);
-	if (type0 == Token::operator_dot && type1 == Token::number) {
-		buffer = L"0.";
-		tokenize_number();
-		return;
-	}
-
 	if (subgroup0 == Token::operator_assignable) {
 		TokenType type1 = char_to_token(ch);
 		if (type1 == Token::operator_assign) {
@@ -183,10 +175,28 @@ void Lexer::tokenize_operator() {
 	if (type0 == type1) {
 		TokenType type;
 		switch (type0) {
-		case Token::operator_plus:			type = Token::operator_increment;	next();		break;
-		case Token::operator_minus:			type = Token::operator_decrement;	next();		break;
-		case Token::operator_binary_and:	type = Token::operator_and;			next();		break;
-		case Token::operator_binary_or:		type = Token::operator_or;			next();		break;
+		case Token::operator_plus:
+			type = Token::operator_increment;
+			next();
+			if (!tokens->empty() && tokens->crbegin()->get_type() == Token::operator_increment && ch == L'+') {
+				add(Token::operator_plus);
+				add(Token::operator_increment);
+				next();
+				return;
+			}
+			break;
+		case Token::operator_minus:
+			type = Token::operator_decrement;
+			next();
+			if (!tokens->empty() && tokens->crbegin()->get_type() == Token::operator_decrement && ch == L'-') {
+				add(Token::operator_minus);
+				add(Token::operator_decrement);
+				next();
+				return;
+			}
+			break;
+		case Token::operator_binary_and:	type = Token::operator_and;	next();	break;
+		case Token::operator_binary_or:		type = Token::operator_or;	next();	break;
 		case Token::operator_greaterThan:
 			type = Token::operator_binary_rightShift;
 			next();
@@ -204,10 +214,15 @@ void Lexer::tokenize_operator() {
 			}
 			break;
 		default:
-			add(Token::error_unknown);
+			add(type0);
 			return;
 		}
 		add(type);
+		return;
+	}
+	if (type0 == Token::operator_dot && type1 == Token::number) {
+		buffer = L"0.";
+		tokenize_number();
 		return;
 	}
 	if (type0 == Token::operator_minus && type1 == Token::operator_greaterThan) {
