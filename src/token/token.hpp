@@ -45,7 +45,7 @@ TokenType getSubgroup(TokenType token);
 #define WORD(NAME) NAME,
 #define OPERATOR(NAME) operator_##NAME,
 #define KEYWORD(NAME) keyword_##NAME,
-#define ERROR(NAME) error_##NAME
+#define ERROR(NAME) error_##NAME,
 
 BEGIN_TOKENS
 	DEFAULT
@@ -139,7 +139,7 @@ BEGIN_TOKENS
 		SUBGROUP(keyword_values, 3, 3)
 			KEYWORD(true)
 			KEYWORD(false)
-	GROUP(special, 4)
+	GROUP(other, 4)
 		DEFAULT
 			WORD(comment)							// //
 			WORD(sharp)								// #
@@ -147,9 +147,14 @@ BEGIN_TOKENS
 			WORD(backslash)							// \ 
 			WORD(backtick)							// `
 			WORD(at)								// @
-	GROUP(error, 5)
-		DEFAULT
+	GROUP(errors, 5)
+		SUBGROUP(error, 5, 0)
 			ERROR(unknown)
+			ERROR(indev)
+		SUBGROUP(fatalError, 5, 1)
+			ERROR(unknwonFatal)
+		SUBGROUP(warning, 5, 2)
+			ERROR(unknownWarning)
 END_TOKENS
 
 #undef BEGIN_TOKENS

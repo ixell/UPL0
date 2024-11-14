@@ -235,11 +235,13 @@ TEST(Numbers, Float) {
 }
 
 TEST(Strings, Text) {
-	SET_CODE("\"abcdefghijklmnopqrstuvwxyz1234567890.,/+-*/=&^%$#@!?<>(){}[]|'\" '\"' '123'");
+	SET_CODE("\"abcdefghijklmnopqrstuvwxyz1234567890.,/+-*/=&^%$#@!?<>(){}[]|'\" '\"' '123' \"\" ''");
 	SET_CORRECT(
 		T(string, L"abcdefghijklmnopqrstuvwxyz1234567890.,/+-*/=&^%$#@!?<>(){}[]|'"),
 		T(string, L"\""),
 		T(string, L"123"),
+		T(string, L""),
+		T(string, L""),
 		T(eof)
 	);
 	PREPARE();
@@ -256,10 +258,10 @@ TEST(Strings, EscapeSequences) {
 	CHECK_ALL();
 }
 
-TEST(Strings, NumberStrings) {
-	SET_CODE("\"\40\x20\"");
+TEST(Strings, NumberInStrings) {
+	SET_CODE("\"\\1\\10\\17\\777\\x1\\x10\\x1f\\xff\\0\"");
 	SET_CORRECT(
-		T(string, std::wstring(L"\\ \40\x20 \'\" \n\t\v\r\f\a\0", 15)),
+		T(string, std::wstring(L"\1\10\17\777\x01\x10\x1f\xff\0", 9)),
 		T(eof)
 	);
 	PREPARE();
@@ -285,14 +287,13 @@ TEST(Other, Parentheses) {
 }
 
 TEST(Other, Other) {
-	SET_CODE("# : ` @ \\\\ \\/// //");
+	SET_CODE("# : ` @ \\\\ //3214safdsd");
 	SET_CORRECT(
 		T(sharp),
 		T(colon),
 		T(backtick),
 		T(at),
 		T(backslash),
-		T(operator_slash),
 		T(eof)
 	);
 	PREPARE();

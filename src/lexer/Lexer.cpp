@@ -54,6 +54,9 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 			case Token::parentheses:
 				tokenize_parentheses();
 				break;
+			case Token::other:
+				tokenize_other();
+				break;
 			}
 		}
 	}
@@ -213,6 +216,9 @@ void Lexer::tokenize_operator() {
 				next();
 			}
 			break;
+		case Token::operator_slash:
+			tokenize_comment();
+			return;
 		default:
 			add(type0);
 			return;
@@ -236,14 +242,15 @@ void Lexer::tokenize_operator() {
 void Lexer::tokenize_parentheses() {
 	TokenType token = char_to_token(ch);
 	if (token == Token::quote || token == Token::double_quotes) {
-		tokenize_string(1);
+		tokenize_string();
 		return;
 	}
 	add(token);
 	next();
 }
 
-void Lexer::tokenize_string(int char_size) {
+void Lexer::tokenize_string() {
+	int char_size = 1;
 	if (!(ch == '\'' || ch == '"'))
 		return;
 	wchar_t quote = ch;
@@ -301,6 +308,32 @@ void Lexer::tokenize_string(int char_size) {
 	next();
 }
 
+void Lexer::tokenize_other() {
+	TokenType token = char_to_token(ch);
+	switch (token) {
+	case Token::sharp:
+		add(Token::error_indev);
+		next();
+		return;
+	case Token::at:
+		add(Token::error_indev);
+		next();
+		return;
+	case Token::backslash:
+		next();
+		add(Token::error_indev);
+		next();
+		return;
+	default:
+		add(token);
+		next();
+	}
+}
+
+void Lexer::tokenize_comment() {
+	do next(); while (!(ch == ' ' || ch == 0xffff));
+}
+
 void Lexer::typify_word(Token& token) {
 	const wstring& word = token.get_value();
 	for (size_t i = 0; i != word.size(); ++i) {
@@ -308,7 +341,7 @@ void Lexer::typify_word(Token& token) {
 			return;
 	}
 
-	if (word == L"if") 
+	if (word == L"if")
 		token.set_type(Token::keyword_if);
 	else if (word == L"else")
 		token.set_type(Token::keyword_else);
