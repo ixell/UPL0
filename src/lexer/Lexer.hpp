@@ -27,6 +27,7 @@ private:
 	void tokenize_number();
 	void tokenize_operator();
 	void tokenize_parentheses();
+	void tokenize_string(int char_size = 1);
 
 	void typify_word(Token& token);
 

@@ -236,18 +236,69 @@ void Lexer::tokenize_operator() {
 void Lexer::tokenize_parentheses() {
 	TokenType token = char_to_token(ch);
 	if (token == Token::quote || token == Token::double_quotes) {
-		next();
-		while (ch != '\'') {
-			if (ch == 0xffff) {
+		tokenize_string(1);
+		return;
+	}
+	add(token);
+	next();
+}
+
+void Lexer::tokenize_string(int char_size) {
+	if (!(ch == '\'' || ch == '"'))
+		return;
+	wchar_t quote = ch;
+	next();
+	while (ch != quote) {
+		switch (ch) {
+			case '\\':
+				next();
+				switch (ch) {
+					case '\\':
+					case '"':
+					case '\'':
+						break;
+					case 'n':
+						ch = '\n';
+						break;
+					case 't':
+						ch = '\t';
+						break;
+					case 'v':
+						ch = '\v';
+						break;
+					case 'r':
+						ch = '\r';
+						break;
+					case 'f':
+						ch = '\f';
+						break;
+					case 'a':
+						ch = '\a';
+						break;
+					case '0':
+						ch = '\0';
+						break;
+					case 'x':
+						add(Token::error_indev);
+						break;
+					default:
+						if (char_to_token(ch) == Token::number) {
+							add(Token::error_indev);
+							break;
+						}
+						add(Token::error_unknown);
+				}
+				break;
+			case 0xffff:
 				add(Token::error_unknown);
 				return;
-			}
-			buffer.push_back(ch);
-			next();
 		}
-		add(Token::string, buffer);
-		buffer.clear();
+		buffer.push_back(ch);
+		next();
 	}
+	add(Token::string, buffer);
+	buffer.clear();
+	next();
 }
 
 void Lexer::typify_word(Token& token) {
