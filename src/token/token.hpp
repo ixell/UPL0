@@ -59,6 +59,7 @@ BEGIN_TOKENS
 			WORD(integer)
 			WORD(float_)
 		SUBGROUP(endword, 0, 2)
+			WORD(tab)
 			WORD(endline)
 			WORD(endcommand)
 	GROUP(operator_, 1)
@@ -114,6 +115,8 @@ BEGIN_TOKENS
 			WORD(rightBrace)						// }
 			WORD(quote)								// '
 			WORD(double_quotes)						// "
+			//   tab
+			WORD(untab)
 	GROUP(keyword, 3)
 		SUBGROUP(keyword_statements, 3, 0)
 			KEYWORD(if)

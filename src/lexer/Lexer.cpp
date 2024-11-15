@@ -14,6 +14,7 @@ void Lexer::open(std::wistream* code) {
 
 void Lexer::tokenize(std::vector<Token>* tokens) {
 	this->tokens = tokens;
+
 #ifdef DEBUG
 	while (true) {
 #else
@@ -44,6 +45,9 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 			return;
 		default:
 			if (getSubgroup(token) == Token::endword) {
+				if (token == Token::endline) {
+					tokenize_tabs();
+				}
 				next();
 				break;
 			}
@@ -332,6 +336,29 @@ void Lexer::tokenize_other() {
 
 void Lexer::tokenize_comment() {
 	do next(); while (!(ch == ' ' || ch == 0xffff));
+}
+
+void Lexer::tokenize_tabs() {
+	int spaces = 0;
+	while (true) {
+		switch (ch) {
+		case ' ': ++spaces; break;
+		case '\t': spaces += tab_size ? tab_size : 4; break;
+		default: goto out;
+		}
+	}
+	out:
+	if (tab_size == 0) tab_size = spaces;
+	int new_tabs = spaces / tab_size;
+	if (tabs != new_tabs) {
+		if (tabs > new_tabs)
+			for (int i = tabs - new_tabs; i != 0; --i)
+				add(Token::untab);
+		else
+			for (int i = new_tabs - tabs; i != 0; --i)
+				add(Token::tab);
+	}
+	tabs = new_tabs;
 }
 
 void Lexer::typify_word(Token& token) {

@@ -286,6 +286,40 @@ TEST(Other, Parentheses) {
 	CHECK_ALL();
 }
 
+TEST(Other, Tabs) {
+	SET_CODE("+\n	+\n		1\n	a\n+\n +\n   +\n+\n +\n 	+");
+	SET_CORRECT(
+		T(operator_plus),
+		T(tab),
+		T(operator_plus),
+		T(tab),
+		T(integer, L"1"),
+		T(untab),
+		T(variable, L"a"),
+		T(untab),
+		T(operator_plus),
+		T(tab),
+		T(operator_plus),
+		T(tab),
+		T(operator_plus),
+		T(tab),
+		T(operator_plus),
+		T(tab),
+		T(tab),
+		T(operator_plus),
+		T(untab),
+		T(untab),
+		T(untab),
+		T(operator_plus),
+		T(tab),
+		T(operator_plus),
+		T(tab),
+		T(tab),
+		T(operator_plus),
+		T(eof)
+	)
+}
+
 TEST(Other, Other) {
 	SET_CODE("# : ` @ \\\\ //3214safdsd");
 	SET_CORRECT(

@@ -12,6 +12,8 @@ private:
 	std::wistream* code;
 	std::wstring buffer;
 	wchar_t ch{ 0 };
+	
+	int tabs = 0, tab_size = 0;
 public:
 	Lexer();
 	explicit Lexer(std::wistream* code);
@@ -30,6 +32,7 @@ private:
 	void tokenize_string();
 	void tokenize_other();
 	void tokenize_comment();
+	void tokenize_tabs();
 
 	void typify_word(Token& token);
 
