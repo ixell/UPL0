@@ -9,7 +9,7 @@ add_library (
 		token/token.cpp
 )
 
-target_include_directories (token INTERFACE token)
+target_include_directories (token PUBLIC token)
 
 target_compile_definitions (
 	token
@@ -24,12 +24,37 @@ add_library (
 		lexer/lexer.cpp
 )
 
-target_include_directories (lexer INTERFACE lexer)
+target_include_directories (lexer PUBLIC lexer)
 
 target_link_libraries (
 	lexer
 	PUBLIC
 		token
+)
+
+add_subdirectory (expressions)
+
+target_link_libraries (
+	expressions
+	PRIVATE
+		token
+)
+
+add_library (
+	parser
+	STATIC
+		parser/parser.hpp
+		parser/parser.cpp
+)
+
+target_include_directories (parser PUBLIC parser)
+
+target_link_libraries (
+	parser
+	PRIVATE
+		token
+	PUBLIC
+		expressions
 )
 
 add_executable (
@@ -43,9 +68,11 @@ target_link_libraries (
 		lexer
 )
 
-set_target_properties(
+set_target_properties (
 	token
 	lexer
+	expressions
+	parser
 	upl
 	PROPERTIES
 		CXX_STANDARD 20
