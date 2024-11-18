@@ -90,6 +90,8 @@ void Lexer::tokenize_word() {
 	add(token);
 }
 
+static void parse_number(std::wstring* result, std::wstring input, int base);
+
 void Lexer::tokenize_number() {
 	TokenType type;
 	if (buffer.empty()) type = Token::integer;
@@ -163,6 +165,36 @@ void Lexer::tokenize_number() {
 	add(type, buffer);
 	buffer.clear();
 	next();
+}
+
+static void parse_number(std::wstring& result, std::wstring& input, int base) {
+	int number, place = 0;
+	for (auto i = input.crbegin(); i != input.crend(); i++) {
+		wchar_t ch = *i;
+		if ('0' <= ch && ch <= '9') {
+			int n = ch - '0';
+			if (n < base)
+				number += n;
+			else {
+				result.clear();
+				return;
+			}
+		}
+		else if ('a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z') {
+			int n;
+			if ('a' <= ch && ch <= 'z') 
+				n = ch - 'a' + 16;
+			else
+				n = ch - 'A' + 16;
+			if (n < base)
+				number += n;
+			else {
+				result.clear();
+				return;
+			}
+		}
+		//...
+	}
 }
 
 void Lexer::tokenize_operator() {
@@ -325,7 +357,6 @@ void Lexer::tokenize_other() {
 		return;
 	case Token::backslash:
 		next();
-		add(Token::error_indev);
 		next();
 		return;
 	default:
