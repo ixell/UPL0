@@ -1,10 +1,10 @@
 #pragma once
-#include <string>
 #include <memory>
+#include "expressionTypesList.hpp"
 using std::unique_ptr;
 
 class Expression {
 public:
-	virtual std::wstring to_string() const = 0;
+	virtual ExpressionType get_type() = 0;
 	virtual ~Expression() = default;
 };

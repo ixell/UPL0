@@ -9,6 +9,6 @@ private:
 public:
 	BinaryExpression(Operation operation, Expression*&& expr1, Expression*&& expr2);
 
-	virtual std::wstring to_string() const override;
+	virtual ExpressionType get_type() const override;
 	virtual ~BinaryExpression() override = default;
 };

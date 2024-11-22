@@ -8,6 +8,6 @@ public:
 	IntegerExpression(int64_t integer);
 	IntegerExpression();
 
-	virtual std::wstring to_string() const override;
+	virtual ExpressionType get_type() const override;
 	virtual ~IntegerExpression() = default;
 };

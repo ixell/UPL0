@@ -9,6 +9,6 @@ private:
 public:
 	UnaryExpression(Operation operation, Expression*&& value);
 
-	virtual std::wstring to_string() const override;
+	virtual ExpressionType get_type() const override;
 	virtual ~UnaryExpression() = default;
 };
