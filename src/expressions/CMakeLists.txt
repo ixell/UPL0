@@ -11,12 +11,12 @@ add_library (
         ${header}/Expression.hpp
         ${header}/BinaryExpression.hpp
         ${header}/UnaryExpression.hpp
-        ${header}/NumberExpression.hpp
+        ${header}/IntegerExpression.hpp
         ${header}/operations.hpp
 
         ${source}/UnaryExpression.cpp
         ${source}/BinaryExpression.cpp
-        ${source}/NumberExpression.cpp
+        ${source}/IntegerExpression.cpp
         ${source}/operations.cpp
 )
 

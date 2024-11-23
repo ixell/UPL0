@@ -1,10 +1,10 @@
 #pragma once
 #include <memory>
 #include "expressionTypesList.hpp"
-using std::unique_ptr;
+#define ptr_t std::shared_ptr
 
 class Expression {
 public:
-	virtual ExpressionType get_type() = 0;
+	virtual ExpressionType get_type() const = 0;
 	virtual ~Expression() = default;
 };

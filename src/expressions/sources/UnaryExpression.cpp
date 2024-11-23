@@ -1,6 +1,6 @@
 #include "UnaryExpression.hpp"
 
-UnaryExpression::UnaryExpression(Operation operation, Expression*&& expr)
+UnaryExpression::UnaryExpression(Operation operation, ptr_t<Expression> value)
 	: operation(operation), expr(expr) {}
 
 //std::wstring UnaryExpression::to_string() const {
@@ -14,4 +14,8 @@ UnaryExpression::UnaryExpression(Operation operation, Expression*&& expr)
 
 ExpressionType UnaryExpression::get_type() {
 	return ExpressionType::UnaryExpression;
+}
+
+const ptr_t<Expression> UnaryExpression::get_value() const {
+	return expr;
 }
