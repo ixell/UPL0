@@ -12,7 +12,7 @@ public:
 	virtual ExpressionType get_type() const override;
 	virtual ~BinaryExpression() override = default;
 
-	OperationType get_operation() const;
+	Operation get_operation() const;
 	const ptr_t<Expression> get_left() const;
 	const ptr_t<Expression> get_right() const;
 };

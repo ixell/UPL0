@@ -13,4 +13,5 @@ public:
 	virtual ~UnaryExpression() = default;
 
 	const ptr_t<Expression> get_value() const;
+	Operation get_operation() const;
 };

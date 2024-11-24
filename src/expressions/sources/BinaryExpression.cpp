@@ -21,6 +21,6 @@ const ptr_t<Expression> BinaryExpression::get_right() const {
 	return right;
 }
 
-OperationType BinaryExpression::get_operation() const {
+Operation BinaryExpression::get_operation() const {
 	return operation;
 }

@@ -12,10 +12,14 @@ UnaryExpression::UnaryExpression(Operation operation, ptr_t<Expression> value)
 //	return to_wstring(operation) + expr->to_string();
 //}
 
-ExpressionType UnaryExpression::get_type() {
+ExpressionType UnaryExpression::get_type() const {
 	return ExpressionType::UnaryExpression;
 }
 
 const ptr_t<Expression> UnaryExpression::get_value() const {
 	return expr;
+}
+
+Operation UnaryExpression::get_operation() const {
+	return operation;
 }

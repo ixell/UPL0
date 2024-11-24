@@ -1,15 +1,19 @@
 #include "IntegerExpression.hpp"
 
-IntegerExpression::IntegerExpression(int64_t integer)
-	: type(Type::integer), value(integer) {}
+IntegerExpression::IntegerExpression(int64_t value)
+	: value(value) {}
 
 IntegerExpression::IntegerExpression()
-	: type(Type::integer), value(0i64) {}
+	: value(0i64) {}
 
 //std::wstring IntegerExpression::to_string() const {
 //	return std::to_wstring(value.integer);
 //}
 
-ExpressionType IntegerExpression::get_value() const {
+ExpressionType IntegerExpression::get_type() const {
 	return ExpressionType::IntegerExpression;
+}
+
+int64_t IntegerExpression::get_value() const {
+	return value;
 }
