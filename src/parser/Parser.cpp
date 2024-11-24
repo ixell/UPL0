@@ -9,13 +9,11 @@ Parser::Parser(std::vector<Token>& tokens)
 		this_token = &tokens[0];
 }
 
-std::vector<ExprPtr> Parser::parse() {
-	std::vector<ExprPtr> result;
-	if (tokens.empty()) throw -1;
-	for (size_t i = 0; !match(Token::eof); ++i) {
-		result.push_back(ExprPtr(expression()));
+void Parser::parse(std::vector<ExprPtr>& expressions) {
+	if (tokens.empty()) throw;
+	for (size_t i = 0; get().get_type() != Token::eof; ++i) {
+		expressions.push_back(ExprPtr(expression()));
 	}
-	return result;
 }
 
 ExprPtr Parser::expression() {

@@ -11,7 +11,7 @@ private:
 public:
 	Parser(std::vector<Token>& tokens);
 
-	[[nodiscard]] std::vector<ptr_t<Expression>> parse();
+	void parse(std::vector<ptr_t<Expression>>& expressions);
 private:
 	[[nodiscard]] ptr_t<Expression> expression();
 	[[nodiscard]] ptr_t<Expression> multiplicative();
