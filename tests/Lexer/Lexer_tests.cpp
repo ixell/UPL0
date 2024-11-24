@@ -16,7 +16,7 @@
 
 #define CHECK_ALL() {												\
 	ASSERT_EQ(tokens.size(), correct.size());						\
-	for (int i = 0; i != correct.size(); ++i) {						\
+	for (size_t i = correct.size() - 1; i != 0; --i) {				\
 		ASSERT_EQ(tokens[i].get_type(), correct[i].get_type());		\
 		ASSERT_EQ(tokens[i].get_value(), correct[i].get_value());	\
 	}																\
@@ -328,6 +328,32 @@ TEST(Other, Other) {
 		T(backtick),
 		T(at),
 		T(backslash),
+		T(eof)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Combinations, IntegersAndOperators) {
+	SET_CODE("1 + 2-50+++++3 / 9!=0x111+8<<    7");
+	SET_CORRECT(
+		T(integer, L"1"),
+		T(operator_plus),
+		T(integer, L"2"),
+		T(operator_minus),
+		T(integer, L"50"),
+		T(operator_increment),
+		T(operator_plus),
+		T(operator_increment),
+		T(integer, L"3"),
+		T(operator_slash),
+		T(integer, L"9"),
+		T(operator_notEqual),
+		T(integer, L"x111"),
+		T(operator_plus),
+		T(integer, L"8"),
+		T(operator_binary_leftShift),
+		T(integer, L"7"),
 		T(eof)
 	);
 	PREPARE();

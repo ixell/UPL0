@@ -147,18 +147,15 @@ void Lexer::tokenize_number() {
 			next();
 			continue;
 		}
-		{
-			TokenType subgroup = getSubgroup(token);
-			if (subgroup == TokenType::endword
-				|| subgroup == TokenType::operator_
-				|| subgroup == TokenType::parentheses
-				|| ch == 0xffff)
-				break;
-			else {
-				add(TokenType::error);
-				buffer.clear();
-				return;
-			}
+		if (token != TokenType::word && token != TokenType::parentheses) {
+			add(type, buffer);
+			buffer.clear();
+			return;
+		}
+		else {
+			add(TokenType::error);
+			buffer.clear();
+			return;
 		}
 	}
 	
