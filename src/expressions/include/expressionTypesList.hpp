@@ -1,5 +1,6 @@
 enum class ExpressionType {
     BinaryExpression,
     UnaryExpression,
-    IntegerExpression
+    IntegerExpression,
+    BooleanExpression
 };

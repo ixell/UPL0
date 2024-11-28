@@ -58,6 +58,7 @@ if (GTEST_FOUND)
             ${GTEST_BOTH_LIBRARIES}
             parser
             lexer
+            expressions
     )
 
     add_test (

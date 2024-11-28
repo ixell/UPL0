@@ -94,3 +94,13 @@ TEST(Work, BinaryExpression) {
 	PREPARE();
 	CHECK_ALL();
 }
+
+TEST(Work, BooleanExpression) {
+	SET_CODE("true; false");
+	SET_CORRECT(
+		Expr(BooleanExpression, true),
+		Expr(BooleanExpression, false)
+	);
+	PREPARE();
+	CHECK_ALL();
+}

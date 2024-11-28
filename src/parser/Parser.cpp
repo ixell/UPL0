@@ -77,6 +77,12 @@ ExprPtr Parser::primary() {
 	case Token::integer:
 		next();
 		return ExprPtr(new IntegerExpression(_wtoi64(token.get_value().c_str())));
+	case Token::keyword_true:
+		next();
+		return ExprPtr(new BooleanExpression(true));
+	case Token::keyword_false:
+		next();
+		return ExprPtr(new BooleanExpression(false));
 	case Token::leftParenthesis: {
 		next();
 		ExprPtr expr = expression();

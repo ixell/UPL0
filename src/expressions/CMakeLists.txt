@@ -13,11 +13,13 @@ add_library (
         ${header}/UnaryExpression.hpp
         ${header}/IntegerExpression.hpp
         ${header}/operations.hpp
+        ${header}/BooleanExpression.hpp
 
         ${source}/UnaryExpression.cpp
         ${source}/BinaryExpression.cpp
         ${source}/IntegerExpression.cpp
         ${source}/operations.cpp
+        ${source}/BooleanExpression.cpp
 )
 
 target_include_directories (

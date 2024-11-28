@@ -2,3 +2,4 @@
 #include "IntegerExpression.hpp"
 #include "BinaryExpression.hpp"
 #include "UnaryExpression.hpp"
+#include "BooleanExpression.hpp"
