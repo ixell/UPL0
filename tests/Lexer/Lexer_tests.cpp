@@ -287,7 +287,7 @@ TEST(Other, Parentheses) {
 }
 
 TEST(Other, Tabs) {
-	SET_CODE("+\n	+\n		1\n	a\n+\n +\n   +\n+\n +\n 	+");
+	SET_CODE("+\n	+\n		1\n	a\n+\n +\n   +\n+\n +\n+\n 	+");
 	SET_CORRECT(
 		T(operator_plus),
 		T(tab),
@@ -321,12 +321,13 @@ TEST(Other, Tabs) {
 }
 
 TEST(Other, Other) {
-	SET_CODE("# : ` @ \\\\ //3214safdsd");
+	SET_CODE("# : ` @ ; \n \\\\ //3214safdsd");
 	SET_CORRECT(
 		T(sharp),
 		T(colon),
 		T(backtick),
 		T(at),
+		T(endcommand),
 		T(backslash),
 		T(eof)
 	);
@@ -354,6 +355,24 @@ TEST(Combinations, IntegersAndOperators) {
 		T(integer, L"8"),
 		T(operator_binary_leftShift),
 		T(integer, L"7"),
+		T(eof)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Combinations, ExpressionsAndEnds) {
+	SET_CODE("a; true; 2; a\n true\n 2\n");
+	SET_CORRECT(
+		T(variable, L"a"),
+		T(endcommand),
+		T(keyword_true),
+		T(endcommand),
+		T(integer, L"2"),
+		T(endcommand),
+		T(variable, L"a"),
+		T(keyword_true),
+		T(integer, L"2"),
 		T(eof)
 	);
 	PREPARE();

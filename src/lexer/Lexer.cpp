@@ -45,9 +45,10 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 			return;
 		default:
 			if (getSubgroup(token) == Token::endword) {
-				if (token == Token::endline) {
+				if (token == Token::endline)
 					tokenize_tabs();
-				}
+				if (token == Token::endcommand)
+					add(Token::endcommand);
 				next();
 				break;
 			}
@@ -376,7 +377,7 @@ void Lexer::tokenize_tabs() {
 		}
 	}
 	out:
-	if (tab_size == 0) tab_size = spaces;
+	if (tab_size == 0) tab_size = spaces ? spaces : 1;
 	int new_tabs = spaces / tab_size;
 	if (tabs != new_tabs) {
 		if (tabs > new_tabs)
