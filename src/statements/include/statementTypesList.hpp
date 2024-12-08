@@ -1,2 +1,3 @@
 enum class StatementType {
+    InitStatement
 };
