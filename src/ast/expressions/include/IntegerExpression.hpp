@@ -12,4 +12,5 @@ public:
 	virtual ~IntegerExpression() = default;
 
 	int64_t get_value() const;
+	void change_value(int64_t value);
 };

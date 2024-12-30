@@ -17,3 +17,7 @@ ExpressionType IntegerExpression::get_type() const {
 int64_t IntegerExpression::get_value() const {
 	return value;
 }
+
+void change_value(int64_t value) {
+	this->value = value;
+}

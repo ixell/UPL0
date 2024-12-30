@@ -11,4 +11,5 @@ public:
     virtual ~BooleanExpression() = default;
 
     bool get_value() const;
+    void change_value(bool value);
 };
