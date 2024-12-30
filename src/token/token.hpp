@@ -130,6 +130,7 @@ BEGIN_TOKENS
 			KEYWORD(enum)
 			KEYWORD(union)
 			KEYWORD(import)
+			KEYWORD(template)
 		SUBGROUP(keyword_types, 3, 1)
 			KEYWORD(int)
 			KEYWORD(float)
