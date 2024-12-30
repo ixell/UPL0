@@ -1,12 +1,13 @@
 cmake_minimum_required (VERSION 3.13)
+project(expressions)
 
-set(header "${PROJECT_SOURCE_DIR}/expressions/include")
-set(source "${PROJECT_SOURCE_DIR}/expressions/sources")
+set(header "${PROJECT_SOURCE_DIR}/include")
+set(source "${PROJECT_SOURCE_DIR}/source")
 
 add_library (
     expressions
     STATIC
-        ${header}/all.hpp
+        ${header}/all_expressions.hpp
 
         ${header}/Expression.hpp
         ${header}/BinaryExpression.hpp

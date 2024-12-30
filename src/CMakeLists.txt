@@ -32,7 +32,7 @@ target_link_libraries (
 		token
 )
 
-add_subdirectory (expressions)
+add_subdirectory (ast)
 
 target_link_libraries (
 	expressions
