@@ -1,6 +1,6 @@
 #include "BlockStatement.hpp"
 
-BlockStatement::BlockStatement(const std::vector<Statement>& statements)
+BlockStatement::BlockStatement(const std::vector<ptr_t<Statement>>& statements)
     : statements(statements) {}
     
 StatementType BlockStatement::get_type() const {

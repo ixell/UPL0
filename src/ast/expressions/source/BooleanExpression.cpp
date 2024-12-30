@@ -11,6 +11,6 @@ bool BooleanExpression::get_value() const {
     return value;
 }
 
-void change_value(bool value) {
+void BooleanExpression::change_value(bool value) {
     this->value = value;
 }

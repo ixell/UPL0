@@ -30,7 +30,7 @@ const std::vector<ptr_t<VariableExpression>> VariableExpression::get_template() 
 	return template_;
 }
 
-const std::wstring& VariableExpression::get_type() const {
+const std::wstring& VariableExpression::get_variable_type() const {
 	return type;
 }
 

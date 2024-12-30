@@ -8,5 +8,5 @@ public:
 	virtual ~Statement() = default;
 };
 
-class InternalStatement : public Statement {}
-class ExternalStatement : public Statement {}
+class InternalStatement : public Statement {};
+class ExternalStatement : public Statement {};

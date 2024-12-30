@@ -10,13 +10,13 @@ public:
     VariableExpression(
         const std::wstring& type,
         const std::wstring& name,
-        const std::vector<Modificators>& modificators,
+        const std::vector<Modificator>& modificators,
         const std::vector<ptr_t<VariableExpression>>& template_
     );
     VariableExpression(
         const std::wstring& type,
         const std::wstring& name,
-        const std::vector<Modificators>& modificators
+        const std::vector<Modificator>& modificators
     );
     VariableExpression(const std::wstring& type, const std::wstring& name);
 
@@ -24,6 +24,6 @@ public:
 
     const std::vector<Modificator> get_modificators() const;
     const std::vector<ptr_t<VariableExpression>> get_template() const;
-    const std::wstring& get_type() const;
+    const std::wstring& get_variable_type() const;
     const std::wstring& get_name() const;
-}
+};
