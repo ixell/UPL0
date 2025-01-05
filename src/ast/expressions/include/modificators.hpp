@@ -2,5 +2,6 @@
 #include <string>
 
 enum class Modificator {
-    nothing
+    nothing,
+    const_
 };

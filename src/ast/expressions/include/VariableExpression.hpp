@@ -1,29 +1,17 @@
-#include "Expression.hpp"
-#include "modificators.hpp"
+#include "TypeExpression.hpp"
 
 class VariableExpression : public Expression {
 private:
-    std::vector<Modificator> modificators;
-    std::vector<ptr_t<VariableExpression>> template_;
-    std::wstring type, name;
+    ptr_t<TypeExpression> type;
+    std::wstring name;
 public:
-    VariableExpression(
-        const std::wstring& type,
-        const std::wstring& name,
-        const std::vector<Modificator>& modificators,
-        const std::vector<ptr_t<VariableExpression>>& template_
-    );
-    VariableExpression(
-        const std::wstring& type,
-        const std::wstring& name,
-        const std::vector<Modificator>& modificators
-    );
-    VariableExpression(const std::wstring& type, const std::wstring& name);
+    VariableExpression(ptr_t<TypeExpression> type, const std::wstring& name);
 
 	virtual ExpressionType get_type() const override;
 
-    const std::vector<Modificator> get_modificators() const;
-    const std::vector<ptr_t<VariableExpression>> get_template() const;
+    const std::vector<Modificator>& get_modificators() const;
+    const std::vector<ptr_t<VariableExpression>>& get_template() const;
     const std::wstring& get_variable_type() const;
+    ptr_t<TypeExpression> get_type_expression() const;
     const std::wstring& get_name() const;
 };
