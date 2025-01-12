@@ -11,7 +11,7 @@ const std::vector<Modificator>& VariableExpression::get_modificators() const {
 	return type->get_modificators();
 }
 
-const std::vector<ptr_t<VariableExpression>>& VariableExpression::get_template() const {
+const std::vector<ptr_t<Expression>>& VariableExpression::get_template() const {
 	return type->get_template();
 }
 

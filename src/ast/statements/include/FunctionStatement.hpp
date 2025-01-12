@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include "Statement.hpp"
 #include "TypeExpression.hpp"
@@ -14,14 +15,14 @@ public:
         ptr_t<TypeExpression> type,
         const std::wstring& name,
         const std::vector<ptr_t<Expression>>& args,
-        ptr_t<BlockStatement> code;
+        ptr_t<BlockStatement> code
     );
     
-    virtual get_type() const override;
+    virtual StatementType get_type() const override;
     virtual ~FunctionStatement();
 
     ptr_t<Expression> get_return_type() const;
     const std::wstring& get_name() const;
     const std::vector<ptr_t<Expression>>& get_args() const;
     ptr_t<BlockStatement> get_code() const;
-}
+};

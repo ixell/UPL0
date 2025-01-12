@@ -13,14 +13,24 @@ add_library (
         ${header}/BinaryExpression.hpp
         ${header}/UnaryExpression.hpp
         ${header}/IntegerExpression.hpp
-        ${header}/operations.hpp
         ${header}/BooleanExpression.hpp
+        ${header}/TypeExpression.hpp
+        ${header}/VariableExpression.hpp
+        ${header}/ConstantVariableExpression.hpp
 
         ${source}/UnaryExpression.cpp
         ${source}/BinaryExpression.cpp
         ${source}/IntegerExpression.cpp
-        ${source}/operations.cpp
         ${source}/BooleanExpression.cpp
+        ${source}/TypeExpression.cpp
+        ${source}/VariableExpression.cpp
+        ${source}/ConstantVariableExpression.cpp
+
+        ${header}/operations.hpp
+        ${header}/expressionTypesList.hpp
+        ${header}/modificators.hpp
+        
+        ${source}/operations.cpp
 )
 
 target_include_directories (

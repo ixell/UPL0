@@ -9,13 +9,16 @@ add_library (
     STATIC
         ${header}/all_statements.hpp
 
+        ${header}/Statement.hpp
         ${header}/BlockStatement.hpp
         ${header}/InitStatement.hpp
-        ${header}/Statement.hpp
-        ${header}/statementTypesList.hpp
+        ${header}/FunctionStatement.hpp
 
         ${source}/BlockStatement.cpp
         ${source}/InitStatement.cpp
+        ${source}/FunctionStatement.cpp
+        
+        ${header}/statementTypesList.hpp
 )
 
 target_include_directories (

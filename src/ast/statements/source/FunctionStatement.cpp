@@ -1,31 +1,31 @@
 #include "FunctionStatement.hpp"
 
-FunctionStatement(
+FunctionStatement::FunctionStatement(
     ptr_t<TypeExpression> type,
     const std::wstring& name,
     const std::vector<ptr_t<Expression>>& args,
-    ptr_t<BlockStatement> code;
+    ptr_t<BlockStatement> code
 ) :
     type(type), name(name), args(args), code(code) {}
 
-virtual get_type() const override {
-    return StatementType::unknown;
+StatementType FunctionStatement::get_type() const {
+    return StatementType::Unknown;
 }
 
-virtual ~FunctionStatement() = default;
+FunctionStatement::~FunctionStatement() = default;
 
-ptr_t<Expression> get_return_type() const {
+ptr_t<Expression> FunctionStatement::get_return_type() const {
     return type;
 }
 
-const std::wstring& get_name() const {
+const std::wstring& FunctionStatement::get_name() const {
     return name;
 }
 
-const std::vector<ptr_t<Expression>>& get_args() const {
+const std::vector<ptr_t<Expression>>& FunctionStatement::get_args() const {
     return args;
 }
 
-ptr_t<BlockStatement> get_code() const {
+ptr_t<BlockStatement> FunctionStatement::get_code() const {
     return code;
 }

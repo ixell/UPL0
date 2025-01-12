@@ -1,3 +1,4 @@
+#pragma once
 enum class ExpressionType {
     unknown,
     BinaryExpression,

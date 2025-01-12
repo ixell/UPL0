@@ -1,3 +1,5 @@
+#pragma once
+#include <vector>
 #include "TypeExpression.hpp"
 
 class VariableExpression : public Expression {
@@ -10,7 +12,7 @@ public:
 	virtual ExpressionType get_type() const override;
 
     const std::vector<Modificator>& get_modificators() const;
-    const std::vector<ptr_t<VariableExpression>>& get_template() const;
+    const std::vector<ptr_t<Expression>>& get_template() const;
     const std::wstring& get_variable_type() const;
     ptr_t<TypeExpression> get_type_expression() const;
     const std::wstring& get_name() const;

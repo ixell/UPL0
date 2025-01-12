@@ -1,30 +1,9 @@
 #include "ConstantVariableExpression.hpp"
 
-ConstantVariableExpression::ConstantVariableExpression(
-    const std::wstring& type,
-    const std::wstring& name,
-    const std::vector<Modificator>& modificators,
-    const std::vector<ptr_t<VariableExpression>>& template_,
-    ptr_t<Expression> value;
-) :
-    VariableExpression(type, name, modificators, template_), value(value) {}
+ConstantVariableExpression::ConstantVariableExpression(ptr_t<TypeExpression> type, const std::wstring& name, ptr_t<Expression> value)
+    : VariableExpression(type, name), value(value) {}
 
-ConstantVariableExpression::ConstantVariableExpression(
-    const std::wstring& type,
-    const std::wstring& name,
-    const std::vector<Modificator>& modificators,
-    ptr_t<Expression> value
-) :
-    VariableExpression(type, name, modificators), value(value) {}
-
-ConstantVariableExpression::ConstantVariableExpression(
-    const std::wstring& type,
-    const std::wstring& name,
-    ptr_t<Expression> value
-) :
-    VariableExpression(type, name), value(value) {}
-
-virtual ExpressionType ConstantVariableExpression::get_type() const override {
+ExpressionType ConstantVariableExpression::get_type() const {
     return ExpressionType::unknown;
 }
 
