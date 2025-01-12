@@ -3,11 +3,12 @@
 
 class ConstantVariableExpression : public VariableExpression {
 private:
-    ptr_t<Expression> value;
+    Expression* value;
 public:
-    ConstantVariableExpression(ptr_t<TypeExpression> type, const std::wstring& name, ptr_t<Expression> value);
+    ConstantVariableExpression(TypeExpression* type, const std::wstring& name, Expression* value);
 
 	virtual ExpressionType get_type() const override;
+    virtual ~ConstantVariableExpression();
 
-    const ptr_t<Expression> get_value() const;
+    const Expression* get_value() const;
 };

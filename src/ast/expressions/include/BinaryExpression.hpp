@@ -5,14 +5,14 @@
 class BinaryExpression : public Expression {
 private:
 	Operation operation;
-	ptr_t<Expression> left, right;
+	Expression* left, *right;
 public:
-	BinaryExpression(Operation operation, ptr_t<Expression> left, ptr_t<Expression> right);
+	BinaryExpression(Operation operation, Expression* left, Expression* right);
 
 	virtual ExpressionType get_type() const override;
-	virtual ~BinaryExpression() override = default;
+	virtual ~BinaryExpression() override;
 
 	Operation get_operation() const;
-	const ptr_t<Expression> get_left() const;
-	const ptr_t<Expression> get_right() const;
+	const Expression* get_left() const;
+	const Expression* get_right() const;
 };

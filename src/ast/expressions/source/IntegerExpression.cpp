@@ -14,6 +14,8 @@ ExpressionType IntegerExpression::get_type() const {
 	return ExpressionType::IntegerExpression;
 }
 
+IntegerExpression::~IntegerExpression() = default;
+
 int64_t IntegerExpression::get_value() const {
 	return value;
 }

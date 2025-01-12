@@ -6,17 +6,17 @@
 
 class InitStatement : public Statement {
 private:
-    ptr_t<VariableExpression> variable;
-    std::vector<ptr_t<Expression>> args;
+    VariableExpression* variable;
+    std::vector<Expression*> args;
 public:
     InitStatement(
-        ptr_t<VariableExpression> variable,
-        const std::vector<ptr_t<Expression>>& args
+        VariableExpression* variable,
+        const std::vector<Expression*>& args
     );
 
     virtual StatementType get_type() const override;
-    virtual ~InitStatement() = default;
+    virtual ~InitStatement();
 
-    const ptr_t<VariableExpression> get_variable();
-    const std::vector<ptr_t<Expression>>& get_args();
+    const VariableExpression* get_variable();
+    const std::vector<Expression*>& get_args();
 };

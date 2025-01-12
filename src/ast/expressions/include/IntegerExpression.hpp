@@ -9,7 +9,7 @@ public:
 	IntegerExpression();
 
 	virtual ExpressionType get_type() const override;
-	virtual ~IntegerExpression() = default;
+	virtual ~IntegerExpression();
 
 	int64_t get_value() const;
 	void change_value(int64_t value);

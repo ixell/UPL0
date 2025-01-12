@@ -7,6 +7,8 @@ ExpressionType BooleanExpression::get_type() const {
     return ExpressionType::BooleanExpression;
 }
 
+BooleanExpression::~BooleanExpression() = default;
+
 bool BooleanExpression::get_value() const {
     return value;
 }

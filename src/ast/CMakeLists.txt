@@ -6,3 +6,15 @@ target_link_libraries (
     PRIVATE
         expressions
 )
+
+add_library (
+    ast
+    INTERFACE
+)
+
+target_link_libraries (
+    ast
+    INTERFACE
+        statements
+        expressions
+)

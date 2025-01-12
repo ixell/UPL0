@@ -1,6 +1,6 @@
 #include "BinaryExpression.hpp"
 
-BinaryExpression::BinaryExpression(Operation operation, ptr_t<Expression> left, ptr_t<Expression> right)
+BinaryExpression::BinaryExpression(Operation operation, Expression* left, Expression* right)
 	: operation(operation), left(left), right(right) {}
 
 //std::wstring BinaryExpression::to_string() const {
@@ -13,11 +13,15 @@ ExpressionType BinaryExpression::get_type() const {
 	return ExpressionType::BinaryExpression;
 }
 
-const ptr_t<Expression> BinaryExpression::get_left() const {
+BinaryExpression::~BinaryExpression() {
+	delete left, right;
+}
+
+const Expression* BinaryExpression::get_left() const {
 	return left;
 }
 
-const ptr_t<Expression> BinaryExpression::get_right() const {
+const Expression* BinaryExpression::get_right() const {
 	return right;
 }
 

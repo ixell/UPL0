@@ -4,7 +4,7 @@
 TypeExpression::TypeExpression(
 	const std::wstring& type,
 	const std::vector<Modificator>& modificators,
-	const std::vector<ptr_t<Expression>>& template_
+	const std::vector<Expression*>& template_
 ) :
 	type(type), modificators(modificators), template_(template_) {}
 
@@ -21,11 +21,16 @@ ExpressionType TypeExpression::get_type() const {
 	return ExpressionType::unknown;
 }
 
+TypeExpression::~TypeExpression() {
+	for (Expression* expr : template_)
+		delete expr;
+}
+
 const std::vector<Modificator>& TypeExpression::get_modificators() const {
 	return modificators;
 }
 
-const std::vector<ptr_t<Expression>>& TypeExpression::get_template() const {
+const std::vector<Expression*>& TypeExpression::get_template() const {
 	return template_;
 }
 

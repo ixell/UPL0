@@ -4,16 +4,17 @@
 
 class VariableExpression : public Expression {
 private:
-    ptr_t<TypeExpression> type;
+    TypeExpression* type;
     std::wstring name;
 public:
-    VariableExpression(ptr_t<TypeExpression> type, const std::wstring& name);
+    VariableExpression(TypeExpression* type, const std::wstring& name);
 
 	virtual ExpressionType get_type() const override;
+    virtual ~VariableExpression();
 
     const std::vector<Modificator>& get_modificators() const;
-    const std::vector<ptr_t<Expression>>& get_template() const;
+    const std::vector<Expression*>& get_template() const;
     const std::wstring& get_variable_type() const;
-    ptr_t<TypeExpression> get_type_expression() const;
+    TypeExpression* get_type_expression() const;
     const std::wstring& get_name() const;
 };

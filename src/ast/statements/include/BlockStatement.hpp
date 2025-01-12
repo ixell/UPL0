@@ -4,13 +4,13 @@
 
 class BlockStatement : public ExternalStatement {
 private:
-    std::vector<ptr_t<Statement>> statements;
+    std::vector<Statement*> statements;
 public:
-    BlockStatement(const std::vector<ptr_t<Statement>>& statements);
+    BlockStatement(const std::vector<Statement*>& statements);
     
 	virtual StatementType get_type() const override;
-	virtual ~BlockStatement() override = default;
+	virtual ~BlockStatement() override;
 
-    const std::vector<ptr_t<Statement>> get_statements() const;
-    const ptr_t<Statement> get_statement(size_t index) const;
+    const std::vector<Statement*> get_statements() const;
+    const Statement* get_statement(size_t index) const;
 };

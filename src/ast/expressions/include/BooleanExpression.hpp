@@ -8,7 +8,7 @@ public:
     BooleanExpression(bool value);
 
     virtual ExpressionType get_type() const override;
-    virtual ~BooleanExpression() = default;
+    virtual ~BooleanExpression();
 
     bool get_value() const;
     void change_value(bool value);
