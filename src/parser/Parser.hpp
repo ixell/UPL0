@@ -2,6 +2,7 @@
 #include <vector>
 #include "token.hpp"
 #include "Expression.hpp"
+#include "Statement.hpp"
 
 class Parser {
 private:
@@ -11,8 +12,14 @@ private:
 public:
 	Parser(std::vector<Token>& tokens);
 
-	void parse(std::vector<ptr_t<Expression>>& expressions);
+	void parse(std::vector<ptr_t<Statement>>& statements);
 private:
+	[[nodiscard]] ptr_t<Statement> global();
+	[[nodiscard]] ptr_t<Statement> define_variable();
+	[[nodiscard]] ptr_t<Statement> function();
+	[[nodiscard]] ptr_t<Statement> code();
+	[[nodiscard]] std::vector<ptr_t<Expression>> args();
+	[[nodiscard]] ptr_t<Expression> type();
 	[[nodiscard]] ptr_t<Expression> expression();
 	[[nodiscard]] ptr_t<Expression> multiplicative();
 	[[nodiscard]] ptr_t<Expression> additive();

@@ -1,7 +1,8 @@
 #include "Parser.hpp"
-#include "all.hpp"
+#include "all_expressions.hpp"
+#include "all_statements.hpp"
 
-using ExprPtr = ptr_t<Expression>;
+using ExprPtr = Expression*;
 
 Parser::Parser(std::vector<Token>& tokens)
 	: tokens(tokens), this_token(0), pos(0) {
@@ -9,11 +10,119 @@ Parser::Parser(std::vector<Token>& tokens)
 		this_token = &tokens[0];
 }
 
-void Parser::parse(std::vector<ExprPtr>& expressions) {
+void Parser::parse(std::vector<Statement*>& statements) {
 	if (tokens.empty()) throw;
 	for (size_t i = 0; get().get_type() != Token::eof; ++i) {
-		expressions.push_back(ExprPtr(expression()));
+		statements.push_back(global());
 	}
+}
+
+ptr_t<Statement> Parser::global() {
+	switch (get().get_type()) {
+	case Token::word:
+	case Token::keyword_type:
+		return define_variable();
+	default:
+		switch (getSubgroup(get().get_type())) {
+		case Token::keyword_modificators:
+			return define_variable();
+		default: throw;
+		}
+	}
+}
+
+ptr_t<Statement> Parser::define_variable() {
+	TypeExpression* type = static_cast<TypeExpression*>(this->type().get());
+	std::wstring name;
+	if (get().get_type() == Token::word)
+		name = get().get_value();
+	else throw;
+	next();
+	switch (get().get_type()) {
+	case Token::leftParenthesis:
+		std::vector<ExprPtr> args = this->args();
+		BlockStatement* code;
+		if (get().get_type() == Token::colon)
+			code = this->code();
+		else if (get().get_type() == Token::endcommand)
+			code = nullptr;
+		else throw;
+		return FunctionStatement(type, name, args, code);
+	case Token::operator_assign: {
+		next();
+		ptr_t<Statement> result = new InitExpression(new VariableExpression(type, name), expression());
+		if (get().get_type() == Token::endcommand)
+			return result;
+		throw;
+	}
+	case Token::endcommand:
+		next();
+		return new InitExpression(new VariableExpression(type, name), nullptr);
+	}
+}
+
+std::vector<ptr_t<Expression>> Parser::get_args() {
+	TokenType opener = get().get_type();
+	TokenType closer = opener + 1;
+	next();
+	std::vector<ptr_t<Expression>> args;
+	while (get().get_type() != closer) {
+		ptr_t<TypeExpression> type = get_type();
+		ptr_t<Expression> arg = type;
+		if (get().get_type() == Token::word) {
+			arg = VariableExpression(type, get().get_value());
+			next();
+			if (get().get_type() == Token::operator_assign) {
+				arg = BinaryExpression(Operation::assign, arg, expression());
+				next();
+			}
+		}
+		if (get().get_type() != Token::operator_comma)
+			throw;
+		args.push_back(arg);
+		next();
+	}
+	next();
+	return args;
+}
+
+ptr_t<TypeExpression> Parser::get_type() {
+	TypeExpression* expression;
+	bool is_const = false;
+	{
+		std::vector<Modificator> modificators;
+		while (getSubgroup(get().get_type()) == Token::keyword_modificators) {
+			Modificator mod = Modificator::nothing;
+			switch (get().get_type()) {
+			// ...
+			default:
+				break;
+			}
+			modificators.push_back(mod);
+			next();
+		}
+		if (get().get_type() != Token::word || get().get_type() != Token::keyword_type)
+			throw;
+		std::wstring type = get().get_value();
+		std::vector<ptr_t<Expression>> template_;
+		if (get().get_type() == Token::operator_lessThan)
+			template_ = args();
+		expression = new TypeExpression(type, modificators, template_);
+	}
+	while (get().get_type() != Token::word) {
+		std::vector<Modificator> modificators {1};
+		if (get().get_type() == Token::keyword_const) {
+			modificators.push_back(Modificator::const_);
+			next();
+		}
+		if (get().get_const() == Token::operator_binary_and) {
+			std::vector<Expression> template_ = {expression};
+			expression = TypeExpression(L"&", modificators, template_);
+		}
+		else throw;
+		next();
+	}
+	return expression;
 }
 
 ExprPtr Parser::expression() {
