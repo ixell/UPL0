@@ -2,6 +2,7 @@
 #include <vector>
 #include "token.hpp"
 #include "Expression.hpp"
+#include "BlockStatement.hpp"
 #include "Statement.hpp"
 
 class Parser {
@@ -12,19 +13,19 @@ private:
 public:
 	Parser(std::vector<Token>& tokens);
 
-	void parse(std::vector<ptr_t<Statement>>& statements);
+	void parse(std::vector<Statement*>& statements);
 private:
-	[[nodiscard]] ptr_t<Statement> global();
-	[[nodiscard]] ptr_t<Statement> define_variable();
-	[[nodiscard]] ptr_t<Statement> function();
-	[[nodiscard]] ptr_t<Statement> code();
-	[[nodiscard]] std::vector<ptr_t<Expression>> args();
-	[[nodiscard]] ptr_t<Expression> type();
-	[[nodiscard]] ptr_t<Expression> expression();
-	[[nodiscard]] ptr_t<Expression> multiplicative();
-	[[nodiscard]] ptr_t<Expression> additive();
-	[[nodiscard]] ptr_t<Expression> unary();
-	[[nodiscard]] ptr_t<Expression> primary();
+	[[nodiscard]] Statement* global();
+	[[nodiscard]] Statement* define_variable();
+	[[nodiscard]] Statement* function();
+	[[nodiscard]] BlockStatement* code();
+	[[nodiscard]] std::vector<Expression*> args();
+	[[nodiscard]] Expression* type();
+	[[nodiscard]] Expression* expression();
+	[[nodiscard]] Expression* multiplicative();
+	[[nodiscard]] Expression* additive();
+	[[nodiscard]] Expression* unary();
+	[[nodiscard]] Expression* primary();
 private:
 	[[nodiscard]] bool match(TokenType type);
 	[[nodiscard]] Token& get(size_t pos);

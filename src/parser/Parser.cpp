@@ -17,7 +17,7 @@ void Parser::parse(std::vector<Statement*>& statements) {
 	}
 }
 
-ptr_t<Statement> Parser::global() {
+Statement* Parser::global() {
 	switch (get().get_type()) {
 	case Token::word:
 	case Token::keyword_type:
@@ -31,15 +31,15 @@ ptr_t<Statement> Parser::global() {
 	}
 }
 
-ptr_t<Statement> Parser::define_variable() {
-	TypeExpression* type = static_cast<TypeExpression*>(this->type().get());
+Statement* Parser::define_variable() {
+	TypeExpression* type = static_cast<TypeExpression*>(this->type());
 	std::wstring name;
 	if (get().get_type() == Token::word)
 		name = get().get_value();
 	else throw;
 	next();
 	switch (get().get_type()) {
-	case Token::leftParenthesis:
+	case Token::leftParenthesis: {
 		std::vector<ExprPtr> args = this->args();
 		BlockStatement* code;
 		if (get().get_type() == Token::colon)
@@ -47,33 +47,39 @@ ptr_t<Statement> Parser::define_variable() {
 		else if (get().get_type() == Token::endcommand)
 			code = nullptr;
 		else throw;
-		return FunctionStatement(type, name, args, code);
+		return static_cast<Statement*>(new FunctionStatement(type, name, args, code));
+	}
 	case Token::operator_assign: {
 		next();
-		ptr_t<Statement> result = new InitExpression(new VariableExpression(type, name), expression());
+		std::vector<ExprPtr> arg{ expression() };
+		Statement* result = static_cast<Statement*>(new InitStatement(new VariableExpression(type, name), arg));
 		if (get().get_type() == Token::endcommand)
 			return result;
 		throw;
 	}
-	case Token::endcommand:
+	case Token::endcommand: {
 		next();
-		return new InitExpression(new VariableExpression(type, name), nullptr);
+		std::vector<ExprPtr> arg{ nullptr };
+		return static_cast<Statement*>(new InitStatement(new VariableExpression(type, name), arg));
+	}
+	default:
+		throw;
 	}
 }
 
-std::vector<ptr_t<Expression>> Parser::get_args() {
+std::vector<ExprPtr> Parser::args() {
 	TokenType opener = get().get_type();
-	TokenType closer = opener + 1;
+	TokenType closer = TokenType(opener + 1);
 	next();
-	std::vector<ptr_t<Expression>> args;
+	std::vector<ExprPtr> args;
 	while (get().get_type() != closer) {
-		ptr_t<TypeExpression> type = get_type();
-		ptr_t<Expression> arg = type;
+		TypeExpression* type = static_cast<TypeExpression*>(this->type());
+		ExprPtr arg = type;
 		if (get().get_type() == Token::word) {
-			arg = VariableExpression(type, get().get_value());
+			arg = static_cast<ExprPtr>(new VariableExpression(type, get().get_value()));
 			next();
 			if (get().get_type() == Token::operator_assign) {
-				arg = BinaryExpression(Operation::assign, arg, expression());
+				arg = static_cast<ExprPtr>(new BinaryExpression(Operation::assign, arg, expression()));
 				next();
 			}
 		}
@@ -86,7 +92,7 @@ std::vector<ptr_t<Expression>> Parser::get_args() {
 	return args;
 }
 
-ptr_t<TypeExpression> Parser::get_type() {
+Expression* Parser::type() {
 	TypeExpression* expression;
 	bool is_const = false;
 	{
@@ -104,7 +110,7 @@ ptr_t<TypeExpression> Parser::get_type() {
 		if (get().get_type() != Token::word || get().get_type() != Token::keyword_type)
 			throw;
 		std::wstring type = get().get_value();
-		std::vector<ptr_t<Expression>> template_;
+		std::vector<ExprPtr> template_;
 		if (get().get_type() == Token::operator_lessThan)
 			template_ = args();
 		expression = new TypeExpression(type, modificators, template_);
@@ -115,9 +121,9 @@ ptr_t<TypeExpression> Parser::get_type() {
 			modificators.push_back(Modificator::const_);
 			next();
 		}
-		if (get().get_const() == Token::operator_binary_and) {
-			std::vector<Expression> template_ = {expression};
-			expression = TypeExpression(L"&", modificators, template_);
+		if (get().get_type() == Token::operator_binary_and) {
+			std::vector<Expression*> template_ = {expression};
+			expression = new TypeExpression(L"&", modificators, template_);
 		}
 		else throw;
 		next();
