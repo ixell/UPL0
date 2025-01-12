@@ -419,16 +419,26 @@ void Lexer::typify_word(Token& token) {
 		token.set_type(Token::keyword_union);
 	else if (word == L"import")
 		token.set_type(Token::keyword_import);
-	else if (word == L"int")
-		token.set_type(Token::keyword_int);
-	else if (word == L"float")
-		token.set_type(Token::keyword_float);
-	else if (word == L"string")
-		token.set_type(Token::keyword_string);
-	else if (word == L"bool")
-		token.set_type(Token::keyword_bool);
-	else if (word == L"auto")
-		token.set_type(Token::keyword_auto);
+	else if (word == L"int") {
+		token.set_type(Token::keyword_type);
+		token.set_value(L"int");
+	}
+	else if (word == L"float") {
+		token.set_type(Token::keyword_type);
+		token.set_value(L"float");
+	}
+	else if (word == L"string") {
+		token.set_type(Token::keyword_type);
+		token.set_value(L"string");
+	}
+	else if (word == L"bool") {
+		token.set_type(Token::keyword_type);
+		token.set_value(L"bool");
+	}
+	else if (word == L"auto") {
+		token.set_type(Token::keyword_type);
+		token.set_value(L"auto");
+	}
 	else if (word == L"const")
 		token.set_type(Token::keyword_const);
 	else if (word == L"friend")
