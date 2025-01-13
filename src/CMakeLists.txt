@@ -43,8 +43,8 @@ target_link_libraries (
 add_library (
 	parser
 	STATIC
-		parser/parser.hpp
-		parser/parser.cpp
+		Parser/Parser.hpp
+		Parser/Parser.cpp
 )
 
 target_include_directories (parser PUBLIC parser)
@@ -54,7 +54,7 @@ target_link_libraries (
 	PRIVATE
 		token
 	PUBLIC
-		expressions
+		ast
 )
 
 add_executable (
@@ -66,6 +66,7 @@ target_link_libraries (
 	upl
 	PRIVATE
 		lexer
+		parser
 )
 
 set_target_properties (

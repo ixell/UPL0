@@ -421,23 +421,23 @@ void Lexer::typify_word(Token& token) {
 		token.set_type(Token::keyword_import);
 	else if (word == L"int") {
 		token.set_type(Token::keyword_type);
-		token.set_value(L"int");
+		return;
 	}
 	else if (word == L"float") {
 		token.set_type(Token::keyword_type);
-		token.set_value(L"float");
+		return;
 	}
 	else if (word == L"string") {
 		token.set_type(Token::keyword_type);
-		token.set_value(L"string");
+		return;
 	}
 	else if (word == L"bool") {
 		token.set_type(Token::keyword_type);
-		token.set_value(L"bool");
+		return;
 	}
 	else if (word == L"auto") {
 		token.set_type(Token::keyword_type);
-		token.set_value(L"auto");
+		return;
 	}
 	else if (word == L"const")
 		token.set_type(Token::keyword_const);

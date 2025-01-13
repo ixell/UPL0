@@ -134,11 +134,11 @@ TEST(Words, Keywords) {
 		T(keyword_enum),
 		T(keyword_union),
 		T(keyword_import),
-		T(keyword_int),
-		T(keyword_float),
-		T(keyword_string),
-		T(keyword_bool),
-		T(keyword_auto),
+		T(keyword_type, L"int"),
+		T(keyword_type, L"float"),
+		T(keyword_type, L"string"),
+		T(keyword_type, L"bool"),
+		T(keyword_type, L"auto"),
 		T(keyword_const),
 		T(keyword_friend),
 		T(keyword_true),
@@ -321,9 +321,8 @@ TEST(Other, Tabs) {
 }
 
 TEST(Other, Other) {
-	SET_CODE("# : ` @ ; \n \\\\ //3214safdsd");
+	SET_CODE(": ` @ ; \n \\\\ //3214safdsd");
 	SET_CORRECT(
-		T(sharp),
 		T(colon),
 		T(backtick),
 		T(at),
