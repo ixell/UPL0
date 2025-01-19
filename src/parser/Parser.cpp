@@ -131,6 +131,10 @@ Expression* Parser::type() {
 	return expression;
 }
 
+BlockStatement* Parser::code() {
+	return new BlockStatement(std::vector<Statement*>());
+}
+
 ExprPtr Parser::expression() {
 	return additive();
 }

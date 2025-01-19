@@ -54,11 +54,10 @@ if (GTEST_FOUND)
 
     target_link_libraries (
         parser_tests
-        PRIVATE
+        PUBLIC
             ${GTEST_BOTH_LIBRARIES}
-            parser
             lexer
-            expressions
+            parser
     )
 
     add_test (

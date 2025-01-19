@@ -11,12 +11,6 @@ add_library (
 
 target_include_directories (token PUBLIC token)
 
-target_compile_definitions (
-	token
-	PUBLIC
-		$IF:<$<CONFIG:Debug>,DEBUG,NDEBUG>
-)
-
 add_library (
 	lexer
 	STATIC
@@ -73,6 +67,7 @@ set_target_properties (
 	token
 	lexer
 	expressions
+	statements
 	parser
 	upl
 	PROPERTIES

@@ -6,6 +6,9 @@
 #include "Statement.hpp"
 
 class Parser {
+#ifdef TESTING
+	friend class ParserGetter;
+#endif
 private:
 	std::vector<Token>& tokens;
 	Token* this_token;
