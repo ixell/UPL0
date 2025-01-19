@@ -87,7 +87,7 @@ void check(const Expression* expr, const Expression* correct) {
 			static_cast<const IntegerExpression*>(correct)->get_value()
 		) << "Integers are not equal";
 	default:
-		EXPECT_TRUE(false) << "Unknown expression.";S
+		EXPECT_TRUE(false) << "Unknown expression.";
 	}
 }
 
