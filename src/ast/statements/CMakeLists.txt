@@ -7,13 +7,6 @@ set(source "${PROJECT_SOURCE_DIR}/source")
 add_library (
     statements
     STATIC
-        ${header}/all_statements.hpp
-
-        ${header}/Statement.hpp
-        ${header}/BlockStatement.hpp
-        ${header}/InitStatement.hpp
-        ${header}/FunctionStatement.hpp
-
         ${source}/BlockStatement.cpp
         ${source}/InitStatement.cpp
         ${source}/FunctionStatement.cpp
@@ -25,7 +18,6 @@ target_include_directories (
     statements
     PUBLIC
         ${header}
-        ${source}
 )
 
 unset(header)
