@@ -21,17 +21,17 @@ Statement* Parser::global() {
 	switch (get().get_type()) {
 	case Token::word:
 	case Token::keyword_type:
-		return define_variable();
+		return define_variable(true);
 	default:
 		switch (getSubgroup(get().get_type())) {
 		case Token::keyword_modificators:
-			return define_variable();
+			return define_variable(true);
 		default: throw;
 		}
 	}
 }
 
-Statement* Parser::define_variable() {
+Statement* Parser::define_variable(bool is_global) {
 	TypeExpression* type = static_cast<TypeExpression*>(this->type());
 	std::wstring name;
 	if (get().get_type() == Token::word)
@@ -40,6 +40,7 @@ Statement* Parser::define_variable() {
 	next();
 	switch (get().get_type()) {
 	case Token::leftParenthesis: {
+		if (is_global) throw;
 		std::vector<ExprPtr> args = this->args();
 		BlockStatement* code;
 		if (get().get_type() == Token::colon)
@@ -132,7 +133,55 @@ Expression* Parser::type() {
 }
 
 BlockStatement* Parser::code() {
-	return new BlockStatement(std::vector<Statement*>());
+	std::vector<Statement*> code;
+	while (get().get_type() != Token::untab) {
+		code.push_back(statement());
+	}
+	return new BlockStatement(code);
+}
+
+Statement* Parser::statement() {
+	switch (get().get_type()) {
+	case Token::word:
+		switch (get(1).get_type()) {
+		case Token::word:
+		case Token::operator_binary_and:
+			return define_variable(false);
+		default:
+			return new DoStatement(expression());
+		}
+		return nullptr; //...
+	case Token::keyword_type:
+		if (get(1).get_type() == Token::leftParenthesis)
+			return new DoStatement(expression());
+		return define_variable(false);
+	case Token::keyword_if:
+		next();
+		return nullptr; //...
+	case Token::keyword_else:
+		next();
+		return nullptr; //...
+	case Token::keyword_switch:
+		next();
+		return nullptr; //...
+	case Token::keyword_case:
+		next();
+		return nullptr; //...
+	case Token::keyword_do:
+		next();
+		return nullptr; //...
+	case Token::keyword_enum:
+		next();
+		return nullptr; //...
+	case Token::keyword_while:
+		next();
+		return nullptr; //...
+	default:
+		switch (getSubgroup(get().get_type())) {
+		case Token::keyword_modificators:
+			return define_variable(false);
+		}
+	}
 }
 
 ExprPtr Parser::expression() {

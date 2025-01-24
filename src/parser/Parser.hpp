@@ -19,9 +19,10 @@ public:
 	void parse(std::vector<Statement*>& statements);
 private:
 	[[nodiscard]] Statement* global();
-	[[nodiscard]] Statement* define_variable();
+	[[nodiscard]] Statement* define_variable(bool is_global = false);
 	[[nodiscard]] Statement* function();
 	[[nodiscard]] BlockStatement* code();
+	[[nodiscard]] Statement* statement();
 	[[nodiscard]] std::vector<Expression*> args();
 	[[nodiscard]] Expression* type();
 	[[nodiscard]] Expression* expression();
