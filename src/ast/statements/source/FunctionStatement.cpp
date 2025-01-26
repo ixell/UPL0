@@ -1,9 +1,9 @@
 #include "FunctionStatement.hpp"
 
 FunctionStatement::FunctionStatement(
-    TypeExpression* type,
+    TypeStatement* type,
     const std::wstring& name,
-    const std::vector<Expression*>& args,
+    const std::vector<Statement*>& args,
     BlockStatement* code
 ) :
     type(type), name(name), args(args), code(code) {}
@@ -14,11 +14,11 @@ StatementType FunctionStatement::get_type() const {
 
 FunctionStatement::~FunctionStatement() {
     delete type;
-    for (Expression* expr : args)
+    for (Statement* expr : args)
         delete expr;
 }
 
-Expression* FunctionStatement::get_return_type() const {
+Statement* FunctionStatement::get_return_type() const {
     return type;
 }
 
@@ -26,7 +26,7 @@ const std::wstring& FunctionStatement::get_name() const {
     return name;
 }
 
-const std::vector<Expression*>& FunctionStatement::get_args() const {
+const std::vector<Statement*>& FunctionStatement::get_args() const {
     return args;
 }
 

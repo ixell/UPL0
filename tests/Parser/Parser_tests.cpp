@@ -15,8 +15,8 @@ public:
 	[[nodiscard]] static Statement* define_variable(Parser& parser)		{ return parser.define_variable(); }
 	[[nodiscard]] static Statement* function(Parser& parser)			{ return parser.function(); }
 	[[nodiscard]] static BlockStatement* code(Parser& parser)			{ return parser.code(); }
-	[[nodiscard]] static std::vector<Expression*> args(Parser& parser)	{ return parser.args(); }
-	[[nodiscard]] static Expression* type(Parser& parser)				{ return parser.type(); }
+	[[nodiscard]] static std::vector<Statement*> args(Parser& parser)	{ return parser.args(); }
+	[[nodiscard]] static Statement* type(Parser& parser)				{ return parser.type(); }
 	[[nodiscard]] static Expression* expression(Parser& parser)			{ return parser.expression(); }
 	[[nodiscard]] static Expression* multiplicative(Parser& parser)		{ return parser.multiplicative(); }
 	[[nodiscard]] static Expression* additive(Parser& parser)			{ return parser.additive(); }

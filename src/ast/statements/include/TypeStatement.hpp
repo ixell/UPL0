@@ -1,29 +1,29 @@
 #pragma once
 #include <vector>
-#include "Expression.hpp"
-#include "modificators.hpp"
+#include "Statement.hpp"
+#include "typeModificators.hpp"
 
-class TypeExpression : public Expression {
+class TypeStatement : public Statement {
 private:
     std::vector<Modificator> modificators;
-    std::vector<Expression*> template_;
+    std::vector<Statement*> template_;
     std::wstring type;
 public:
-    TypeExpression(
+    TypeStatement(
         const std::wstring& type,
         const std::vector<Modificator>& modificators,
-        const std::vector<Expression*>& template_
+        const std::vector<Statement*>& template_
     );
-    TypeExpression(
+    TypeStatement(
         const std::wstring& type,
         const std::vector<Modificator>& modificators
     );
-    TypeExpression(const std::wstring& type);
+    TypeStatement(const std::wstring& type);
 
-	virtual ExpressionType get_type() const override;
-    virtual ~TypeExpression();
+	virtual StatementType get_type() const override;
+    virtual ~TypeStatement();
 
     const std::vector<Modificator>& get_modificators() const;
-    const std::vector<Expression*>& get_template() const;
+    const std::vector<Statement*>& get_template() const;
     const std::wstring& get_type_value() const;
 };

@@ -23,8 +23,8 @@ private:
 	[[nodiscard]] Statement* function();
 	[[nodiscard]] BlockStatement* code();
 	[[nodiscard]] Statement* statement();
-	[[nodiscard]] std::vector<Expression*> args();
-	[[nodiscard]] Expression* type();
+	[[nodiscard]] std::vector<Statement*> args();
+	[[nodiscard]] Statement* type();
 	[[nodiscard]] Expression* expression();
 	[[nodiscard]] Expression* multiplicative();
 	[[nodiscard]] Expression* additive();

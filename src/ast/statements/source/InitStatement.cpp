@@ -1,9 +1,9 @@
 #include "InitStatement.hpp"
 
 InitStatement::InitStatement(
-        VariableExpression* variable,
-        const std::vector<Expression*>& args)
-    : variable(variable), args(args) {}
+    VariableStatement* variable,
+    const std::vector<Expression*>& args
+) : variable(variable), args(args) {}
 
 StatementType InitStatement::get_type() const {
     return StatementType::InitStatement;
@@ -15,7 +15,7 @@ InitStatement::~InitStatement() {
         delete expr;
 }
 
-const VariableExpression* InitStatement::get_variable() {
+const VariableStatement* InitStatement::get_variable() {
     return variable;
 }
 

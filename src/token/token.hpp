@@ -131,6 +131,7 @@ BEGIN_TOKENS
 			KEYWORD(union)
 			KEYWORD(import)
 			KEYWORD(template)
+			KEYWORD(namespace)
 		SUBGROUP(keyword_types, 3, 1)
 			KEYWORD(type)
 		SUBGROUP(keyword_modificators, 3, 2)

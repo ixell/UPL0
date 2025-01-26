@@ -10,6 +10,13 @@ add_library (
         ${source}/BlockStatement.cpp
         ${source}/InitStatement.cpp
         ${source}/FunctionStatement.cpp
+        ${source}/ClassStatement.cpp
+        ${source}/ConstantVariableStatement.cpp
+        ${source}/ForStatement.cpp
+        ${source}/IfElseStatement.cpp
+        ${source}/SwitchCaseStatement.cpp
+        ${source}/VariableStatement.cpp
+        ${source}/WhileStatement.cpp
         
         ${header}/statementTypesList.hpp
 )
