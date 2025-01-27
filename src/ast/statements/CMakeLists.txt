@@ -17,6 +17,8 @@ add_library (
         ${source}/SwitchCaseStatement.cpp
         ${source}/VariableStatement.cpp
         ${source}/WhileStatement.cpp
+        ${source}/DoStatement.cpp
+        ${source}/TypeStatement.cpp
         
         ${header}/statementTypesList.hpp
 )

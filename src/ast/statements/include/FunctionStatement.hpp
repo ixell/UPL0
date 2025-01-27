@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "Statement.hpp"
 #include "TypeStatement.hpp"
 #include "BlockStatement.hpp"

@@ -1,10 +1,10 @@
-#include "TypeExpression.hpp"
-#include "modificators.hpp"
+#include "TypeStatement.hpp"
+#include "typeModificators.hpp"
 
 TypeStatement::TypeStatement(
 	const std::wstring& type,
 	const std::vector<Modificator>& modificators,
-	const std::vector<Expression*>& template_
+	const std::vector<Statement*>& template_
 ) :
 	type(type), modificators(modificators), template_(template_) {}
 
@@ -22,15 +22,15 @@ StatementType TypeStatement::get_type() const {
 }
 
 TypeStatement::~TypeStatement() {
-	for (Expression* expr : template_)
-		delete expr;
+	for (Statement* statement : template_)
+		delete statement;
 }
 
 const std::vector<Modificator>& TypeStatement::get_modificators() const {
 	return modificators;
 }
 
-const std::vector<Expression*>& TypeStatement::get_template() const {
+const std::vector<Statement*>& TypeStatement::get_template() const {
 	return template_;
 }
 
