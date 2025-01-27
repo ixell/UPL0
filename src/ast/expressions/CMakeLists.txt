@@ -11,6 +11,9 @@ add_library (
         ${source}/BinaryExpression.cpp
         ${source}/IntegerExpression.cpp
         ${source}/BooleanExpression.cpp
+        ${source}/FloatExpression.cpp
+        ${source}/StringExpression.cpp
+        ${source}/VariableGetterExpression.cpp
         
         ${source}/operations.cpp
 )

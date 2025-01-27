@@ -4,3 +4,6 @@
 #include "BinaryExpression.hpp"
 #include "UnaryExpression.hpp"
 #include "BooleanExpression.hpp"
+#include "FloatExpression.hpp"
+#include "StringExpression.hpp"
+#include "VariableGetterExpression.hpp"
