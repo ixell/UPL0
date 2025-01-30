@@ -4,7 +4,7 @@ StringExpression::StringExpression(std::wstring value)
     : value(value) {}
 
 ExpressionType StringExpression::get_type() const {
-    return ExpressionType::unknown;
+    return ExpressionType::StringExpression;
 }
 
 StringExpression::~StringExpression() = default;

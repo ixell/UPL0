@@ -12,7 +12,7 @@ ForStatement::ForStatement(
     code(code) {}
 
 StatementType ForStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::ForStatement;
 }
 
 ForStatement::~ForStatement() {

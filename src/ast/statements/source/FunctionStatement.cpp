@@ -9,7 +9,7 @@ FunctionStatement::FunctionStatement(
     type(type), name(name), args(args), code(code) {}
 
 StatementType FunctionStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::FunctionStatement;
 }
 
 FunctionStatement::~FunctionStatement() {

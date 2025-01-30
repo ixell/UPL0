@@ -4,7 +4,7 @@ WhileStatement::WhileStatement(Expression* condition, BlockStatement* code)
     : condition(condition), code(code) {}
 
 StatementType WhileStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::WhileStatement;
 }
 
 WhileStatement::~WhileStatement() {

@@ -7,7 +7,7 @@ IfElseStatement::IfElseStatement(Expression* condition, BlockStatement* if_)
     : IfElseStatement(condition, if_, nullptr) {}
 
 StatementType IfElseStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::IfElseStatement;
 }
 
 IfElseStatement::~IfElseStatement() {

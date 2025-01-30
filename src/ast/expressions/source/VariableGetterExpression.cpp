@@ -7,7 +7,7 @@ VariableGetterExpression::VariableGetterExpression(std::wstring variable, std::v
     : variable(variable), path(path) {}
 
 ExpressionType VariableGetterExpression::get_type() const {
-    return ExpressionType::unknown;
+    return ExpressionType::VariableGetterExpression;
 }
 
 VariableGetterExpression::~VariableGetterExpression() = default;

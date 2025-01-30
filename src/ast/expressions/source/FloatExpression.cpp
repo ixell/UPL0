@@ -4,7 +4,7 @@ FloatExpression::FloatExpression(float value)
     : value(value) {}
 
 ExpressionType FloatExpression::get_type() const {
-    return ExpressionType::unknown;
+    return ExpressionType::FloatExpression;
 }
 
 FloatExpression::~FloatExpression() = default;

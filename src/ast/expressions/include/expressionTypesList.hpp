@@ -4,5 +4,8 @@ enum class ExpressionType {
     BinaryExpression,
     UnaryExpression,
     IntegerExpression,
-    BooleanExpression
+    BooleanExpression,
+    FloatExpression,
+    StringExpression
+    VariableGetterExpression
 };

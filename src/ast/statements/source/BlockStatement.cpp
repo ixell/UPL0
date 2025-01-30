@@ -4,7 +4,7 @@ BlockStatement::BlockStatement(const std::vector<Statement*>& statements)
     : statements(statements) {}
     
 StatementType BlockStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::BlockStatement;
 }
 
 BlockStatement::~BlockStatement() {

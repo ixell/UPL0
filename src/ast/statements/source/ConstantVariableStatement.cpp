@@ -4,7 +4,7 @@ ConstantVariableStatement::ConstantVariableStatement(TypeStatement* type, const 
     : VariableStatement(type, name), value(value) {}
 
 StatementType ConstantVariableStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::ConstantVariableStatement;
 }
 
 ConstantVariableStatement::~ConstantVariableStatement() {

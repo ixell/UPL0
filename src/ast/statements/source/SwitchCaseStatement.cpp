@@ -8,7 +8,7 @@ SwitchCaseStatement::SwitchCaseStatement(
     item(item), cases(cases), default_case(default_case) {}
 
 StatementType SwitchCaseStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::SwitchCaseStatement;
 }
 
 SwitchCaseStatement::~SwitchCaseStatement() {

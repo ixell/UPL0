@@ -4,7 +4,7 @@ VariableStatement::VariableStatement(TypeStatement* type, const std::wstring& na
 	: type(type), name(name) {}
 
 StatementType VariableStatement::get_type() const {
-	return StatementType::Unknown;
+	return StatementType::VariableStatement;
 }
 
 VariableStatement::~VariableStatement() {

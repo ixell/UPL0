@@ -4,7 +4,7 @@ DoStatement::DoStatement(Expression* expr)
     : expr(expr) {}
 
 StatementType DoStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::DoStatement;
 }
 
 DoStatement::~DoStatement() = default;

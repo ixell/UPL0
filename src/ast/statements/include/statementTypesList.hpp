@@ -1,6 +1,19 @@
 #pragma once
 
 enum class StatementType {
-    Unknown,
-    InitStatement
+    unknown,
+    TypeStatement,
+    VariableStatement,
+    ConstantVariableStatement,
+    InitStatement,
+    DoStatement,
+    BlockStatement,
+    FunctionStatement,
+    ClassStatement,
+    ClassVariableStatement,
+    MethodStatement,
+    IfElseStatement,
+    SwitchCaseStatement,
+    WhileStatement,
+    ForStatement
 };

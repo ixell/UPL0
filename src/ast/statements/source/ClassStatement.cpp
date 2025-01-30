@@ -12,7 +12,7 @@ ClassStatement::MethodStatement::MethodStatement(
     FunctionStatement(type, name, args, code) {}
 
 StatementType ClassStatement::MethodStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::MethodStatement;
 }
 
 ClassStatement::MethodStatement::~MethodStatement() = default;
@@ -29,7 +29,7 @@ ClassStatement::ClassVariableStatement::ClassVariableStatement(
     access(access), VariableStatement(type, name) {}
 
 StatementType ClassStatement::ClassVariableStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::ClassVariableStatement;
 }
 
 ClassStatement::ClassVariableStatement::~ClassVariableStatement() = default;
@@ -42,15 +42,19 @@ ClassStatement::ClassStatement(
     std::wstring name,
     //...,
     std::vector<ClassVariableStatement*> variables,
-    std::vector<MethodStatement*> methods
+    std::vector<MethodStatement*> methods,
+    MethodStatement* constructor,
+    MethodStatement* destructor
 ) :
     name(name),
     //...,
     variables(variables),
-    methods(methods) {}
+    methods(methods)
+    constructor(constructor),
+    destructor(destructor) {}
 
 StatementType ClassStatement::get_type() const {
-    return StatementType::Unknown;
+    return StatementType::ClassStatement;
 }
 
 ClassStatement::~ClassStatement() = default;

@@ -7,7 +7,7 @@
 
 class ClassStatement : public Statement {
 public:
-    enum class Access {
+    enum Access {
         UNKNOWN,
         PUBLIC,
         PROTECTED,
@@ -48,12 +48,15 @@ private:
     //...
     std::vector<ClassVariableStatement*> variables;
     std::vector<MethodStatement*> methods;
+    MethodStatement *constructor, *destructor;
 public:
     ClassStatement(
         std::wstring name,
         //...,
         std::vector<ClassVariableStatement*> variables,
         std::vector<MethodStatement*> methods
+        MethodStatement* constructor,
+        MethodStatement* destructor
     );
 
     virtual StatementType get_type() const override;

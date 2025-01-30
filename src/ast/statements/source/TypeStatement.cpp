@@ -18,7 +18,7 @@ TypeStatement::TypeStatement(const std::wstring& type)
 	: type(type) {}
 
 StatementType TypeStatement::get_type() const {
-	return StatementType::Unknown;
+	return StatementType::TypeStatement;
 }
 
 TypeStatement::~TypeStatement() {
