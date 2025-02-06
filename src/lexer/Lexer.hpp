@@ -13,7 +13,8 @@ private:
 	std::wstring buffer;
 	wchar_t ch{ 0 };
 
-	int tabs = 0, tab_size = 0;
+	int tabs = 0, brackets_depth = 0;
+	std::vector<unsigned int> tab_sizes;
 public:
 	Lexer();
 	explicit Lexer(std::wistream* code);
@@ -28,11 +29,12 @@ private:
 	void tokenize_word();
 	void tokenize_number();
 	void tokenize_operator();
-	void tokenize_parentheses();
+	void tokenize_brackets();
 	void tokenize_string();
 	void tokenize_other();
 	void tokenize_comment();
 	void tokenize_tabs();
+	void tokenize_end();
 
 	void parse_number();
 	void typify_word(Token& token);

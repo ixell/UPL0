@@ -3,7 +3,7 @@
 Lexer::Lexer() {}
 
 Lexer::Lexer(std::wistream* code)
-	: code(code), ch(code->get()) {}
+	: code(code), ch(code->get()), tab_sizes() { tab_sizes.reserve(8); }
 
 Lexer::~Lexer() = default;
 
@@ -22,7 +22,7 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 #endif
 		if (ch >= 0x80) {
 			if (ch == 0xffff) {
-				add(Token::eof);
+				tokenize_end();
 				return;
 			}
 			tokenize_word();
@@ -40,14 +40,15 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 			next();
 			break;
 		case Token::eof:
-			add(Token::eof);
-			this->tokens = nullptr;
+			tokenize_end();
 			return;
 		default:
 			if (getSubgroup(token) == Token::endword) {
-				if (token == Token::endline)
+				if (token == Token::endline) {
+					next();
 					tokenize_tabs();
-				if (token == Token::endcommand)
+					break;
+				} else if (token == Token::endcommand)
 					add(Token::endcommand);
 				next();
 				break;
@@ -56,8 +57,8 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 			case Token::operator_:
 				tokenize_operator();
 				break;
-			case Token::parentheses:
-				tokenize_parentheses();
+			case Token::brackets:
+				tokenize_brackets();
 				break;
 			case Token::other:
 				tokenize_other();
@@ -148,7 +149,7 @@ void Lexer::tokenize_number() {
 			next();
 			continue;
 		}
-		if (token != TokenType::word && token != TokenType::parentheses) {
+		if (token != TokenType::word && token != TokenType::brackets) {
 			add(type, buffer);
 			buffer.clear();
 			return;
@@ -273,12 +274,16 @@ void Lexer::tokenize_operator() {
 	add(type0);
 }
 
-void Lexer::tokenize_parentheses() {
+void Lexer::tokenize_brackets() {
 	TokenType token = char_to_token(ch);
 	if (token == Token::quote || token == Token::double_quotes) {
 		tokenize_string();
 		return;
 	}
+	if (token - Token::leftParenthesis % 2 == 0)
+		++brackets_depth;
+	else
+		--brackets_depth;
 	add(token);
 	next();
 }
@@ -364,30 +369,87 @@ void Lexer::tokenize_other() {
 }
 
 void Lexer::tokenize_comment() {
-	do next(); while (!(ch == ' ' || ch == 0xffff));
+	do next(); while (!(ch == '\n' || ch == 0xffff));
 }
 
-void Lexer::tokenize_tabs() {
-	int spaces = 0;
-	while (true) {
-		switch (ch) {
-		case ' ': ++spaces; break;
-		case '\t': spaces += tab_size ? tab_size : 4; break;
-		default: goto out;
+void Lexer::tokenize_tabs() { //...
+	if (brackets_depth != 0) return;
+	int tabs = 0;
+	for (int i = 0; i != this->tabs; ++i) {
+		int indent_size = tab_sizes.at(i);
+		if (indent_size == -1U) {
+			if (get() != L'\t') {
+				if (get() == L' ') {
+					while (get() == '\t' || get() == ' ') next();
+					if (get() == '\n' || get() == '//' || get() == 0xffff) return;
+					throw;
+				}
+				break;
+			}
+			++tabs;
+			next();
+			continue;
+		} 
+		else {
+			int spaces = 0;
+			for (; spaces != indent_size; ++spaces) {
+				if (get() != L' ') {
+					if (get() == '\t') {
+						while (get() == '\t' || get() == ' ') next();
+						if (get() == '\n' || get() == '//' || get() == 0xffff) return;
+						throw;
+					}
+					goto out;
+				}
+			}
+			++tabs;
+			next();
+			continue;
 		}
+		break;
 	}
 	out:
-	if (tab_size == 0) tab_size = spaces ? spaces : 1;
-	int new_tabs = spaces / tab_size;
-	if (tabs != new_tabs) {
-		if (tabs > new_tabs)
-			for (int i = tabs - new_tabs; i != 0; --i)
-				add(Token::untab);
-		else
-			for (int i = new_tabs - tabs; i != 0; --i)
-				add(Token::tab);
+	if (get() == '\n'  || get() == '//' || get() == 0xffff)
+		return;
+	if (tabs < this->tabs) {
+		for (int i = this->tabs - tabs; i != 0; --i) {
+			add(Token::untab);
+			tab_sizes.pop_back();
+		}
+		this->tabs = tabs;
+		return;
 	}
-	tabs = new_tabs;
+	if (get() == ' ') {
+		int spaces = 0;
+		for (; get() == ' '; next()) ++spaces;
+		if (get() == '\t') {
+			while (get() == '\t' || get() == ' ') next();
+			if (get() == '\n' || get() == '//' || get() == 0xffff) return;
+			throw;
+		}
+		tab_sizes.push_back(spaces);
+		add(Token::tab);
+		++this->tabs;
+		return;
+	}
+	if (get() == '\t') {
+		next();
+		if (get() == '\t') {
+			while (get() == '\t' || get() == ' ') next();
+			if (get() == '\n' || get() == '//' || get() == 0xffff) return;
+			throw;
+		}
+		tab_sizes.push_back(-1U);
+		add(Token::tab);
+		++this->tabs;
+		return;
+	}
+}
+
+void Lexer::tokenize_end() {
+	for (int tabs = this->tabs; tabs != 0; --tabs)
+		add(Token::untab);
+	add(Token::eof);
 }
 
 void Lexer::typify_word(Token& token) {

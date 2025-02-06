@@ -287,37 +287,41 @@ TEST(Other, Parentheses) {
 }
 
 TEST(Other, Tabs) {
-	SET_CODE("+\n	+\n		1\n	a\n+\n +\n   +\n+\n +\n+\n 	+");
+	SET_CODE(
+		"\n"
+		"+\n"
+		"\t1\n"
+		"\t  a\n"
+		"true\n"
+		"\t\t\t\n"
+		" +\n"
+		"  +\n"
+		"   +\n"
+		"+\n"
+	);
 	SET_CORRECT(
 		T(operator_plus),
 		T(tab),
-		T(operator_plus),
-		T(tab),
 		T(integer, L"1"),
-		T(untab),
+		T(tab),
 		T(variable, L"a"),
 		T(untab),
-		T(operator_plus),
+		T(untab),
+		T(keyword_true),
 		T(tab),
 		T(operator_plus),
 		T(tab),
 		T(operator_plus),
-		T(tab),
-		T(operator_plus),
-		T(tab),
 		T(tab),
 		T(operator_plus),
 		T(untab),
 		T(untab),
 		T(untab),
-		T(operator_plus),
-		T(tab),
-		T(operator_plus),
-		T(tab),
-		T(tab),
 		T(operator_plus),
 		T(eof)
-	)
+	);
+	PREPARE();
+	CHECK_ALL();
 }
 
 TEST(Other, Other) {
@@ -361,7 +365,7 @@ TEST(Combinations, IntegersAndOperators) {
 }
 
 TEST(Combinations, ExpressionsAndEnds) {
-	SET_CODE("a; true; 2; a\n true\n 2\n");
+	SET_CODE("a; true; 2; a\ntrue\n2\n");
 	SET_CORRECT(
 		T(variable, L"a"),
 		T(endcommand),
@@ -372,6 +376,37 @@ TEST(Combinations, ExpressionsAndEnds) {
 		T(variable, L"a"),
 		T(keyword_true),
 		T(integer, L"2"),
+		T(eof)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Combinations, TabsAndEof) {
+	SET_CODE("1\n\t2\n\t\t3");
+	SET_CORRECT(
+		T(integer, L"1"),
+		T(tab),
+		T(integer, L"2"),
+		T(tab),
+		T(integer, L"3"),
+		T(untab),
+		T(untab),
+		T(eof)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Combinations, TabsAndBrackets) {
+	SET_CODE("(\n\t){\n\t}[\n\t]");
+	SET_CORRECT(
+		T(leftParenthesis),
+		T(rightParenthesis),
+		T(leftBrace),
+		T(rightBrace),
+		T(leftSquareBracket),
+		T(rightSquareBracket),
 		T(eof)
 	);
 	PREPARE();

@@ -105,7 +105,7 @@ BEGIN_TOKENS
 			OPERATOR(arrow)							// ->
 			OPERATOR(and)							// && // and
 			OPERATOR(or)							// || // or
-	GROUP(parentheses, 2)
+	GROUP(brackets, 2)
 		DEFAULT
 			WORD(leftParenthesis)					// (
 			WORD(rightParenthesis)					// )
