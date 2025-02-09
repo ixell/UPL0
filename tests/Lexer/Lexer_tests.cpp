@@ -42,6 +42,7 @@ TEST(Operators, SimpleOperators) {
 		T(operator_not),
 		T(operator_comma),
 		T(operator_dot),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -63,6 +64,7 @@ TEST(Operators, AssignedOperators) {
 		T(operator_assign_binary_xor),
 		T(operator_assign_procent),
 		T(operator_notEqual),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -81,6 +83,7 @@ TEST(Operators, SpecialOperators) {
 		T(operator_assign_binary_leftShift),
 		T(operator_assign_binary_rightShift),
 		T(operator_arrow),
+		T(endcommand),
 		T(eof),
 	);
 	PREPARE();
@@ -99,6 +102,7 @@ TEST(Operators, Groups) {
 		T(operator_increment),
 		T(operator_minus),
 		T(operator_increment),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -114,6 +118,7 @@ TEST(Words, Variables) {
 		T(variable, L"d_0"),
 		T(variable, L"_0123456789"),
 		T(variable, L"$1"),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -143,6 +148,7 @@ TEST(Words, Keywords) {
 		T(keyword_friend),
 		T(keyword_true),
 		T(keyword_false),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -164,6 +170,7 @@ TEST(Numbers, DecimalIntegers) {
 		T(integer, L"0"),
 		T(integer, L"1234567890"),
 		T(integer, L"1000000"),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -198,6 +205,7 @@ TEST(Numbers, HexadecimalIntegers) {
 		T(integer, L"x123"),
 		T(integer, L"x1234567890abcdef"),
 		T(integer, L"x10000000"),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -214,6 +222,7 @@ TEST(Numbers, BinaryIntegers) {
 		T(integer, L"b01"),
 		T(integer, L"b00011011"),
 		T(integer, L"b1000000000000000"),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -228,6 +237,7 @@ TEST(Numbers, Float) {
 		T(float_, L"1.1"),
 		T(float_, L"123456789.123456789"),
 		T(float_, L"0.123456789"),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -242,6 +252,7 @@ TEST(Strings, Text) {
 		T(string, L"123"),
 		T(string, L""),
 		T(string, L""),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -252,6 +263,7 @@ TEST(Strings, EscapeSequences) {
 	SET_CODE("\"\\\\ \\'\\\" \\n\\t\\v\\r\\f\\a\\0\"");
 	SET_CORRECT(
 		T(string, std::wstring(L"\\ \'\" \n\t\v\r\f\a\0", 12)),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -262,6 +274,7 @@ TEST(Strings, NumberInStrings) {
 	SET_CODE("\"\\1\\10\\17\\777\\x1\\x10\\x1f\\xff\\0\"");
 	SET_CORRECT(
 		T(string, std::wstring(L"\1\10\17\777\x01\x10\x1f\xff\0", 9)),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -280,6 +293,7 @@ TEST(Other, Parentheses) {
 		T(rightBrace),
 		T(operator_lessThan),
 		T(operator_greaterThan),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -300,24 +314,35 @@ TEST(Other, Tabs) {
 		"+\n"
 	);
 	SET_CORRECT(
+		T(endcommand),
 		T(operator_plus),
+		T(endcommand),
 		T(tab),
 		T(integer, L"1"),
+		T(endcommand),
 		T(tab),
 		T(variable, L"a"),
+		T(endcommand),
 		T(untab),
 		T(untab),
 		T(keyword_true),
+		T(endcommand),
+		T(endcommand),
 		T(tab),
 		T(operator_plus),
+		T(endcommand),
 		T(tab),
 		T(operator_plus),
+		T(endcommand),
 		T(tab),
 		T(operator_plus),
+		T(endcommand),
 		T(untab),
 		T(untab),
 		T(untab),
 		T(operator_plus),
+		T(endcommand),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -332,6 +357,7 @@ TEST(Other, Other) {
 		T(at),
 		T(endcommand),
 		T(backslash),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -358,6 +384,7 @@ TEST(Combinations, IntegersAndOperators) {
 		T(integer, L"8"),
 		T(operator_binary_leftShift),
 		T(integer, L"7"),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -374,8 +401,12 @@ TEST(Combinations, ExpressionsAndEnds) {
 		T(integer, L"2"),
 		T(endcommand),
 		T(variable, L"a"),
+		T(endcommand),
 		T(keyword_true),
+		T(endcommand),
 		T(integer, L"2"),
+		T(endcommand),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();
@@ -386,10 +417,13 @@ TEST(Combinations, TabsAndEof) {
 	SET_CODE("1\n\t2\n\t\t3");
 	SET_CORRECT(
 		T(integer, L"1"),
+		T(endcommand),
 		T(tab),
 		T(integer, L"2"),
+		T(endcommand),
 		T(tab),
 		T(integer, L"3"),
+		T(endcommand),
 		T(untab),
 		T(untab),
 		T(eof)
@@ -407,6 +441,7 @@ TEST(Combinations, TabsAndBrackets) {
 		T(rightBrace),
 		T(leftSquareBracket),
 		T(rightSquareBracket),
+		T(endcommand),
 		T(eof)
 	);
 	PREPARE();

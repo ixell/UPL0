@@ -46,7 +46,10 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 			if (getSubgroup(token) == Token::endword) {
 				if (token == Token::endline) {
 					next();
-					tokenize_tabs();
+					if (brackets_depth == 0) {
+						add(Token::endcommand);
+						tokenize_tabs();
+					}
 					break;
 				} else if (token == Token::endcommand)
 					add(Token::endcommand);
@@ -280,7 +283,7 @@ void Lexer::tokenize_brackets() {
 		tokenize_string();
 		return;
 	}
-	if (token - Token::leftParenthesis % 2 == 0)
+	if ((token - Token::leftParenthesis) % 2 == 0)
 		++brackets_depth;
 	else
 		--brackets_depth;
@@ -447,6 +450,9 @@ void Lexer::tokenize_tabs() { //...
 }
 
 void Lexer::tokenize_end() {
+	if (brackets_depth != 0)
+		add(Token::error_unknwonFatal);
+	add(Token::endcommand);
 	for (int tabs = this->tabs; tabs != 0; --tabs)
 		add(Token::untab);
 	add(Token::eof);
