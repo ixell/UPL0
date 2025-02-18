@@ -432,6 +432,15 @@ TEST(CodeStatements, BlockStatement) {
 	CHECK_ALL();
 }
 
+TEST(CodeStatements, EmptyBlock) {
+	SET_CODE(":\n\t;;;;\n");
+	SET_CORRECT_STATEMENTS(
+		STATEMENT(BlockStatement, {})
+	);
+	PREPARE_SEGMENT(code, Statement);
+	CHECK_ALL();
+}
+	
 TEST(CodeStatements, IfElseStatement) {
 	SET_CODE("if x == 1:\n\t1\nelse:\n\t2\n");
 	SET_CORRECT_STATEMENTS(

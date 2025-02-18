@@ -47,12 +47,13 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 				if (token == Token::endline) {
 					next();
 					if (brackets_depth == 0) {
-						if (tokens->empty() || tokens->back().get_type() != Token::endcommand)
-							add(Token::endcommand);
+						if (tokens->empty() || tokens->back().get_type() != Token::endline)
+							add(Token::endline);
 						tokenize_tabs();
 					}
 					break;
-				} else if (token == Token::endcommand)
+				}
+				if (token == Token::endcommand)
 					add(Token::endcommand);
 				next();
 				break;
@@ -453,8 +454,8 @@ void Lexer::tokenize_tabs() { //...
 void Lexer::tokenize_end() {
 	if (brackets_depth != 0)
 		add(Token::error_unknwonFatal);
-	if (tokens->empty() || tokens->back().get_type() != Token::endcommand)
-		add(Token::endcommand);
+	if (tokens->empty() || tokens->back().get_type() != Token::endline)
+		add(Token::endline);
 	for (int tabs = this->tabs; tabs != 0; --tabs)
 		add(Token::untab);
 	add(Token::eof);

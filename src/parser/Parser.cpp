@@ -47,7 +47,7 @@ Statement* Parser::define_variable(bool is_global) {
 		BlockStatement* code;
 		if (get().get_type() == Token::colon)
 			code = this->code();
-		else if (get().get_type() == Token::endcommand)
+		else if (get().get_type() == Token::endline)
 			code = nullptr;
 		else
 			throw;
@@ -56,10 +56,11 @@ Statement* Parser::define_variable(bool is_global) {
 	case Token::operator_assign: {
 		next();
 		std::vector<ExprPtr> arg{ expression() };
-		consume(Token::endcommand);
+		consume(Token::endline);
 		return static_cast<Statement*>(new InitStatement(new VariableStatement(type, name), arg));
 	}
-	case Token::endcommand: {
+	case Token::endcommand:
+	case Token::endline: {
 		next();
 		std::vector<ExprPtr> arg{ nullptr };
 		return static_cast<Statement*>(new InitStatement(new VariableStatement(type, name), arg));
@@ -142,110 +143,115 @@ Statement* Parser::type() {
 
 BlockStatement* Parser::code() {
 	std::vector<Statement*> code;
-	if (get().get_type() == Token::endcommand)
+	if (get().get_type() == Token::endcommand || get().get_type() == Token::endline)
 		return nullptr;
 	consume(Token::colon);
-	if (get().get_type() != Token::endcommand) {
-		code.push_back(statement());
-		if (get().get_type() != Token::endcommand)
-			throw;
+	if (get().get_type() != Token::endline) {
+		while (true) {
+			code.push_back(statement());
+			if (get().get_type() == Token::endline)
+				break;
+			if (get().get_type() != Token::endcommand)
+				throw;
+		}
 		return new BlockStatement(code);
 	}
 	next();
 	consume(Token::tab);
 	while (get().get_type() != Token::untab) {
-		code.push_back(statement());
-		consume(Token::endcommand);
+		Statement* statement = this->statement();
+		if (statement != nullptr)
+			code.push_back(statement);
+		if (get().get_type() != Token::endcommand && get().get_type() != Token::endline)
+			throw;
+		next();
 	}
 	next();
 	return new BlockStatement(code);
 }
 
 Statement* Parser::statement() {
-#ifdef DEBUG
-	for (int COUNT = 0; COUNT != 10'000; ++COUNT)
-#else
-	while (true)
-#endif
-		switch (get().get_type()) {
+	switch (get().get_type()) {
+	case Token::variable:
+		switch (get(1).get_type()) {
 		case Token::variable:
-			switch (get(1).get_type()) {
-			case Token::variable:
-				return define_variable(false);
-			default:
-				return static_cast<Statement*>(new DoStatement(expression()));
-			}
-			return nullptr; //...
-		case Token::integer:
-		case Token::keyword_true:
-		case Token::keyword_false:
-			return static_cast<Statement*>(new DoStatement(expression()));
-		case Token::keyword_type:
-			if (get(1).get_type() == Token::leftParenthesis)
-				return static_cast<Statement*>(new DoStatement(expression()));
 			return define_variable(false);
-		case Token::keyword_if:
-			next();
-			{
-				Expression* condition = expression();
-				BlockStatement* if_code = code();
-				BlockStatement* else_code = nullptr;
-				if (get().get_type() == Token::keyword_else) {
-					next();
-					else_code = code();
-				}
-				return static_cast<Statement*>(new IfElseStatement(condition, if_code, else_code));
-			}
-		case Token::keyword_switch:
-			next();
-			{
-				Expression* item = expression();
-				if (get().get_type() == Token::endcommand)
-					return static_cast<Statement*>(new SwitchCaseStatement(item, {}, nullptr));
-				consume(Token::colon);
-				consume(Token::endcommand);
-				consume(Token::tab);
-				std::vector<std::pair<Expression*, BlockStatement*>> cases;
-				BlockStatement* default_case { nullptr };
-				while (get().get_type() != Token::untab) {
-					consume(Token::keyword_case);
-					//if (get().get_type() == Token::...)
-					Expression* item2 = expression();
-					BlockStatement* code = this->code();
-					cases.push_back(std::pair(item2, code));
-				}
-				return static_cast<Statement*>(new SwitchCaseStatement(item, cases, default_case));
-			}
-		case Token::keyword_while:
-			next();
-			{
-				Expression* condition = expression();
-				BlockStatement* code = this->code();
-				return static_cast<Statement*>(new WhileStatement(condition, code));
-			}
-		case Token::keyword_do:
-			next();
-			{
-				BlockStatement* code = this->code();
-				consume(Token::keyword_while);
-				Expression* condition = expression();
-				consume(Token::endcommand);
-				return static_cast<Statement*>(new DoWhileStatement(condition, code));
-			}
-		case Token::keyword_enum:
-			next();
-			return nullptr; //...
-		case Token::endcommand:
-			next();
-			break;
 		default:
-			switch (getSubgroup(get().get_type())) {
-			case Token::keyword_modificators:
-				return define_variable(false);
-			default:
-				throw; // syntax error
-			}
+			return static_cast<Statement*>(new DoStatement(expression()));
 		}
+		return nullptr; //...
+	case Token::integer:
+	case Token::keyword_true:
+	case Token::keyword_false:
+		return static_cast<Statement*>(new DoStatement(expression()));
+	case Token::keyword_type:
+		if (get(1).get_type() == Token::leftParenthesis)
+			return static_cast<Statement*>(new DoStatement(expression()));
+		return define_variable(false);
+	case Token::keyword_if:
+		next();
+		{
+			Expression* condition = expression();
+			BlockStatement* if_code = code();
+			BlockStatement* else_code = nullptr;
+			if (get().get_type() == Token::keyword_else) {
+				next();
+				else_code = code();
+			}
+			return static_cast<Statement*>(new IfElseStatement(condition, if_code, else_code));
+		}
+	case Token::keyword_switch:
+		next();
+		{
+			Expression* item = expression();
+			if (get().get_type() == Token::endcommand || get().get_type() == Token::endline)
+				return static_cast<Statement*>(new SwitchCaseStatement(item, {}, nullptr));
+			consume(Token::colon);
+			consume(Token::endline);
+			consume(Token::tab);
+			std::vector<std::pair<Expression*, BlockStatement*>> cases;
+			BlockStatement* default_case { nullptr };
+			while (get().get_type() != Token::untab) {
+				consume(Token::keyword_case);
+				//if (get().get_type() == Token::...)
+				Expression* item2 = expression();
+				BlockStatement* code = this->code();
+				cases.push_back(std::pair(item2, code));
+			}
+			return static_cast<Statement*>(new SwitchCaseStatement(item, cases, default_case));
+		}
+	case Token::keyword_while:
+		next();
+		{
+			Expression* condition = expression();
+			BlockStatement* code = this->code();
+			return static_cast<Statement*>(new WhileStatement(condition, code));
+		}
+	case Token::keyword_do:
+		next();
+		{
+			BlockStatement* code = this->code();
+			consume(Token::keyword_while);
+			Expression* condition = expression();
+			consume(Token::endline);
+			return static_cast<Statement*>(new DoWhileStatement(condition, code));
+		}
+	case Token::keyword_enum:
+		next();
+		return nullptr; //...
+	case Token::endcommand:
+		next();
+		[[fallthrough]];
+	case Token::endline:
+		return nullptr;
+	default:
+		switch (getSubgroup(get().get_type())) {
+		case Token::keyword_modificators:
+			return define_variable(false);
+		default:
+			throw; // syntax error
+		}
+	}
 }
 
 ExprPtr Parser::expression() {
