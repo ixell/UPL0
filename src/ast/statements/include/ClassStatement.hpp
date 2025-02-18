@@ -54,7 +54,7 @@ public:
         std::wstring name,
         //...,
         std::vector<ClassVariableStatement*> variables,
-        std::vector<MethodStatement*> methods
+        std::vector<MethodStatement*> methods,
         MethodStatement* constructor,
         MethodStatement* destructor
     );
@@ -65,4 +65,6 @@ public:
     std::wstring get_name() const;
     const std::vector<ClassVariableStatement*>& get_variables() const;
     const std::vector<MethodStatement*>& get_methods() const;
+    MethodStatement* get_constructor() const;
+    MethodStatement* get_destructor() const;
 };

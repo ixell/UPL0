@@ -40,7 +40,8 @@ std::wstring to_wstring(Operation operation) {
 }
 
 Operation to_operation(Token::Type token, OperationType type) {
-	if (!(token & (Token::operator_ | Token::parentheses))) throw;
+	if (!(token & (Token::operator_ | Token::brackets)))
+		throw;
 	switch (type) {
 	case unary_prefix:
 		switch (token) {

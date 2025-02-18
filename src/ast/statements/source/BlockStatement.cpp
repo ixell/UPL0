@@ -12,6 +12,10 @@ BlockStatement::~BlockStatement() {
         delete statement;
 }
 
+const size_t BlockStatement::get_count() const {
+    return statements.size();
+}
+
 const std::vector<Statement*> BlockStatement::get_statements() const {
     return statements;
 }

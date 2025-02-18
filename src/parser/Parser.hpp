@@ -26,6 +26,7 @@ private:
 	[[nodiscard]] std::vector<Statement*> args();
 	[[nodiscard]] Statement* type();
 	[[nodiscard]] Expression* expression();
+	[[nodiscard]] Expression* logical();
 	[[nodiscard]] Expression* multiplicative();
 	[[nodiscard]] Expression* additive();
 	[[nodiscard]] Expression* unary();
@@ -34,5 +35,6 @@ private:
 	[[nodiscard]] bool match(TokenType type);
 	[[nodiscard]] Token& get(size_t pos);
 	[[nodiscard]] Token& get();
+	void consume(TokenType expected);
 	Token& next();
 };

@@ -21,6 +21,6 @@ public:
 
     Expression* get_item() const;
     std::pair<Expression*, BlockStatement*> get_case(size_t index) const;
-    std::vector<std::pair<Expression*, BlockStatement*>>::const_iterator get_cases() const;
+    const std::vector<std::pair<Expression*, BlockStatement*>>& get_cases() const;
     BlockStatement* get_default_case();
 };

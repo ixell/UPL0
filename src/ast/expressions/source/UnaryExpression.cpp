@@ -1,7 +1,7 @@
 #include "UnaryExpression.hpp"
 
 UnaryExpression::UnaryExpression(Operation operation, Expression* value)
-	: operation(operation), expr(expr) {}
+	: operation(operation), expr(value) {}
 
 //std::wstring UnaryExpression::to_string() const {
 //	switch (operation) {

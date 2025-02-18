@@ -49,7 +49,7 @@ ClassStatement::ClassStatement(
     name(name),
     //...,
     variables(variables),
-    methods(methods)
+    methods(methods),
     constructor(constructor),
     destructor(destructor) {}
 
@@ -69,4 +69,12 @@ const std::vector<ClassStatement::ClassVariableStatement*>& ClassStatement::get_
 
 const std::vector<ClassStatement::MethodStatement*>& ClassStatement::get_methods() const {
     return methods;
+}
+
+ClassStatement::MethodStatement* ClassStatement::get_constructor() const {
+    return constructor;
+}
+
+ClassStatement::MethodStatement* ClassStatement::get_destructor() const {
+    return destructor;
 }

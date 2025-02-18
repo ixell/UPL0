@@ -26,8 +26,8 @@ std::pair<Expression*, BlockStatement*> SwitchCaseStatement::get_case(size_t ind
     return cases.at(index);
 }
 
-std::vector<std::pair<Expression*, BlockStatement*>>::const_iterator SwitchCaseStatement::get_cases() const {
-    return cases.cbegin();
+const std::vector<std::pair<Expression*, BlockStatement*>>& SwitchCaseStatement::get_cases() const {
+    return cases;
 }
 
 BlockStatement* SwitchCaseStatement::get_default_case() {

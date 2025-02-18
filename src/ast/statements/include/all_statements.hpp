@@ -12,3 +12,4 @@
 #include "TypeStatement.hpp"
 #include "VariableStatement.hpp"
 #include "WhileStatement.hpp"
+#include "IfElseStatement.hpp"

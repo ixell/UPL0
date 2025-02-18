@@ -17,6 +17,6 @@ public:
     virtual StatementType get_type() const override;
     virtual ~InitStatement();
 
-    const VariableStatement* get_variable();
-    const std::vector<Expression*>& get_args();
+    const VariableStatement* get_variable() const;
+    const std::vector<Expression*>& get_args() const;
 };

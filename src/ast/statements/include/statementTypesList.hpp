@@ -15,5 +15,8 @@ enum class StatementType {
     IfElseStatement,
     SwitchCaseStatement,
     WhileStatement,
-    ForStatement
+    DoWhileStatement,
+    ForStatement,
+    EnumStatement,
+    UnionStatement
 };

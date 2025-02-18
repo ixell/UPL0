@@ -15,10 +15,10 @@ InitStatement::~InitStatement() {
         delete expr;
 }
 
-const VariableStatement* InitStatement::get_variable() {
+const VariableStatement* InitStatement::get_variable() const {
     return variable;
 }
 
-const std::vector<Expression*>& InitStatement::get_args() {
+const std::vector<Expression*>& InitStatement::get_args() const {
     return args;
 }

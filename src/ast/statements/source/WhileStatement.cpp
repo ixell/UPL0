@@ -18,3 +18,10 @@ Expression* WhileStatement::get_condition() const {
 BlockStatement* WhileStatement::get_code() const {
     return code;
 }
+
+DoWhileStatement::DoWhileStatement(Expression* condition, BlockStatement* code)
+    : WhileStatement(condition, code) {}
+
+StatementType DoWhileStatement::get_type() const {
+    return StatementType::DoWhileStatement;
+}
