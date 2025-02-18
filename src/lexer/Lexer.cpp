@@ -47,7 +47,8 @@ void Lexer::tokenize(std::vector<Token>* tokens) {
 				if (token == Token::endline) {
 					next();
 					if (brackets_depth == 0) {
-						add(Token::endcommand);
+						if (tokens->empty() || tokens->back().get_type() != Token::endcommand)
+							add(Token::endcommand);
 						tokenize_tabs();
 					}
 					break;
@@ -219,7 +220,7 @@ void Lexer::tokenize_operator() {
 		case Token::operator_plus:
 			type = Token::operator_increment;
 			next();
-			if (!tokens->empty() && tokens->crbegin()->get_type() == Token::operator_increment && ch == L'+') {
+			if (!tokens->empty() && tokens->back().get_type() == Token::operator_increment && ch == L'+') {
 				add(Token::operator_plus);
 				add(Token::operator_increment);
 				next();
@@ -229,7 +230,7 @@ void Lexer::tokenize_operator() {
 		case Token::operator_minus:
 			type = Token::operator_decrement;
 			next();
-			if (!tokens->empty() && tokens->crbegin()->get_type() == Token::operator_decrement && ch == L'-') {
+			if (!tokens->empty() && tokens->back().get_type() == Token::operator_decrement && ch == L'-') {
 				add(Token::operator_minus);
 				add(Token::operator_decrement);
 				next();
@@ -452,7 +453,8 @@ void Lexer::tokenize_tabs() { //...
 void Lexer::tokenize_end() {
 	if (brackets_depth != 0)
 		add(Token::error_unknwonFatal);
-	add(Token::endcommand);
+	if (tokens->empty() || tokens->back().get_type() != Token::endcommand)
+		add(Token::endcommand);
 	for (int tabs = this->tabs; tabs != 0; --tabs)
 		add(Token::untab);
 	add(Token::eof);

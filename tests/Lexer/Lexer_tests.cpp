@@ -327,7 +327,6 @@ TEST(Other, Tabs) {
 		T(untab),
 		T(keyword_true),
 		T(endcommand),
-		T(endcommand),
 		T(tab),
 		T(operator_plus),
 		T(endcommand),
@@ -341,7 +340,6 @@ TEST(Other, Tabs) {
 		T(untab),
 		T(untab),
 		T(operator_plus),
-		T(endcommand),
 		T(endcommand),
 		T(eof)
 	);
@@ -405,7 +403,6 @@ TEST(Combinations, ExpressionsAndEnds) {
 		T(keyword_true),
 		T(endcommand),
 		T(integer, L"2"),
-		T(endcommand),
 		T(endcommand),
 		T(eof)
 	);
