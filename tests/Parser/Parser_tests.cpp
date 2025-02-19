@@ -11,23 +11,23 @@
 
 class ParserGetter {
 public:
-	[[nodiscard]] static Statement* global(Parser& parser)				{ return parser.global(); }
-	[[nodiscard]] static Statement* define_variable(Parser& parser)		{ return parser.define_variable(); }
-	[[nodiscard]] static Statement* function(Parser& parser)			{ return parser.function(); }
-	[[nodiscard]] static BlockStatement* code(Parser& parser)			{ return parser.code(); }
-	[[nodiscard]] static std::vector<Statement*> args(Parser& parser)	{ return parser.args(); }
-	[[nodiscard]] static Statement* statement(Parser& parser)  			{ return parser.statement(); }
-	[[nodiscard]] static Statement* type(Parser& parser)				{ return parser.type(); }
-	[[nodiscard]] static Expression* expression(Parser& parser)			{ return parser.expression(); }
-	[[nodiscard]] static Expression* multiplicative(Parser& parser)		{ return parser.multiplicative(); }
-	[[nodiscard]] static Expression* additive(Parser& parser)			{ return parser.additive(); }
-	[[nodiscard]] static Expression* unary(Parser& parser)				{ return parser.unary(); }
-	[[nodiscard]] static Expression* primary(Parser& parser)			{ return parser.primary(); }
+	[[nodiscard]] static Statement* parse_global(Parser& parser)			{ return parser.parse_global(); }
+	[[nodiscard]] static Statement* parse_definition(Parser& parser)		{ return parser.parse_definition(); }
+	[[nodiscard]] static Statement* parse_function(Parser& parser)			{ return parser.parse_function(); }
+	[[nodiscard]] static BlockStatement* parse_code(Parser& parser)			{ return parser.parse_code(); }
+	[[nodiscard]] static std::vector<Statement*> parse_args(Parser& parser)	{ return parser.parse_args(); }
+	[[nodiscard]] static Statement* parse_statement(Parser& parser)  		{ return parser.parse_statement(); }
+	[[nodiscard]] static Statement* parse_type(Parser& parser)				{ return parser.parse_type(); }
+	[[nodiscard]] static Expression* parse_expression(Parser& parser)		{ return parser.parse_expression(); }
+	[[nodiscard]] static Expression* parse_multiplicative(Parser& parser)	{ return parser.parse_multiplicative(); }
+	[[nodiscard]] static Expression* parse_additive(Parser& parser)			{ return parser.parse_additive(); }
+	[[nodiscard]] static Expression* parse_unary(Parser& parser)			{ return parser.parse_unary(); }
+	[[nodiscard]] static Expression* parse_primary(Parser& parser)			{ return parser.parse_primary(); }
 
-	static bool match(Parser& parser, TokenType type)					{ return parser.match(type); }
-	[[nodiscard]] static Token& get(Parser& parser, size_t pos)			{ return parser.get(pos); }
-	[[nodiscard]] static Token& get(Parser& parser)						{ return parser.get(); }
-	static Token& next(Parser& parser)									{ return parser.next(); }
+	static bool match(Parser& parser, TokenType type)						{ return parser.match(type); }
+	[[nodiscard]] static Token& get(Parser& parser, size_t pos)				{ return parser.get(pos); }
+	[[nodiscard]] static Token& get(Parser& parser)							{ return parser.get(); }
+	static Token& next(Parser& parser)										{ return parser.next(); }
 };
 
 #define ALLOCATE_MEMORY()
@@ -61,7 +61,7 @@ public:
 	}
 
 #define PREPARE_SEGMENT(SEGMENT, TYPE) PREPARE_SEGMENT_PART(SEGMENT, TYPE, -1U)
-#define PREPARE() PREPARE_SEGMENT(global, Statement)
+#define PREPARE() PREPARE_SEGMENT(parse_global, Statement)
 
 void check(const Expression* expr, const Expression* correct);
 
@@ -319,7 +319,7 @@ TEST(Expressions, IntgerExpression) {
 	SET_CORRECT_EXPRESSIONS(
 		EXPRESSION(IntegerExpression, 1),
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 1)
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 1)
 	CHECK_ALL();
 }
 
@@ -329,7 +329,7 @@ TEST(Expressions, BooleanExpression) {
 		EXPRESSION(BooleanExpression, true),
 		EXPRESSION(BooleanExpression, false)
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 2);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 2);
 	CHECK_ALL();
 }
 
@@ -339,7 +339,7 @@ TEST(Expressions, FloatExpression) {
 		EXPRESSION(FloatExpression, 0.1f),
 		EXPRESSION(FloatExpression, 123.123f)
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 2);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 2);
 	CHECK_ALL();
 }
 
@@ -348,7 +348,7 @@ TEST(Expressions, StringExpression) {
 	SET_CORRECT_EXPRESSIONS(
 		EXPRESSION(StringExpression, L"abc")
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 1);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 1);
 	CHECK_ALL();
 }
 
@@ -357,7 +357,7 @@ TEST(Expressions, CombinatedString) {
 	SET_CORRECT_EXPRESSIONS(
 		EXPRESSION(StringExpression, L"abcdef123")
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 1);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 1);
 	CHECK_ALL();
 }
 
@@ -368,7 +368,7 @@ TEST(Expressions, VariableGetterExpression) {
 		EXPRESSION(VariableGetterExpression, L"_b", {L"sp1"}),
 		EXPRESSION(VariableGetterExpression, L"c0", {L"sp1", L"sp2"})
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 3);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 3);
 	CHECK_ALL();
 }
 
@@ -384,7 +384,7 @@ TEST(Expressions, UnaryExpression) {
 			EXPRESSION(VariableGetterExpression, L"a")
 		)
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 2);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 2);
 	CHECK_ALL();
 }
 
@@ -403,7 +403,7 @@ TEST(Expressions, BinaryExpression) {
 			EXPRESSION(IntegerExpression, 2)
 		)
 	);
-	PREPARE_SEGMENT_PART(expression, Expression, 2);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 2);
 	CHECK_ALL();
 }
 
@@ -416,7 +416,7 @@ TEST(Statements, DoStatement) {
 			EXPRESSION(IntegerExpression, 2)
 		))
 	);
-	PREPARE_SEGMENT_PART(statement, Statement, 1);
+	PREPARE_SEGMENT_PART(parse_statement, Statement, 1);
 	CHECK_ALL();
 }
 
@@ -428,7 +428,7 @@ TEST(CodeStatements, BlockStatement) {
 			STATEMENT(DoStatement, EXPRESSION(IntegerExpression, 2))
 		})
 	);
-	PREPARE_SEGMENT(code, Statement);
+	PREPARE_SEGMENT(parse_code, Statement);
 	CHECK_ALL();
 }
 
@@ -437,7 +437,7 @@ TEST(CodeStatements, EmptyBlock) {
 	SET_CORRECT_STATEMENTS(
 		STATEMENT(BlockStatement, {})
 	);
-	PREPARE_SEGMENT(code, Statement);
+	PREPARE_SEGMENT(parse_code, Statement);
 	CHECK_ALL();
 }
 	
@@ -458,7 +458,7 @@ TEST(CodeStatements, IfElseStatement) {
 			})
 		)
 	);
-	PREPARE_SEGMENT_PART(statement, Statement, 1);
+	PREPARE_SEGMENT_PART(parse_statement, Statement, 1);
 	CHECK_ALL();
 }
 
@@ -486,7 +486,7 @@ TEST(CodeStatements, SwitchCaseStatement) {
 			//})
 		)
 	);
-	PREPARE_SEGMENT_PART(statement, Statement, 1);
+	PREPARE_SEGMENT_PART(parse_statement, Statement, 1);
 	CHECK_ALL();
 }
 
@@ -500,7 +500,7 @@ TEST(CodeStatements, WhileStatement) {
 			})
 		)
 	);
-	PREPARE_SEGMENT_PART(statement, Statement, 1);
+	PREPARE_SEGMENT_PART(parse_statement, Statement, 1);
 	CHECK_ALL();
 }
 
@@ -514,7 +514,7 @@ TEST(CodeStatements, DoWhileStatement) {
 			})
 		)
 	);
-	PREPARE_SEGMENT_PART(statement, Statement, 1);
+	PREPARE_SEGMENT_PART(parse_statement, Statement, 1);
 	CHECK_ALL();
 }
 
@@ -534,7 +534,7 @@ TEST(TypeStatements, InitStatement) {
 				}
 			)
 		);
-		PREPARE_SEGMENT_PART(statement, Statement, 1);
+		PREPARE_SEGMENT_PART(parse_statement, Statement, 1);
 		CHECK_ALL();
 	}
 }

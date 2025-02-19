@@ -18,19 +18,19 @@ public:
 
 	void parse(std::vector<Statement*>& statements);
 private:
-	[[nodiscard]] Statement* global();
-	[[nodiscard]] Statement* define_variable(bool is_global = false);
-	[[nodiscard]] Statement* function();
-	[[nodiscard]] BlockStatement* code();
-	[[nodiscard]] Statement* statement();
-	[[nodiscard]] std::vector<Statement*> args();
-	[[nodiscard]] Statement* type();
-	[[nodiscard]] Expression* expression();
-	[[nodiscard]] Expression* logical();
-	[[nodiscard]] Expression* multiplicative();
-	[[nodiscard]] Expression* additive();
-	[[nodiscard]] Expression* unary();
-	[[nodiscard]] Expression* primary();
+	[[nodiscard]] Statement* parse_global();
+	[[nodiscard]] Statement* parse_definition(bool is_global = false);
+	[[nodiscard]] Statement* parse_function();
+	[[nodiscard]] BlockStatement* parse_code();
+	[[nodiscard]] Statement* parse_statement();
+	[[nodiscard]] std::vector<Statement*> parse_args();
+	[[nodiscard]] Statement* parse_type();
+	[[nodiscard]] Expression* parse_expression();
+	[[nodiscard]] Expression* parse_logical();
+	[[nodiscard]] Expression* parse_multiplicative();
+	[[nodiscard]] Expression* parse_additive();
+	[[nodiscard]] Expression* parse_unary();
+	[[nodiscard]] Expression* parse_primary();
 private:
 	[[nodiscard]] bool match(TokenType type);
 	[[nodiscard]] Token& get(size_t pos);
