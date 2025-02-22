@@ -34,8 +34,8 @@ Statement* Parser::parse_global() {
 }
 
 Statement* Parser::parse_definition(bool is_global) {
-	TypeStatement* type = static_cast<TypeStatement*>(this->parse_type());
-	if (get().get_type() != Token::variable)
+	TypeStatement* type = static_cast<TypeStatement*>(parse_type());
+	if (!match(Token::variable))
 		throw;
 	std::wstring name = get().get_value();
 	next();
@@ -43,11 +43,11 @@ Statement* Parser::parse_definition(bool is_global) {
 	case Token::leftParenthesis: {
 		if (!is_global)
 			throw;
-		std::vector<Statement*> args = this->parse_args();
+		std::vector<Statement*> args = parse_args();
 		BlockStatement* code;
-		if (get().get_type() == Token::colon)
-			code = this->parse_code();
-		else if (get().get_type() == Token::endline)
+		if (match(Token::colon))
+			code = parse_code();
+		else if (match(Token::endline) || match(Token::endcommand))
 			code = nullptr;
 		else
 			throw;
@@ -78,10 +78,10 @@ std::vector<Statement*> Parser::parse_args() {
 	while (true) {
 		TypeStatement* type = static_cast<TypeStatement*>(this->parse_type());
 		Statement* arg = type;
-		if (get().get_type() == Token::variable) {
+		if (match(Token::variable)) {
 			arg = static_cast<Statement*>(new VariableStatement(type, get().get_value()));
 			next();
-			if (get().get_type() == Token::operator_assign) {
+			if (match(Token::operator_assign)) {
 				std::vector<Expression*> value = { parse_expression() };
 				arg = static_cast<Statement*>(
 					new InitStatement(static_cast<VariableStatement*>(arg), value));
@@ -89,8 +89,8 @@ std::vector<Statement*> Parser::parse_args() {
 			}
 		}
 		args.push_back(arg);
-		if (get().get_type() != Token::operator_comma) {
-			if (get().get_type() == closer) {
+		if (!match(Token::operator_comma)) {
+			if (match(closer)) {
 				next();
 				return args;
 			}
@@ -115,22 +115,22 @@ Statement* Parser::parse_type() {
 			modificators.push_back(mod);
 			next();
 		}
-		if (get().get_type() != Token::variable && get().get_type() != Token::keyword_type)
+		if (!match(Token::variable) && !match(Token::keyword_type))
 			throw;
 		std::wstring type = get().get_value();
 		next();
 		std::vector<Statement*> template_;
-		if (get().get_type() == Token::operator_lessThan)
+		if (match(Token::operator_lessThan))
 			template_ = parse_args();
 		statement = new TypeStatement(type, modificators, template_);
 	}
-	while (get().get_type() != Token::variable) {
+	while (!match(Token::variable)) {
 		std::vector<Modificator> modificators;
-		if (get().get_type() == Token::keyword_const) {
+		if (match(Token::keyword_const)) {
 			modificators.push_back(Modificator::const_);
 			next();
 		}
-		if (get().get_type() == Token::operator_binary_and) {
+		if (match(Token::operator_binary_and)) {
 			std::vector<Statement*> template_ = {statement};
 			statement = new TypeStatement(L"&", modificators, template_);
 		}
@@ -143,26 +143,26 @@ Statement* Parser::parse_type() {
 
 BlockStatement* Parser::parse_code() {
 	std::vector<Statement*> code;
-	if (get().get_type() == Token::endcommand || get().get_type() == Token::endline)
+	if (match(Token::endcommand) || match(Token::endline))
 		return nullptr;
 	consume(Token::colon);
-	if (get().get_type() != Token::endline) {
+	if (!match(Token::endline)) {
 		while (true) {
 			code.push_back(parse_statement());
-			if (get().get_type() == Token::endline)
+			if (match(Token::endline))
 				break;
-			if (get().get_type() != Token::endcommand)
+			if (!match(Token::endcommand))
 				throw;
 		}
 		return new BlockStatement(code);
 	}
 	next();
 	consume(Token::tab);
-	while (get().get_type() != Token::untab) {
+	while (!match(Token::untab)) {
 		Statement* statement = this->parse_statement();
 		if (statement != nullptr)
 			code.push_back(statement);
-		if (get().get_type() != Token::endcommand && get().get_type() != Token::endline)
+		if (!match(Token::endcommand) && !match(Token::endline))
 			throw;
 		next();
 	}
@@ -189,53 +189,14 @@ Statement* Parser::parse_statement() {
 			return static_cast<Statement*>(new DoStatement(parse_expression()));
 		return parse_definition(false);
 	case Token::keyword_if:
-		next();
-		{
-			Expression* condition = parse_expression();
-			BlockStatement* if_code = parse_code();
-			BlockStatement* else_code = nullptr;
-			if (get().get_type() == Token::keyword_else) {
-				next();
-				else_code = parse_code();
-			}
-			return static_cast<Statement*>(new IfElseStatement(condition, if_code, else_code));
-		}
+		return parse_if_statement();
 	case Token::keyword_switch:
-		next();
-		{
-			Expression* item = parse_expression();
-			if (get().get_type() == Token::endcommand || get().get_type() == Token::endline)
-				return static_cast<Statement*>(new SwitchCaseStatement(item, {}, nullptr));
-			consume(Token::colon);
-			consume(Token::endline);
-			consume(Token::tab);
-			std::vector<std::pair<Expression*, BlockStatement*>> cases;
-			BlockStatement* default_case { nullptr };
-			while (get().get_type() != Token::untab) {
-				consume(Token::keyword_case);
-				//if (get().get_type() == Token::...)
-				Expression* item2 = parse_expression();
-				BlockStatement* code = this->parse_code();
-				cases.push_back(std::pair(item2, code));
-			}
-			return static_cast<Statement*>(new SwitchCaseStatement(item, cases, default_case));
-		}
+		return parse_switch_statement();
 	case Token::keyword_while:
-		next();
-		{
-			Expression* condition = parse_expression();
-			BlockStatement* code = this->parse_code();
-			return static_cast<Statement*>(new WhileStatement(condition, code));
-		}
 	case Token::keyword_do:
-		next();
-		{
-			BlockStatement* code = this->parse_code();
-			consume(Token::keyword_while);
-			Expression* condition = parse_expression();
-			consume(Token::endline);
-			return static_cast<Statement*>(new DoWhileStatement(condition, code));
-		}
+		return parse_while_statement();
+	case Token::keyword_for:
+		return parse_for_statement();
 	case Token::keyword_enum:
 		next();
 		return nullptr; //...
@@ -254,6 +215,70 @@ Statement* Parser::parse_statement() {
 	}
 }
 
+Statement* Parser::parse_if_statement() {
+	next();
+	Expression* condition = parse_expression();
+	BlockStatement* if_code = parse_code();
+	BlockStatement* else_code = nullptr;
+	if (match(Token::keyword_else)) {
+		next();
+		else_code = parse_code();
+	}
+	return static_cast<Statement*>(new IfElseStatement(condition, if_code, else_code));
+}
+
+Statement* Parser::parse_switch_statement() {
+	next();
+	Expression* item = parse_expression();
+	if (match(Token::endcommand) || match(Token::endline))
+		return static_cast<Statement*>(new SwitchCaseStatement(item, {}, nullptr));
+	consume(Token::colon);
+	consume(Token::endline);
+	consume(Token::tab);
+	std::vector<std::pair<Expression*, BlockStatement*>> cases;
+	BlockStatement* default_case { nullptr };
+	while (!match(Token::untab)) {
+		consume(Token::keyword_case);
+		//if (match(Token::...))
+		Expression* item2 = parse_expression();
+		BlockStatement* code = this->parse_code();
+		cases.push_back(std::pair(item2, code));
+	}
+	return static_cast<Statement*>(new SwitchCaseStatement(item, cases, default_case));
+}
+
+Statement* Parser::parse_while_statement() {
+	if (match(Token::keyword_while)) {
+		next();
+		Expression* condition = parse_expression();
+		BlockStatement* code = this->parse_code();
+		return static_cast<Statement*>(new WhileStatement(condition, code));
+	}
+	if (match(Token::keyword_do)) {
+		next();
+		BlockStatement* code = this->parse_code();
+		consume(Token::keyword_while);
+		Expression* condition = parse_expression();
+		consume(Token::endline);
+		return static_cast<Statement*>(new DoWhileStatement(condition, code));
+	}
+	throw;
+}
+
+Statement* Parser::parse_for_statement() {
+	next();
+	consume(Token::leftParenthesis);
+	Expression* initializer = parse_expression();
+	consume(Token::endcommand);
+	Expression* condition = parse_expression();
+	consume(Token::endcommand);
+	Expression* changer = parse_expression();
+	consume(Token::rightParenthesis);
+	BlockStatement* code = parse_code();
+	return static_cast<Statement*>(new ForStatement(initializer, condition, changer, code));
+}
+
+
 ExprPtr Parser::parse_expression() {
 	return parse_logical();
 }
@@ -261,10 +286,11 @@ ExprPtr Parser::parse_expression() {
 ExprPtr Parser::parse_logical() {
 	ExprPtr result = parse_additive();
 	#ifdef DEBUG
-		for (int COUNT = 0; COUNT != 10'000; ++COUNT) {
+		for (int COUNT = 0; COUNT != 10'000; ++COUNT)
 	#else
-		while (true) {
+		while (true)
 	#endif
+	{
 		TokenType token = get().get_type();
 		switch (token) {
 		case Token::operator_equal:
@@ -293,10 +319,11 @@ ExprPtr Parser::parse_logical() {
 ExprPtr Parser::parse_additive() {
 	ExprPtr result = parse_multiplicative();
 	#ifdef DEBUG
-		for (int COUNT = 0; COUNT != 10'000; ++COUNT) {
+		for (int COUNT = 0; COUNT != 10'000; ++COUNT)
 	#else
-		while (true) {
+		while (true)
 	#endif
+	{
 		TokenType token = get().get_type();
 		switch (token) {
 		case Token::operator_plus:
@@ -315,10 +342,11 @@ ExprPtr Parser::parse_additive() {
 ExprPtr Parser::parse_multiplicative() {
 	ExprPtr result = parse_unary();
 	#ifdef DEBUG
-		for (int COUNT = 0; COUNT != 10'000; ++COUNT) {
+		for (int COUNT = 0; COUNT != 10'000; ++COUNT)
 	#else
-		while (true) {
+		while (true)
 	#endif
+	{
 		TokenType token = get().get_type();
 		switch (token) {
 		case Token::operator_star:
@@ -377,7 +405,7 @@ ExprPtr Parser::parse_primary() {
 		next();
 		std::list<std::wstring> path;
 		path.push_back(token.get_value());
-		while (get().get_type() == Token::colon) {
+		while (match(Token::colon)) {
 			if (get(1).get_type() == Token::colon && get(2).get_type() == Token::variable) {
 				next();
 				next();
@@ -406,7 +434,6 @@ ExprPtr Parser::parse_primary() {
 
 bool Parser::match(Token::Type type) {
 	if (this_token->get_type() != type) return false;
-	++pos;
 	return true;
 }
 
@@ -419,7 +446,7 @@ Token& Parser::get() {
 }
 
 void Parser::consume(TokenType expected) {
-	if (get().get_type() != expected)
+	if (!match(expected))
 		throw;
 	next();
 }

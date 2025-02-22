@@ -23,6 +23,10 @@ private:
 	[[nodiscard]] Statement* parse_function();
 	[[nodiscard]] BlockStatement* parse_code();
 	[[nodiscard]] Statement* parse_statement();
+	[[nodiscard]] Statement* parse_if_statement();
+	[[nodiscard]] Statement* parse_switch_statement();
+	[[nodiscard]] Statement* parse_while_statement();
+	[[nodiscard]] Statement* parse_for_statement();
 	[[nodiscard]] std::vector<Statement*> parse_args();
 	[[nodiscard]] Statement* parse_type();
 	[[nodiscard]] Expression* parse_expression();

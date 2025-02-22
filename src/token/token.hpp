@@ -140,6 +140,10 @@ BEGIN_TOKENS
 		SUBGROUP(keyword_values, 3, 3)
 			KEYWORD(true)
 			KEYWORD(false)
+		SUBGROUP(keyword_accesses, 3, 4)
+			KEYWORD(public)
+			KEYWORD(protected)
+			KEYWORD(private)
 	GROUP(other, 4)
 		DEFAULT
 			WORD(comment)							// //

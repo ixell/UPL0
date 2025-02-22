@@ -1,9 +1,9 @@
 #include "ForStatement.hpp"
 
 ForStatement::ForStatement(
-    DoStatement* initializer,
+    Expression* initializer,
     Expression* condition,
-    DoStatement* changer,
+    Expression* changer,
     BlockStatement* code
 ) :
     initializer(initializer),
@@ -19,7 +19,7 @@ ForStatement::~ForStatement() {
     delete initializer, condition, changer, code;
 }
 
-DoStatement* ForStatement::get_initializer() const {
+Expression* ForStatement::get_initializer() const {
     return initializer;
 }
 
@@ -27,7 +27,7 @@ Expression* ForStatement::get_condition() const {
     return condition;
 }
 
-DoStatement* ForStatement::get_changer() const {
+Expression* ForStatement::get_changer() const {
     return changer;
 }
 
