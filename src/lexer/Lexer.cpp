@@ -518,6 +518,12 @@ void Lexer::typify_word(Token& token) {
 		token.set_type(Token::keyword_true);
 	else if (word == L"false")
 		token.set_type(Token::keyword_false);
+	else if (word == L"public")
+		token.set_type(Token::keyword_public);
+	else if (word == L"protected")
+		token.set_type(Token::keyword_protected);
+	else if (word == L"private")
+		token.set_type(Token::keyword_private);
 	else if (word == L"and")
 		token.set_type(Token::operator_and);
 	else if (word == L"or")

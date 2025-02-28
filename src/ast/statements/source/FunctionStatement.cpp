@@ -16,6 +16,7 @@ FunctionStatement::~FunctionStatement() {
     delete type;
     for (Statement* expr : args)
         delete expr;
+    delete code;
 }
 
 Statement* FunctionStatement::get_return_type() const {

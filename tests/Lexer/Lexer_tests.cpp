@@ -126,7 +126,11 @@ TEST(Words, Variables) {
 }
 
 TEST(Words, Keywords) {
-	SET_CODE("if else switch case while for do class enum union import int float string bool auto const friend true false");
+	SET_CODE(
+		"if else switch case while for do class enum union "
+		"import int float string bool auto const friend true false "
+		"public protected private"
+	);
 	SET_CORRECT(
 		T(keyword_if),
 		T(keyword_else),
@@ -148,6 +152,9 @@ TEST(Words, Keywords) {
 		T(keyword_friend),
 		T(keyword_true),
 		T(keyword_false),
+		T(keyword_public),
+		T(keyword_protected),
+		T(keyword_private),
 		T(endline),
 		T(eof)
 	);

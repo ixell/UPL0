@@ -24,6 +24,8 @@ Statement* Parser::parse_global() {
 	case Token::variable:
 	case Token::keyword_type:
 		return parse_definition(true);
+	case Token::keyword_class:
+		return parse_class();
 	default:
 		switch (getSubgroup(get().get_type())) {
 		case Token::keyword_modificators:
@@ -34,6 +36,87 @@ Statement* Parser::parse_global() {
 	}
 }
 
+Statement* Parser::parse_class() {
+	using Access = ClassStatement::Access;
+    std::wstring class_name;
+    //...;
+    std::vector<ClassStatement::ClassVariableStatement*> variables;
+    std::vector<ClassStatement::MethodStatement*> methods;
+    ClassStatement::MethodStatement* constructor = nullptr;
+    ClassStatement::MethodStatement* destructor = nullptr;
+
+	consume(Token::keyword_class);
+	if (!match(Token::variable))
+		throw;
+	class_name = get().get_value();
+	next();
+	if (match(Token::leftParenthesis)) {
+		//...
+	}
+	consume(Token::colon);
+	consume(Token::endline);
+	consume(Token::tab);
+	while (!match(Token::untab)) {
+		if (getSubgroup(get().get_type()) == Token::keyword_accesses) {
+			Access access = Access(get().get_type() - Token::keyword_public + 1);
+			next();
+			if (match(Token::operator_binary_not)) {
+				next();
+				if (!match(Token::variable))
+					throw;
+				if (get().get_value() == L"construct") {
+					next();
+					constructor = 
+						static_cast<ClassStatement::MethodStatement*>(parse_function(nullptr, L"", access));
+				}
+				else if (get().get_value() == L"destruct") {
+					next();
+					destructor = 
+						static_cast<ClassStatement::MethodStatement*>(parse_function(nullptr, L"", access));
+				}
+				else
+					throw;
+				continue;
+			}
+			if (!match(Token::variable) && !match(Token::keyword_type)
+					&& getSubgroup(get().get_type()) != Token::keyword_modificators)
+				throw;
+			TypeStatement* type = static_cast<TypeStatement*>(parse_type());
+			if (!match(Token::variable))
+				throw;
+			std::wstring name = get().get_value();
+			next();
+			switch (get().get_type()) {
+			case Token::leftParenthesis: {
+				methods.push_back(static_cast<ClassStatement::MethodStatement*>(
+					parse_function(type, name, access)));
+				break;
+			}
+			case Token::endcommand:
+			case Token::endline:
+				next();
+				variables.push_back(new ClassStatement::ClassVariableStatement(access, type, name));
+				break;
+			default:
+				throw;
+			}
+		}
+		else {
+			//...
+			throw;
+		}
+	}
+	next();
+	return new ClassStatement(
+		class_name,
+		//...,
+		variables,
+		methods,
+		constructor,
+		destructor
+	);
+}
+
 Statement* Parser::parse_definition(bool is_global) {
 	TypeStatement* type = static_cast<TypeStatement*>(parse_type());
 	if (!match(Token::variable))
@@ -41,19 +124,8 @@ Statement* Parser::parse_definition(bool is_global) {
 	std::wstring name = get().get_value();
 	next();
 	switch (get().get_type()) {
-	case Token::leftParenthesis: {
-		if (!is_global)
-			throw;
-		std::vector<Statement*> args = parse_args();
-		BlockStatement* code;
-		if (match(Token::colon))
-			code = parse_code();
-		else if (match(Token::endline) || match(Token::endcommand))
-			code = nullptr;
-		else
-			throw;
-		return static_cast<Statement*>(new FunctionStatement(type, name, args, code));
-	}
+	case Token::leftParenthesis:
+		return parse_function(type, name);
 	case Token::operator_assign: {
 		next();
 		std::vector<ExprPtr> arg{ parse_expression() };
@@ -71,11 +143,31 @@ Statement* Parser::parse_definition(bool is_global) {
 	}
 }
 
+Statement* Parser::parse_function(Statement* type, const std::wstring& name, ClassStatement::Access access) {
+	std::vector<Statement*> args = parse_args();
+	BlockStatement* code;
+	if (match(Token::colon))
+		code = parse_code();
+	else if (match(Token::endline) || match(Token::endcommand))
+		code = nullptr;
+	else
+		throw;
+	if (access != ClassStatement::Access::UNKNOWN)
+		return static_cast<Statement*>(new ClassStatement::MethodStatement(
+			access, static_cast<TypeStatement*>(type), name, args, code));
+	return static_cast<Statement*>(new FunctionStatement(
+		static_cast<TypeStatement*>(type), name, args, code));
+}
+
 std::vector<Statement*> Parser::parse_args() {
 	TokenType opener = get().get_type();
 	TokenType closer = TokenType(opener + 1);
 	next();
 	std::vector<Statement*> args;
+	if (get().get_type() == closer) {
+		next();
+		return args;
+	}
 	while (true) {
 		TypeStatement* type = static_cast<TypeStatement*>(this->parse_type());
 		Statement* arg = type;

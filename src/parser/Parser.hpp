@@ -4,6 +4,7 @@
 #include "Expression.hpp"
 #include "BlockStatement.hpp"
 #include "Statement.hpp"
+#include "ClassStatement.hpp"
 
 class Parser {
 #ifdef TESTING
@@ -19,8 +20,10 @@ public:
 	void parse(std::vector<Statement*>& statements);
 private:
 	[[nodiscard]] Statement* parse_global();
+	[[nodiscard]] Statement* parse_class();
 	[[nodiscard]] Statement* parse_definition(bool is_global = false);
-	[[nodiscard]] Statement* parse_function();
+	[[nodiscard]] Statement* parse_function(
+		Statement* type, const std::wstring& name, ClassStatement::Access = ClassStatement::Access::UNKNOWN);
 	[[nodiscard]] BlockStatement* parse_code();
 	[[nodiscard]] Statement* parse_statement();
 	[[nodiscard]] Statement* parse_if_statement();

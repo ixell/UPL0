@@ -13,7 +13,8 @@ class ParserGetter {
 public:
 	[[nodiscard]] static Statement* parse_global(Parser& parser)			{ return parser.parse_global(); }
 	[[nodiscard]] static Statement* parse_definition(Parser& parser)		{ return parser.parse_definition(); }
-	[[nodiscard]] static Statement* parse_function(Parser& parser)			{ return parser.parse_function(); }
+	[[nodiscard]] static Statement* parse_function(Parser& parser, Statement* type, const std::wstring& name)
+		{ return parser.parse_function(type, name); }
 	[[nodiscard]] static BlockStatement* parse_code(Parser& parser)			{ return parser.parse_code(); }
 	[[nodiscard]] static std::vector<Statement*> parse_args(Parser& parser)	{ return parser.parse_args(); }
 	[[nodiscard]] static Statement* parse_statement(Parser& parser)  		{ return parser.parse_statement(); }
@@ -66,6 +67,10 @@ public:
 void check(const Expression* expr, const Expression* correct);
 
 void check(const Statement* statement, const Statement* correct) {
+	if (statement == nullptr || correct == nullptr) {
+		ASSERT_EQ(statement, correct);
+		return;
+	}
 	StatementType type = statement->get_type();
 	ASSERT_EQ(type, correct->get_type()) << "Different statements";
 	switch (type) {
@@ -112,6 +117,10 @@ void check(const Statement* statement, const Statement* correct) {
 	case StatementType::VariableStatement: {
 		const VariableStatement* var0 = static_cast<const VariableStatement*>(statement);
 		const VariableStatement* var1 = static_cast<const VariableStatement*>(correct);
+		if (var0 == nullptr || var1 == nullptr) {
+			ASSERT_EQ(var0, var1);
+			return;
+		}
 		ASSERT_EQ(var0->get_name(), var1->get_name());
 		check(static_cast<Statement*>(var0->get_type_expression()),
 			static_cast<Statement*>(var1->get_type_expression()));
@@ -192,12 +201,16 @@ void check(const Statement* statement, const Statement* correct) {
 	case StatementType::FunctionStatement: {
 		const FunctionStatement* func0 { static_cast<const FunctionStatement*>(statement) };
 		const FunctionStatement* func1 { static_cast<const FunctionStatement*>(correct) };
+		if (func0 == nullptr || func1 == nullptr) {
+			ASSERT_EQ(func0, func1);
+			return;
+		}
 		ASSERT_EQ(func0->get_name(), func1->get_name());
 		check(static_cast<const Statement*>(func0->get_return_type()),
 			static_cast<const Statement*>(func1->get_return_type()));
 		{
-			const std::vector<Statement*> args0 = func0->get_args();
-			const std::vector<Statement*> args1 = func1->get_args();
+			const std::vector<Statement*>& args0 = func0->get_args();
+			const std::vector<Statement*>& args1 = func1->get_args();
 			ASSERT_EQ(args0.size(), args1.size());
 			for (size_t i = 0; i != args0.size(); ++i)
 				check(args0.at(i), args1.at(i));
@@ -235,6 +248,10 @@ void check(const Statement* statement, const Statement* correct) {
 }
 
 void check(const Expression* expr, const Expression* correct) {
+	if (expr == nullptr || correct == nullptr) {
+		ASSERT_EQ(expr, correct);
+		return;
+	}
 	ExpressionType type = expr->get_type();
 	ASSERT_EQ(type, correct->get_type()) << "Different expressions";
 	switch (type) {
@@ -629,7 +646,7 @@ TEST(TypeStatements, FunctionStatement) {
 
 TEST(TypeStatements, ClassStatement) {
 	SET_CODE(
-		"class A:\n"
+		"class A:\n" //...
 		"\tprivate int x\n"
 		"\tpublic ~construct(int x):\n"
 		"\t\tthis.x = x\n"
@@ -671,7 +688,11 @@ TEST(TypeStatements, ClassStatement) {
 				new BlockStatement({
 					STATEMENT(DoStatement, EXPRESSION(BinaryExpression,
 						Operation::assign,
-						EXPRESSION(VariableGetterExpression, L"x", {L"this"}),
+						EXPRESSION(BinaryExpression,
+							Operation::dot,
+							EXPRESSION(VariableGetterExpression, L"this"),
+							EXPRESSION(VariableGetterExpression, L"x")
+						),
 						EXPRESSION(VariableGetterExpression, L"x")
 					))
 				})
