@@ -14,6 +14,7 @@ add_library (
         ${source}/FloatExpression.cpp
         ${source}/StringExpression.cpp
         ${source}/VariableGetterExpression.cpp
+        ${source}/ArgumentedExpression.cpp
         
         ${source}/operations.cpp
 )

@@ -407,6 +407,72 @@ TEST(Expressions, BinaryExpression) {
 	CHECK_ALL();
 }
 
+TEST(Expressions, Operations) {
+	SET_CODE("a = b || c && d | e ^ f & g >= h << i + j % ++k.l::m[n](o, p)");
+	SET_CORRECT_EXPRESSIONS(
+		EXPRESSION(BinaryExpression,
+			Operation::assign,
+			EXPRESSION(VariableGetterExpression, L"a"),
+			EXPRESSION(BinaryExpression,
+				Operation::logical_or,
+				EXPRESSION(VariableGetterExpression, L"b"),
+				EXPRESSION(BinaryExpression,
+					Operation::logical_and,
+					EXPRESSION(VariableGetterExpression, L"c"),
+					EXPRESSION(BinaryExpression,
+						Operation::binary_or,
+						EXPRESSION(VariableGetterExpression, L"d"),
+						EXPRESSION(BinaryExpression,
+							Operation::binary_xor,
+							EXPRESSION(VariableGetterExpression, L"e"),
+							EXPRESSION(BinaryExpression,
+								Operation::binary_and,
+								EXPRESSION(VariableGetterExpression, L"f"),
+								EXPRESSION(BinaryExpression,
+									Operation::greaterThanEq,
+									EXPRESSION(VariableGetterExpression, L"g"),
+									EXPRESSION(BinaryExpression,
+										Operation::leftShift,
+										EXPRESSION(VariableGetterExpression, L"h"),
+										EXPRESSION(BinaryExpression,
+											Operation::plus,
+											EXPRESSION(VariableGetterExpression, L"i"),
+											EXPRESSION(BinaryExpression,
+												Operation::modulus,
+												EXPRESSION(VariableGetterExpression, L"j"),
+												EXPRESSION(UnaryExpression,
+													Operation::prefix_increment,
+													EXPRESSION(ArgumentedExpression,
+														Operation::call,
+														EXPRESSION(ArgumentedExpression,
+															Operation::subscript,
+															EXPRESSION(BinaryExpression,
+																Operation::dot,
+																EXPRESSION(VariableGetterExpression, L"k"),
+																EXPRESSION(VariableGetterExpression, L"l")
+															),
+															{EXPRESSION(VariableGetterExpression, L"m")}
+														),
+														{
+															EXPRESSION(VariableGetterExpression, L"o"),
+															EXPRESSION(VariableGetterExpression, L"p")
+														}
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			)
+		)
+	);
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 1)
+}
+
 TEST(Statements, DoStatement) {
 	SET_CODE("1 + 2");
 	SET_CORRECT_STATEMENTS(

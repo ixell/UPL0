@@ -30,11 +30,22 @@ private:
 	[[nodiscard]] std::vector<Statement*> parse_args();
 	[[nodiscard]] Statement* parse_type();
 	[[nodiscard]] Expression* parse_expression();
+	//[[nodiscard]] Expression* parse_comma();
+	[[nodiscard]] Expression* parse_assignation();
+	[[nodiscard]] Expression* parse_logical_or();
+	[[nodiscard]] Expression* parse_logical_and();
+	[[nodiscard]] Expression* parse_binary_or();
+	[[nodiscard]] Expression* parse_binary_xor();
+	[[nodiscard]] Expression* parse_binary_and();
+	[[nodiscard]] Expression* parse_comparison();
+	[[nodiscard]] Expression* parse_shift();
 	[[nodiscard]] Expression* parse_logical();
 	[[nodiscard]] Expression* parse_multiplicative();
 	[[nodiscard]] Expression* parse_additive();
 	[[nodiscard]] Expression* parse_unary();
 	[[nodiscard]] Expression* parse_primary();
+	[[nodiscard]] Expression* parse_variable();
+	[[nodiscard]] Expression* _parse_variable();
 private:
 	[[nodiscard]] bool match(TokenType type);
 	[[nodiscard]] Token& get(size_t pos);

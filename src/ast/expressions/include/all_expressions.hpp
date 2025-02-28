@@ -7,3 +7,4 @@
 #include "FloatExpression.hpp"
 #include "StringExpression.hpp"
 #include "VariableGetterExpression.hpp"
+#include "ArgumentedExpression.hpp"

@@ -7,5 +7,6 @@ enum class ExpressionType {
     BooleanExpression,
     FloatExpression,
     StringExpression,
-    VariableGetterExpression
+    VariableGetterExpression,
+    ArgumentedExpression
 };

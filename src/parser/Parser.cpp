@@ -1,4 +1,5 @@
 #include <list>
+#include <stack>
 #include "Parser.hpp"
 #include "all_expressions.hpp"
 #include "all_statements.hpp"
@@ -280,31 +281,127 @@ Statement* Parser::parse_for_statement() {
 
 
 ExprPtr Parser::parse_expression() {
-	return parse_logical();
+	return parse_assignation();
 }
 
-ExprPtr Parser::parse_logical() {
+ExprPtr Parser::parse_assignation() {
+	ExprPtr result = parse_logical_or();
+	while (true) {
+		TokenType token = get().get_type();
+		switch (token) {
+		case Token::operator_assign:
+		case Token::operator_assign_binary_and:
+		case Token::operator_assign_binary_leftShift:
+		case Token::operator_assign_binary_not:
+		case Token::operator_assign_binary_or:
+		case Token::operator_assign_binary_rightShift:
+		case Token::operator_assign_binary_xor:
+		case Token::operator_assign_minus:
+		case Token::operator_assign_plus:
+		case Token::operator_assign_procent:
+		case Token::operator_assign_slash:
+		case Token::operator_assign_star:
+			next();
+			result = ExprPtr(new BinaryExpression(
+				to_operation(token, binary),
+				result, parse_logical_or()
+			));
+			continue;
+		}
+		return result;
+	}
+}
+
+ExprPtr Parser::parse_logical_or() {
+	ExprPtr result = parse_logical_and();
+	while (match(Token::operator_or)) {
+		next();
+		result = ExprPtr(new BinaryExpression(
+			Operation::logical_or,
+			result, parse_logical_and()
+		));
+	}
+	return result;
+}
+
+ExprPtr Parser::parse_logical_and() {
+	ExprPtr result = parse_binary_or();
+	while (match(Token::operator_and)) {
+		next();
+		result = ExprPtr(new BinaryExpression(
+			Operation::logical_and,
+			result, parse_binary_or()
+		));
+	}
+	return result;
+}
+
+ExprPtr Parser::parse_binary_or() {
+	ExprPtr result = parse_binary_xor();
+	while (match(Token::operator_binary_or)) {
+		next();
+		result = ExprPtr(new BinaryExpression(
+			Operation::binary_or,
+			result, parse_binary_xor()
+		));
+	}
+	return result;
+}
+
+ExprPtr Parser::parse_binary_xor() {
+	ExprPtr result = parse_binary_and();
+	while (match(Token::operator_binary_xor)) {
+		next();
+		result = ExprPtr(new BinaryExpression(
+			Operation::binary_xor,
+			result, parse_binary_and()
+		));
+	}
+	return result;
+}
+
+ExprPtr Parser::parse_binary_and() {
+	ExprPtr result = parse_comparison();
+	while (match(Token::operator_binary_and)) {
+		next();
+		result = ExprPtr(new BinaryExpression(
+			Operation::binary_and,
+			result, parse_comparison()
+		));
+	}
+	return result;
+}
+
+
+ExprPtr Parser::parse_comparison() {
 	ExprPtr result = parse_additive();
-	#ifdef DEBUG
-		for (int COUNT = 0; COUNT != 10'000; ++COUNT)
-	#else
-		while (true)
-	#endif
-	{
+	while (true) {
 		TokenType token = get().get_type();
 		switch (token) {
 		case Token::operator_equal:
+		case Token::operator_lessThan:
+		case Token::operator_greaterThan:
+		case Token::operator_lessThanEqual:
+		case Token::operator_greaterThanEqual:
 			next();
 			result = ExprPtr(new BinaryExpression(
 				to_operation(token, binary),
 				result, parse_additive()
 			));
 			continue;
-		case Token::operator_lessThan:
-		case Token::operator_greaterThan:
-		case Token::operator_lessThanEqual:
-		case Token::operator_greaterThanEqual:
-			//...
+		//...
+		}
+		return result;
+	}
+}
+
+Expression* Parser::parse_shift() {
+	ExprPtr result = parse_additive();
+	while (true) {
+		TokenType token = get().get_type();
+		switch (token) {
+		case Token::operator_binary_leftShift:
+		case Token::operator_binary_rightShift:
 			next();
 			result = ExprPtr(new BinaryExpression(
 				to_operation(token, binary),
@@ -318,12 +415,7 @@ ExprPtr Parser::parse_logical() {
 
 ExprPtr Parser::parse_additive() {
 	ExprPtr result = parse_multiplicative();
-	#ifdef DEBUG
-		for (int COUNT = 0; COUNT != 10'000; ++COUNT)
-	#else
-		while (true)
-	#endif
-	{
+	while (true) {
 		TokenType token = get().get_type();
 		switch (token) {
 		case Token::operator_plus:
@@ -341,12 +433,7 @@ ExprPtr Parser::parse_additive() {
 
 ExprPtr Parser::parse_multiplicative() {
 	ExprPtr result = parse_unary();
-	#ifdef DEBUG
-		for (int COUNT = 0; COUNT != 10'000; ++COUNT)
-	#else
-		while (true)
-	#endif
-	{
+	while (true) {
 		TokenType token = get().get_type();
 		switch (token) {
 		case Token::operator_star:
@@ -401,27 +488,8 @@ ExprPtr Parser::parse_primary() {
 	case Token::string:
 		next();
 		return ExprPtr(new StringExpression(token.get_value()));
-	case Token::variable: {
-		next();
-		std::list<std::wstring> path;
-		path.push_back(token.get_value());
-		while (match(Token::colon)) {
-			if (get(1).get_type() == Token::colon && get(2).get_type() == Token::variable) {
-				next();
-				next();
-				path.push_back(get().get_value());
-				next();
-				continue;
-			}
-			break;
-		}
-		std::wstring variable = path.back();
-		path.pop_back();
-		return ExprPtr(new VariableGetterExpression(
-			variable,
-			std::vector<std::wstring>(std::move_iterator(path.begin()), std::move_iterator(path.end()))
-		));
-	}
+	case Token::variable:
+		return parse_variable();
 	case Token::leftParenthesis: {
 		next();
 		ExprPtr expr = parse_expression();
@@ -430,6 +498,53 @@ ExprPtr Parser::parse_primary() {
 	}
 	}
 	throw;
+}
+
+ExprPtr Parser::parse_variable() {
+	ExprPtr result = _parse_variable();
+	while (true) {
+		switch (get().get_type()) {
+		case Token::operator_dot:
+			next();
+			result = static_cast<ExprPtr>(new BinaryExpression(
+				Operation::dot,
+				result, _parse_variable()
+			));
+			continue;
+		case Token::leftSquareBracket:
+			next();
+			result = static_cast<ExprPtr>(new ArgumentedExpression(
+				Operation::subscript,
+				result,	{parse_expression()}
+			));
+			consume(Token::rightSquareBracket);
+			continue;
+		default:
+			return result;
+		}
+	}
+}
+
+ExprPtr Parser::_parse_variable() {
+	std::list<std::wstring> path;
+	path.push_back(get().get_value());
+	next();
+	while (match(Token::colon)) {
+		if (get(1).get_type() == Token::colon && get(2).get_type() == Token::variable) {
+			next();
+			next();
+			path.push_back(get().get_value());
+			next();
+			continue;
+		}
+		break;
+	}
+	std::wstring variable = path.back();
+	path.pop_back();
+	return static_cast<ExprPtr>(new VariableGetterExpression(
+		variable,
+		std::vector<std::wstring>(std::move_iterator(path.begin()), std::move_iterator(path.end()))
+	));
 }
 
 bool Parser::match(Token::Type type) {
