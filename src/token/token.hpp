@@ -132,6 +132,7 @@ BEGIN_TOKENS
 			KEYWORD(import)
 			KEYWORD(template)
 			KEYWORD(namespace)
+			KEYWORD(return)
 		SUBGROUP(keyword_types, 3, 1)
 			KEYWORD(type)
 		SUBGROUP(keyword_modificators, 3, 2)

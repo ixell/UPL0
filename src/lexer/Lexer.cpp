@@ -490,6 +490,8 @@ void Lexer::typify_word(Token& token) {
 		token.set_type(Token::keyword_union);
 	else if (word == L"import")
 		token.set_type(Token::keyword_import);
+	else if (word == L"return")
+		token.set_type(Token::keyword_return);
 	else if (word == L"int") {
 		token.set_type(Token::keyword_type);
 		return;

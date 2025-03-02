@@ -192,6 +192,10 @@ void check(const Statement* statement, const Statement* correct) {
 			static_cast<const Statement*>(statement1->get_code()));
 		return;
 	}
+	case StatementType::ReturnStatement:
+		check(static_cast<const ReturnStatement*>(statement)->get_expression(),
+			static_cast<const ReturnStatement*>(correct)->get_expression());
+		return;
 	case StatementType::MethodStatement:
 		ASSERT_EQ(
 			static_cast<const ClassStatement::MethodStatement*>(statement)->get_access(),
@@ -653,7 +657,7 @@ TEST(TypeStatements, InitStatement) {
 }
 
 TEST(TypeStatements, FunctionStatement) {
-	SET_CODE("void function(int a):\n\t1\n");
+	SET_CODE("void function(int a):\n\treturn 1\n");
 	SET_CORRECT_STATEMENTS(
 		STATEMENT(FunctionStatement,
 			new TypeStatement(L"void"),
@@ -666,7 +670,7 @@ TEST(TypeStatements, FunctionStatement) {
 			},
 			//{},
 			new BlockStatement({
-				STATEMENT(DoStatement, EXPRESSION(IntegerExpression, 1))
+				STATEMENT(ReturnStatement, EXPRESSION(IntegerExpression, 1))
 			})
 		)
 	);

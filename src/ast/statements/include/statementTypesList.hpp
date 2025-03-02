@@ -18,5 +18,6 @@ enum class StatementType {
     DoWhileStatement,
     ForStatement,
     EnumStatement,
-    UnionStatement
+    UnionStatement,
+    ReturnStatement
 };

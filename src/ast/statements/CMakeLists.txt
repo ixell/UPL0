@@ -19,6 +19,7 @@ add_library (
         ${source}/WhileStatement.cpp
         ${source}/DoStatement.cpp
         ${source}/TypeStatement.cpp
+        ${source}/ReturnStatement.cpp
         
         ${header}/statementTypesList.hpp
 )

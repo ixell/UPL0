@@ -298,6 +298,9 @@ Statement* Parser::parse_statement() {
 	case Token::keyword_enum:
 		next();
 		return nullptr; //...
+	case Token::keyword_return:
+		next();
+		return new ReturnStatement(parse_expression());
 	case Token::endcommand:
 		next();
 		[[fallthrough]];
