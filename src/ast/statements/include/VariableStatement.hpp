@@ -14,9 +14,6 @@ public:
 	virtual StatementType get_type() const override;
     virtual ~VariableStatement();
 
-    const std::vector<Modificator>& get_modificators() const;
-    const std::vector<Statement*>& get_template() const;
-    const std::wstring& get_variable_type() const;
-    TypeStatement* get_type_expression() const;
+    TypeStatement* get_variable_type() const;
     const std::wstring& get_name() const;
 };

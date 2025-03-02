@@ -52,14 +52,21 @@ Operation to_operation(Token::Type token, OperationType type) {
 		case Token::operator_star:				return Operation::indirection;
 		case Token::operator_binary_not:		return Operation::binary_not;
 		case Token::operator_binary_and:		return Operation::addressOf;
+		case Token::operator_dot:				return Operation::dot;
+		default:								return Operation::none;
 		}
-		break;
 	case unary_postfix:
 		switch (token) {
 		case Token::operator_increment:			return Operation::postfix_increment;
 		case Token::operator_decrement:			return Operation::postfix_decrement;
+		default:								return Operation::none;
 		}
-		break;
+	case argumented:
+		switch (token) {
+		case Token::leftParenthesis:			return Operation::call;
+		case Token::leftSquareBracket:			return Operation::subscript;
+		default:								return Operation::none;
+		}
 	case binary:
 		switch (token) {
 		case Token::operator_equal:				return Operation::equal;
@@ -74,13 +81,15 @@ Operation to_operation(Token::Type token, OperationType type) {
 		case Token::operator_minus:				return Operation::minus;
 		case Token::operator_star:				return Operation::multiply;
 		case Token::operator_slash:				return Operation::divide;
+		case Token::operator_procent:			return Operation::modulus;
 		case Token::operator_binary_leftShift:	return Operation::leftShift;
 		case Token::operator_binary_rightShift:	return Operation::rightShift;
 		case Token::operator_binary_xor:		return Operation::binary_xor;
 		case Token::operator_binary_or:			return Operation::binary_or;
 		case Token::operator_binary_and:		return Operation::binary_and;
 		case Token::operator_assign:			return Operation::assign;
+		default:								return Operation::none;
 		}
+	default:									return Operation::none;
 	}
-	return Operation::none;
 }

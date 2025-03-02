@@ -6,6 +6,7 @@ enum OperationType {
 	unary_prefix,
 	unary_postfix,
 	binary,
+	argumented,
 	other,
 };
 

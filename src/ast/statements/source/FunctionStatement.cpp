@@ -4,9 +4,17 @@ FunctionStatement::FunctionStatement(
     TypeStatement* type,
     const std::wstring& name,
     const std::vector<Statement*>& args,
-    BlockStatement* code
+    BlockStatement* code,
+    const std::vector<Statement*>& template_
 ) :
-    type(type), name(name), args(args), code(code) {}
+    type(type), name(name), args(args), code(code), template_(template_) {}
+
+FunctionStatement::FunctionStatement(
+    TypeStatement* type,
+    const std::wstring& name,
+    const std::vector<Statement*>& args,
+    BlockStatement* code
+) : FunctionStatement(type, name, args, code, {}) {}
 
 StatementType FunctionStatement::get_type() const {
     return StatementType::FunctionStatement;
@@ -33,4 +41,8 @@ const std::vector<Statement*>& FunctionStatement::get_args() const {
 
 BlockStatement* FunctionStatement::get_code() const {
     return code;
+}
+
+const std::vector<Statement*>& FunctionStatement::get_template() const {
+    return template_;
 }

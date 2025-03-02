@@ -122,8 +122,8 @@ void check(const Statement* statement, const Statement* correct) {
 			return;
 		}
 		ASSERT_EQ(var0->get_name(), var1->get_name());
-		check(static_cast<Statement*>(var0->get_type_expression()),
-			static_cast<Statement*>(var1->get_type_expression()));
+		check(static_cast<Statement*>(var0->get_variable_type()),
+			static_cast<Statement*>(var1->get_variable_type()));
 		return;
 	}
 	case StatementType::InitStatement: {
@@ -215,6 +215,13 @@ void check(const Statement* statement, const Statement* correct) {
 			for (size_t i = 0; i != args0.size(); ++i)
 				check(args0.at(i), args1.at(i));
 		}
+		{
+			const std::vector<Statement*>& template0 = func0->get_template();
+			const std::vector<Statement*>& template1 = func1->get_template();
+			ASSERT_EQ(template0.size(), template1.size());
+			for (size_t i = 0; i != template0.size(); ++i)
+				check(template0.at(i), template1.at(i));
+		}
 		check(static_cast<Statement*>(func0->get_code()),
 			static_cast<Statement*>(func1->get_code()));
 		return;
@@ -258,16 +265,34 @@ void check(const Expression* expr, const Expression* correct) {
 	case ExpressionType::BinaryExpression: {
 		const BinaryExpression* expression = static_cast<const BinaryExpression*>(expr);
 		const BinaryExpression* c = static_cast<const BinaryExpression*>(correct);
+		ASSERT_EQ(expression->get_operation(), c->get_operation());
 		check(expression->get_left(), c->get_left());
 		check(expression->get_right(), c->get_right());
 		return;
 	}
 	case ExpressionType::UnaryExpression:
+		ASSERT_EQ(
+			static_cast<const UnaryExpression*>(expr)->get_operation(),
+			static_cast<const UnaryExpression*>(correct)->get_operation()
+		);
 		check(
 			static_cast<const UnaryExpression*>(expr)->get_value(),
 			static_cast<const UnaryExpression*>(correct)->get_value()
 		);
 		return;
+	case ExpressionType::ArgumentedExpression: {
+		const ArgumentedExpression* expression = static_cast<const ArgumentedExpression*>(expr);
+		const ArgumentedExpression* c = static_cast<const ArgumentedExpression*>(correct);
+		ASSERT_EQ(expression->get_operation(), c->get_operation());
+		check(expression->get_main(), c->get_main());
+		{
+			const std::vector<Expression*>& args0 = expression->get_args();
+			const std::vector<Expression*>& args1 = c->get_args();
+			ASSERT_EQ(args0.size(), args1.size());
+			for (size_t i = 0; i != args0.size(); ++i)
+				check(args0.at(i), args1.at(i));
+		}
+	}
 	case ExpressionType::IntegerExpression:
 		ASSERT_EQ(
 			static_cast<const IntegerExpression*>(expr)->get_value(),
@@ -292,16 +317,20 @@ void check(const Expression* expr, const Expression* correct) {
 			static_cast<const StringExpression*>(correct)->get_value()
 		) << "Strings are not equal";
 		return;
-	case ExpressionType::VariableGetterExpression:
-		ASSERT_EQ(
-			static_cast<const VariableGetterExpression*>(expr)->get_variable(),
-			static_cast<const VariableGetterExpression*>(correct)->get_variable(),
-		) << "Types of variables are different";
-		ASSERT_EQ(
-			static_cast<const VariableGetterExpression*>(expr)->get_path(),
-			static_cast<const VariableGetterExpression*>(correct)->get_path(),
-		) << "Paths of variables are different";
+	case ExpressionType::VariableGetterExpression: {
+		const VariableGetterExpression* var0 = static_cast<const VariableGetterExpression*>(expr);
+		const VariableGetterExpression* var1 = static_cast<const VariableGetterExpression*>(correct);
+		ASSERT_EQ(var0->get_variable(),	var1->get_variable());
+		ASSERT_EQ(var0->get_path(), var1->get_path());
+		{
+			const std::vector<Expression*>& template0 = var0->get_template();
+			const std::vector<Expression*>& template1 = var1->get_template();
+			ASSERT_EQ(template0.size(), template1.size());
+			for (size_t i = 0; i != template0.size(); ++i)
+				check(template0.at(i), template1.at(i));
+		}
 		return;
+		}
 	default:
 		EXPECT_TRUE(false) << "Unknown expression.";
 		return;
@@ -466,9 +495,9 @@ TEST(Expressions, Operations) {
 															EXPRESSION(BinaryExpression,
 																Operation::dot,
 																EXPRESSION(VariableGetterExpression, L"k"),
-																EXPRESSION(VariableGetterExpression, L"l")
+																EXPRESSION(VariableGetterExpression, L"m", {L"l"})
 															),
-															{EXPRESSION(VariableGetterExpression, L"m")}
+															{EXPRESSION(VariableGetterExpression, L"n")}
 														),
 														{
 															EXPRESSION(VariableGetterExpression, L"o"),
@@ -487,7 +516,8 @@ TEST(Expressions, Operations) {
 			)
 		)
 	);
-	PREPARE_SEGMENT_PART(parse_expression, Expression, 1)
+	PREPARE_SEGMENT_PART(parse_expression, Expression, 1);
+	CHECK_ALL();
 }
 
 TEST(Statements, DoStatement) {
@@ -698,6 +728,37 @@ TEST(TypeStatements, ClassStatement) {
 				})
 			),
 			nullptr
+		)
+	);
+	PREPARE();
+	CHECK_ALL();
+}
+
+TEST(Other, Template) {
+	SET_CODE("template <class X>\nX y(X x)\nvoid main():\n\ty<int>(1)\n");
+	SET_CORRECT_STATEMENTS(
+		STATEMENT(FunctionStatement,
+			new TypeStatement(L"X"),
+			L"y",
+			{STATEMENT(TypeStatement, L"X")},
+			nullptr,
+			{STATEMENT(VariableStatement,
+				new TypeStatement(L"X"),
+				L"x"
+			)}
+		),
+		STATEMENT(FunctionStatement,
+			new TypeStatement(L"void"),
+			L"main",
+			{},
+			new BlockStatement({
+				STATEMENT(DoStatement, EXPRESSION(ArgumentedExpression,
+					Operation::call,
+					EXPRESSION(VariableGetterExpression, L"y", {},
+						{EXPRESSION(VariableGetterExpression, L"int")}),
+					{EXPRESSION(IntegerExpression, 1U)}
+				))
+			})
 		)
 	);
 	PREPARE();

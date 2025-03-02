@@ -161,9 +161,14 @@ Statement* Parser::parse_function(Statement* type, const std::wstring& name, Cla
 
 std::vector<Statement*> Parser::parse_args() {
 	TokenType opener = get().get_type();
-	TokenType closer = TokenType(opener + 1);
+	TokenType closer;
+	if (opener == Token::operator_lessThan)
+		closer = Token::operator_greaterThan;
+	else closer = TokenType(opener + 1);
 	next();
 	std::vector<Statement*> args;
+	while (match(Token::endline) || match(Token::tab) || match(Token::untab))
+		next(); // ???
 	if (get().get_type() == closer) {
 		next();
 		return args;
@@ -466,7 +471,7 @@ ExprPtr Parser::parse_binary_and() {
 
 
 ExprPtr Parser::parse_comparison() {
-	ExprPtr result = parse_additive();
+	ExprPtr result = parse_shift();
 	while (true) {
 		TokenType token = get().get_type();
 		switch (token) {
@@ -478,7 +483,7 @@ ExprPtr Parser::parse_comparison() {
 			next();
 			result = ExprPtr(new BinaryExpression(
 				to_operation(token, binary),
-				result, parse_additive()
+				result, parse_shift()
 			));
 			continue;
 		//...
@@ -530,6 +535,7 @@ ExprPtr Parser::parse_multiplicative() {
 		switch (token) {
 		case Token::operator_star:
 		case Token::operator_slash:
+		case Token::operator_procent:
 			next();
 			result = ExprPtr(new BinaryExpression(
 				to_operation(token, binary),
@@ -543,14 +549,14 @@ ExprPtr Parser::parse_multiplicative() {
 
 ExprPtr Parser::parse_unary() {
 	TokenType token = get().get_type();
-	if (getGroup(token) == (Token::operator_)) {
+	if (getGroup(token) == Token::operator_) {
 		Operation operation = to_operation(token, unary_prefix);
 		if (operation != Operation::none) {
 			next();
-			return ExprPtr(new UnaryExpression(operation, parse_primary()));
+			return ExprPtr(new UnaryExpression(operation, parse_argumented_expressions()));
 		}
 	}
-	ExprPtr expr = parse_primary();
+	ExprPtr expr = parse_argumented_expressions();
 	token = get().get_type();
 	if (getGroup(token) == (Token::operator_)) {
 		Operation operation = to_operation(token, unary_postfix);
@@ -560,6 +566,38 @@ ExprPtr Parser::parse_unary() {
 		}
 	}
 	return expr;
+}
+
+
+ExprPtr Parser::parse_argumented_expressions() {
+	ExprPtr result = parse_dot();
+	while (getGroup(get().get_type()) == Token::brackets) {
+		Operation operation = to_operation(get().get_type(), argumented);
+		if (operation == Operation::none) break;
+		TokenType closer = TokenType(get().get_type() + 1);
+		next();
+		std::vector<Expression*> args;
+		if (get().get_type() != closer)
+			while (true) {
+				args.push_back(parse_expression());
+				if (get().get_type() == closer) break;
+				consume(Token::operator_comma);
+			}
+		next();
+		result = new ArgumentedExpression(operation, result, args);
+	}
+	return result;
+}
+
+ExprPtr Parser::parse_dot() {
+	ExprPtr result = parse_primary();
+	while (get().get_type() == Token::operator_dot) {
+		next();
+		if (get().get_type() != Token::variable)
+			throw;
+		result = new BinaryExpression(Operation::dot, result, parse_variable());
+	}
+	return result;
 }
 
 ExprPtr Parser::parse_primary() {
@@ -592,32 +630,32 @@ ExprPtr Parser::parse_primary() {
 	throw;
 }
 
-ExprPtr Parser::parse_variable() {
-	ExprPtr result = _parse_variable();
-	while (true) {
-		switch (get().get_type()) {
-		case Token::operator_dot:
-			next();
-			result = static_cast<ExprPtr>(new BinaryExpression(
-				Operation::dot,
-				result, _parse_variable()
-			));
-			continue;
-		case Token::leftSquareBracket:
-			next();
-			result = static_cast<ExprPtr>(new ArgumentedExpression(
-				Operation::subscript,
-				result,	{parse_expression()}
-			));
-			consume(Token::rightSquareBracket);
-			continue;
-		default:
-			return result;
-		}
-	}
-}
+// ExprPtr Parser::parse_variable() {
+// 	ExprPtr result = _parse_variable();
+// 	while (true) {
+// 		switch (get().get_type()) {
+// 		case Token::operator_dot:
+// 			next();
+// 			result = static_cast<ExprPtr>(new BinaryExpression(
+// 				Operation::dot,
+// 				result, _parse_variable()
+// 			));
+// 			continue;
+// 		case Token::leftSquareBracket:
+// 			next();
+// 			result = static_cast<ExprPtr>(new ArgumentedExpression(
+// 				Operation::subscript,
+// 				result,	{parse_expression()}
+// 			));
+// 			consume(Token::rightSquareBracket);
+// 			continue;
+// 		default:
+// 			return result;
+// 		}
+// 	}
+// }
 
-ExprPtr Parser::_parse_variable() {
+ExprPtr Parser::parse_variable() {
 	std::list<std::wstring> path;
 	path.push_back(get().get_value());
 	next();
@@ -643,7 +681,6 @@ bool Parser::match(Token::Type type) {
 	if (this_token->get_type() != type) return false;
 	return true;
 }
-
 Token& Parser::get(size_t pos) {
 	return tokens.at(this->pos + pos);
 }

@@ -1,10 +1,16 @@
 #include "VariableGetterExpression.hpp"
 
-VariableGetterExpression::VariableGetterExpression(std::wstring variable)
-    : variable(variable), path() {}
+VariableGetterExpression::VariableGetterExpression(
+        const std::wstring& variable,
+        const std::vector<std::wstring>& path,
+        const std::vector<Expression*>& template_)
+    : variable(variable), path(path), template_(template_) {}
 
-VariableGetterExpression::VariableGetterExpression(std::wstring variable, std::vector<std::wstring> path)
-    : variable(variable), path(path) {}
+VariableGetterExpression::VariableGetterExpression(const std::wstring& variable)
+    : VariableGetterExpression(variable, {}, {}) {}
+
+VariableGetterExpression::VariableGetterExpression(const std::wstring& variable, const std::vector<std::wstring>& path)
+    : VariableGetterExpression(variable, path, {}) {}
 
 ExpressionType VariableGetterExpression::get_type() const {
     return ExpressionType::VariableGetterExpression;
@@ -18,4 +24,8 @@ const std::wstring& VariableGetterExpression::get_variable() const {
 
 const std::vector<std::wstring>& VariableGetterExpression::get_path() const {
     return path;
+}
+
+const std::vector<Expression*>& VariableGetterExpression::get_template() const {
+    return template_;
 }

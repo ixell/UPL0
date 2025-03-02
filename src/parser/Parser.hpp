@@ -46,9 +46,10 @@ private:
 	[[nodiscard]] Expression* parse_multiplicative();
 	[[nodiscard]] Expression* parse_additive();
 	[[nodiscard]] Expression* parse_unary();
+	[[nodiscard]] Expression* parse_argumented_expressions();
+	[[nodiscard]] Expression* parse_dot();
 	[[nodiscard]] Expression* parse_primary();
 	[[nodiscard]] Expression* parse_variable();
-	[[nodiscard]] Expression* _parse_variable();
 private:
 	[[nodiscard]] bool match(TokenType type);
 	[[nodiscard]] Token& get(size_t pos);
