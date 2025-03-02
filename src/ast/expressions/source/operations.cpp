@@ -45,51 +45,61 @@ Operation to_operation(Token::Type token, OperationType type) {
 	switch (type) {
 	case unary_prefix:
 		switch (token) {
-		case Token::operator_increment:			return Operation::prefix_increment;
-		case Token::operator_decrement:			return Operation::prefix_decrement;
-		case Token::operator_plus:				return Operation::plus;
-		case Token::operator_minus:				return Operation::minus;
-		case Token::operator_star:				return Operation::indirection;
-		case Token::operator_binary_not:		return Operation::binary_not;
-		case Token::operator_binary_and:		return Operation::addressOf;
-		case Token::operator_dot:				return Operation::dot;
-		default:								return Operation::none;
+		case Token::operator_increment:					return Operation::prefix_increment;
+		case Token::operator_decrement:					return Operation::prefix_decrement;
+		case Token::operator_plus:						return Operation::plus;
+		case Token::operator_minus:						return Operation::minus;
+		case Token::operator_star:						return Operation::indirection;
+		case Token::operator_binary_not:				return Operation::binary_not;
+		case Token::operator_binary_and:				return Operation::addressOf;
+		case Token::operator_dot:						return Operation::dot;
+		default:										return Operation::none;
 		}
 	case unary_postfix:
 		switch (token) {
-		case Token::operator_increment:			return Operation::postfix_increment;
-		case Token::operator_decrement:			return Operation::postfix_decrement;
-		default:								return Operation::none;
+		case Token::operator_increment:					return Operation::postfix_increment;
+		case Token::operator_decrement:					return Operation::postfix_decrement;
+		default:										return Operation::none;
 		}
 	case argumented:
 		switch (token) {
-		case Token::leftParenthesis:			return Operation::call;
-		case Token::leftSquareBracket:			return Operation::subscript;
-		default:								return Operation::none;
+		case Token::leftParenthesis:					return Operation::call;
+		case Token::leftSquareBracket:					return Operation::subscript;
+		default:										return Operation::none;
 		}
 	case binary:
 		switch (token) {
-		case Token::operator_equal:				return Operation::equal;
-		case Token::operator_notEqual:			return Operation::notEqual;
-		case Token::operator_greaterThan:		return Operation::greaterThan;
-		case Token::operator_greaterThanEqual:	return Operation::greaterThanEq;
-		case Token::operator_lessThan:			return Operation::lessThan;
-		case Token::operator_lessThanEqual:		return Operation::lessThanEq;
-		case Token::operator_and:				return Operation::logical_and;
-		case Token::operator_or:				return Operation::logical_or;
-		case Token::operator_plus:				return Operation::plus;
-		case Token::operator_minus:				return Operation::minus;
-		case Token::operator_star:				return Operation::multiply;
-		case Token::operator_slash:				return Operation::divide;
-		case Token::operator_procent:			return Operation::modulus;
-		case Token::operator_binary_leftShift:	return Operation::leftShift;
-		case Token::operator_binary_rightShift:	return Operation::rightShift;
-		case Token::operator_binary_xor:		return Operation::binary_xor;
-		case Token::operator_binary_or:			return Operation::binary_or;
-		case Token::operator_binary_and:		return Operation::binary_and;
-		case Token::operator_assign:			return Operation::assign;
-		default:								return Operation::none;
+		case Token::operator_equal:						return Operation::equal;
+		case Token::operator_notEqual:					return Operation::notEqual;
+		case Token::operator_greaterThan:				return Operation::greaterThan;
+		case Token::operator_greaterThanEqual:			return Operation::greaterThanEq;
+		case Token::operator_lessThan:					return Operation::lessThan;
+		case Token::operator_lessThanEqual:				return Operation::lessThanEq;
+		case Token::operator_and:						return Operation::logical_and;
+		case Token::operator_or:						return Operation::logical_or;
+		case Token::operator_plus:						return Operation::plus;
+		case Token::operator_minus:						return Operation::minus;
+		case Token::operator_star:						return Operation::multiply;
+		case Token::operator_slash:						return Operation::divide;
+		case Token::operator_procent:					return Operation::modulus;
+		case Token::operator_binary_leftShift:			return Operation::leftShift;
+		case Token::operator_binary_rightShift:			return Operation::rightShift;
+		case Token::operator_binary_xor:				return Operation::binary_xor;
+		case Token::operator_binary_or:					return Operation::binary_or;
+		case Token::operator_binary_and:				return Operation::binary_and;
+		case Token::operator_assign:					return Operation::assign;
+		case Token::operator_assign_plus:				return Operation::plus_assign;
+		case Token::operator_assign_minus:				return Operation::minus_assign;
+		case Token::operator_assign_star:				return Operation::multiply_assign;
+		case Token::operator_assign_slash:				return Operation::divide_assign;
+		case Token::operator_assign_procent:			return Operation::modulus_assign;
+		case Token::operator_assign_binary_leftShift:	return Operation::leftShift_assign;
+		case Token::operator_assign_binary_rightShift:	return Operation::rightShift_assign;
+		case Token::operator_assign_binary_and:			return Operation::binary_and_assign;
+		case Token::operator_assign_binary_or:			return Operation::binary_or_assign;
+		case Token::operator_assign_binary_xor:			return Operation::binary_xor_assign;
+		default:										return Operation::none;
 		}
-	default:									return Operation::none;
+	default:											return Operation::none;
 	}
 }

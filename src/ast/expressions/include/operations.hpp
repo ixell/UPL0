@@ -48,7 +48,17 @@ enum class Operation {
 	binary_not,						// ~
 	binary_xor,						// ^
 	leftShift,						// <<
-	rightShift						// >>
+	rightShift,						// >>
+	plus_assign,					// +=
+	minus_assign,					// -=
+	multiply_assign,				// *=
+	divide_assign,					// /=
+	modulus_assign,					// %=
+	leftShift_assign,				// <<=
+	rightShift_assign,				// >>=
+	binary_and_assign,				// &=
+	binary_or_assign,				// |=
+	binary_xor_assign				// ^=
 };
 
 std::wstring to_wstring(Operation operation);
