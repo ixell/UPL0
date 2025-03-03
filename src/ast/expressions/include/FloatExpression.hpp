@@ -11,4 +11,6 @@ public:
     virtual ~FloatExpression();
 
     float get_value() const;
+
+    virtual Expression* eval() const override;
 };

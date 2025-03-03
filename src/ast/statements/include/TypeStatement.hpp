@@ -27,4 +27,6 @@ public:
     const std::vector<Modificator>& get_modificators() const;
     const std::vector<Statement*>& get_template() const;
     const std::wstring& get_type_value() const;
+    
+    virtual void exec() override;
 };

@@ -12,4 +12,6 @@ public:
     virtual ~DoStatement();
 
     Expression* get_expression() const;
+    
+    virtual void exec() override;
 };

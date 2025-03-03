@@ -1,3 +1,4 @@
+#include "all_expressions.hpp"
 #include "BinaryExpression.hpp"
 
 BinaryExpression::BinaryExpression(Operation operation, Expression* left, Expression* right)
@@ -27,4 +28,7 @@ const Expression* BinaryExpression::get_right() const {
 
 Operation BinaryExpression::get_operation() const {
 	return operation;
+}
+    
+Expression* BinaryExpression::eval() const {
 }

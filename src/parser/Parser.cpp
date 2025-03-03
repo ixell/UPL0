@@ -4,6 +4,8 @@
 #include "all_expressions.hpp"
 #include "all_statements.hpp"
 
+Operation to_operation(Token::Type token, OperationType type);
+
 using ExprPtr = Expression*;
 
 Parser::Parser(std::vector<Token>& tokens)

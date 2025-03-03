@@ -12,3 +12,7 @@ FloatExpression::~FloatExpression() = default;
 float FloatExpression::get_value() const {
     return value;
 }
+    
+Expression* FloatExpression::eval() const {
+    return new FloatExpression(*this);
+}

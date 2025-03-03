@@ -27,3 +27,7 @@ const Expression* UnaryExpression::get_value() const {
 Operation UnaryExpression::get_operation() const {
 	return operation;
 }
+    
+Expression* UnaryExpression::eval() const {
+	//...
+}

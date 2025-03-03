@@ -1,6 +1,5 @@
 #pragma once
 #include "string"
-#include "token.hpp"
 
 enum OperationType {
 	unary_prefix,
@@ -62,4 +61,3 @@ enum class Operation {
 };
 
 std::wstring to_wstring(Operation operation);
-Operation to_operation(Token::Type token, OperationType type);

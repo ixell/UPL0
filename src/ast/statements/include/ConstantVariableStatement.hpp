@@ -11,4 +11,6 @@ public:
     virtual ~ConstantVariableStatement();
 
     const Expression* get_value() const;
+    
+    virtual void exec() override;
 };

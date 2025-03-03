@@ -15,6 +15,8 @@ public:
 
     Expression* get_condition() const;
     BlockStatement* get_code() const;
+    
+    virtual void exec() override;
 };
 
 class DoWhileStatement : public WhileStatement {
@@ -23,4 +25,6 @@ public:
 
     virtual StatementType get_type() const override;
     virtual ~DoWhileStatement() = default;
+    
+    virtual void exec() override;
 };

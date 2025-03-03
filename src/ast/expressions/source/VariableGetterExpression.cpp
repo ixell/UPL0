@@ -29,3 +29,7 @@ const std::vector<std::wstring>& VariableGetterExpression::get_path() const {
 const std::vector<Expression*>& VariableGetterExpression::get_template() const {
     return template_;
 }
+
+Expression* VariableGetterExpression::eval() const {
+    //...
+}

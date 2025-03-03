@@ -15,4 +15,6 @@ public:
 	Operation get_operation() const;
 	const Expression* get_left() const;
 	const Expression* get_right() const;
+    
+    virtual Expression* eval() const override;
 };

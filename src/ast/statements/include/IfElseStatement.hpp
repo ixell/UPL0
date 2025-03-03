@@ -18,6 +18,8 @@ public:
     Expression* get_condition() const;
     BlockStatement* get_if_code() const;
     BlockStatement* get_else_code() const;
+    
+    virtual void exec() override;
 };
 
 using IfStatement = IfElseStatement;

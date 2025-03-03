@@ -23,4 +23,6 @@ public:
     const std::wstring& get_variable() const;
     const std::vector<std::wstring>& get_path() const;
     const std::vector<Expression*>& get_template() const;
+    
+    virtual Expression* eval() const override;
 };

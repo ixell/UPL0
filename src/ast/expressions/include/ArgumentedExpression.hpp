@@ -17,4 +17,6 @@ public:
     Operation get_operation() const;
     Expression* get_main() const;
     const std::vector<Expression*>& get_args() const;
+    
+    virtual Expression* eval() const override;
 };

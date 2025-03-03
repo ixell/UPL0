@@ -1,4 +1,5 @@
 #include "operations.hpp"
+#include "token.hpp"
 
 std::wstring to_wstring(Operation operation) {
 	switch (operation) {

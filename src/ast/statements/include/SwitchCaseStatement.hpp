@@ -23,4 +23,6 @@ public:
     std::pair<Expression*, BlockStatement*> get_case(size_t index) const;
     const std::vector<std::pair<Expression*, BlockStatement*>>& get_cases() const;
     BlockStatement* get_default_case();
+    
+    virtual void exec() override;
 };

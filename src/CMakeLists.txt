@@ -34,6 +34,12 @@ target_link_libraries (
 		token
 )
 
+target_link_libraries (
+	statements
+	PRIVATE
+		token
+)
+
 add_library (
 	parser
 	STATIC
@@ -51,6 +57,16 @@ target_link_libraries (
 		ast
 )
 
+add_subdirectory(interpreter)
+
+target_include_directories(interpreter PUBLIC interpreter)
+
+target_link_libraries(
+	interpreter
+	PUBLIC
+		ast
+)
+
 add_executable (
 	upl
 		main.cpp
@@ -61,6 +77,7 @@ target_link_libraries (
 	PRIVATE
 		lexer
 		parser
+		interpreter
 )
 
 set_target_properties (
@@ -69,6 +86,7 @@ set_target_properties (
 	expressions
 	statements
 	parser
+	interpreter
 	upl
 	PROPERTIES
 		CXX_STANDARD 20

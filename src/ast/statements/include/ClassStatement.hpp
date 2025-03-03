@@ -67,4 +67,6 @@ public:
     const std::vector<MethodStatement*>& get_methods() const;
     MethodStatement* get_constructor() const;
     MethodStatement* get_destructor() const;
+    
+    virtual void exec() override;
 };

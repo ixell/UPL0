@@ -7,4 +7,6 @@ class Expression {
 public:
 	virtual ExpressionType get_type() const = 0;
 	virtual ~Expression() = default;
+
+	virtual Expression* eval() const = 0;
 };
