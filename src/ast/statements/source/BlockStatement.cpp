@@ -2,7 +2,15 @@
 
 BlockStatement::BlockStatement(const std::vector<Statement*>& statements)
     : statements(statements) {}
-    
+
+BlockStatement::BlockStatement(const BlockStatement& other)
+        : statements() {
+    statements.reserve(other.get_count());
+    for (Statement* statement : other.statements) {
+        statements.push_back(statement->copy());
+    }
+}
+
 StatementType BlockStatement::get_type() const {
     return StatementType::BlockStatement;
 }
@@ -10,6 +18,10 @@ StatementType BlockStatement::get_type() const {
 BlockStatement::~BlockStatement() {
     for (Statement* statement : statements)
         delete statement;
+}
+
+Statement* BlockStatement::copy() const {
+    return static_cast<Statement*>(new BlockStatement(*this));
 }
 
 const size_t BlockStatement::get_count() const {

@@ -15,9 +15,11 @@ public:
         std::vector<std::pair<Expression*, BlockStatement*>> cases,
         BlockStatement* default_case = nullptr
     );
+    SwitchCaseStatement(const SwitchCaseStatement& other);
     
     virtual StatementType get_type() const override;
     virtual ~SwitchCaseStatement();
+	virtual Statement* copy() const override;
 
     Expression* get_item() const;
     std::pair<Expression*, BlockStatement*> get_case(size_t index) const;

@@ -16,9 +16,11 @@ public:
         const std::vector<std::wstring>& path,
         const std::vector<Expression*>& template_
     );
+    VariableGetterExpression(const VariableGetterExpression& other);
     
     virtual ExpressionType get_type() const override;
     virtual ~VariableGetterExpression();
+	virtual Expression* copy() const override;
 
     const std::wstring& get_variable() const;
     const std::vector<std::wstring>& get_path() const;

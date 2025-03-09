@@ -17,6 +17,14 @@ TypeStatement::TypeStatement(
 TypeStatement::TypeStatement(const std::wstring& type)
 	: type(type) {}
 
+TypeStatement::TypeStatement(const TypeStatement& other)
+		: TypeStatement(other.type, other.modificators) {
+	template_.reserve(other.template_.size());
+	for (Statement* statement : other.template_) {
+		template_.push_back(statement->copy());
+	}
+}
+
 StatementType TypeStatement::get_type() const {
 	return StatementType::TypeStatement;
 }
@@ -24,6 +32,10 @@ StatementType TypeStatement::get_type() const {
 TypeStatement::~TypeStatement() {
 	for (Statement* statement : template_)
 		delete statement;
+}
+
+Statement* TypeStatement::copy() const {
+    return static_cast<Statement*>(new TypeStatement(*this));
 }
 
 const std::vector<Modificator>& TypeStatement::get_modificators() const {

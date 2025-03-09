@@ -6,12 +6,23 @@ IfElseStatement::IfElseStatement(Expression* condition, BlockStatement* if_, Blo
 IfElseStatement::IfElseStatement(Expression* condition, BlockStatement* if_)
     : IfElseStatement(condition, if_, nullptr) {}
 
+IfElseStatement::IfElseStatement(const IfElseStatement& other)
+    : IfElseStatement(
+        other.condition->copy(),
+        new BlockStatement(*other.condition_met),
+        new BlockStatement(*other.condition_not_met)
+    ) {}
+
 StatementType IfElseStatement::get_type() const {
     return StatementType::IfElseStatement;
 }
 
 IfElseStatement::~IfElseStatement() {
     delete condition, condition_met, condition_not_met;
+}
+
+Statement* IfElseStatement::copy() const {
+    return static_cast<Statement*>(new IfElseStatement(*this));
 }
 
 Expression* IfElseStatement::get_condition() const {

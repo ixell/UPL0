@@ -17,9 +17,11 @@ public:
         Expression* changer,
         BlockStatement* code
     );
+    ForStatement(const ForStatement& other);
     
     virtual StatementType get_type() const override;
     virtual ~ForStatement();
+	virtual Statement* copy() const override;
 
     Expression* get_initializer() const;
     Expression* get_condition() const;

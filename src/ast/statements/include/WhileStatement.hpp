@@ -9,9 +9,11 @@ private:
     BlockStatement* code;
 public:
     WhileStatement(Expression* condition, BlockStatement* code);
+    WhileStatement(const WhileStatement& other);
 
     virtual StatementType get_type() const override;
     virtual ~WhileStatement();
+	virtual Statement* copy() const override;
 
     Expression* get_condition() const;
     BlockStatement* get_code() const;

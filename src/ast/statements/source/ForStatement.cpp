@@ -11,12 +11,24 @@ ForStatement::ForStatement(
     changer(changer),
     code(code) {}
 
+ForStatement::ForStatement(const ForStatement& other)
+    : ForStatement(
+        other.initializer->copy(),
+        other.condition->copy(),
+        other.changer->copy(),
+        new BlockStatement(*other.code)
+    ) {}
+
 StatementType ForStatement::get_type() const {
     return StatementType::ForStatement;
 }
 
 ForStatement::~ForStatement() {
     delete initializer, condition, changer, code;
+}
+
+Statement* ForStatement::copy() const {
+    return static_cast<Statement*>(new ForStatement(*this));
 }
 
 Expression* ForStatement::get_initializer() const {

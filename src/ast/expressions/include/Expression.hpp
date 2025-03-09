@@ -9,4 +9,5 @@ public:
 	virtual ~Expression() = default;
 
 	virtual Expression* eval() const = 0;
+	virtual Expression* copy() const = 0;
 };

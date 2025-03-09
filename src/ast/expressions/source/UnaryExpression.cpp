@@ -3,6 +3,9 @@
 UnaryExpression::UnaryExpression(Operation operation, Expression* value)
 	: operation(operation), expr(value) {}
 
+UnaryExpression::UnaryExpression(const UnaryExpression& other)
+	: UnaryExpression(other.operation, other.expr->copy()) {}
+
 //std::wstring UnaryExpression::to_string() const {
 //	switch (operation) {
 //	case Operation::postfix_decrement:
@@ -19,6 +22,10 @@ ExpressionType UnaryExpression::get_type() const {
 UnaryExpression::~UnaryExpression() {
 	delete expr;
 }
+
+Expression* UnaryExpression::copy() const {
+    return static_cast<Expression*>(new UnaryExpression(*this));
+};
 
 const Expression* UnaryExpression::get_value() const {
 	return expr;

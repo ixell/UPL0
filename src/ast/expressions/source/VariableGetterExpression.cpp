@@ -12,11 +12,23 @@ VariableGetterExpression::VariableGetterExpression(const std::wstring& variable)
 VariableGetterExpression::VariableGetterExpression(const std::wstring& variable, const std::vector<std::wstring>& path)
     : VariableGetterExpression(variable, path, {}) {}
 
+VariableGetterExpression::VariableGetterExpression(const VariableGetterExpression& other)
+        : variable(variable), path(path), template_() {
+    template_.reserve(other.template_.size());
+    for (Expression* arg : other.template_) {
+        template_.push_back(arg->copy());
+    }
+}
+
 ExpressionType VariableGetterExpression::get_type() const {
     return ExpressionType::VariableGetterExpression;
 }
 
 VariableGetterExpression::~VariableGetterExpression() = default;
+
+Expression* VariableGetterExpression::copy() const {
+    return static_cast<Expression*>(new VariableGetterExpression(*this));
+};
 
 const std::wstring& VariableGetterExpression::get_variable() const {
     return variable;

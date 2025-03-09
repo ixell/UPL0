@@ -20,16 +20,17 @@ public:
         BlockStatement* code,
         const std::vector<Statement*>& template_
     );
-
     FunctionStatement(
         TypeStatement* type,
         const std::wstring& name,
         const std::vector<Statement*>& args,
         BlockStatement* code
     );
+    FunctionStatement(const FunctionStatement& other);
     
     virtual StatementType get_type() const override;
     virtual ~FunctionStatement();
+	virtual Statement* copy() const override;
 
     Statement* get_return_type() const;
     const std::wstring& get_name() const;

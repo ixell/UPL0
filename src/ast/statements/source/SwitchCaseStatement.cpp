@@ -7,6 +7,14 @@ SwitchCaseStatement::SwitchCaseStatement(
 ) :
     item(item), cases(cases), default_case(default_case) {}
 
+SwitchCaseStatement::SwitchCaseStatement(const SwitchCaseStatement& other)
+        : item(other.item->copy()), cases(), default_case(new BlockStatement(*default_case)) {
+    cases.reserve(other.cases.size());
+    for (const std::pair<Expression*, BlockStatement*>& case_ : other.cases) {
+        cases.push_back(std::pair(case_.first->copy(), new BlockStatement(*case_.second)));
+    }
+}
+
 StatementType SwitchCaseStatement::get_type() const {
     return StatementType::SwitchCaseStatement;
 }
@@ -16,6 +24,10 @@ SwitchCaseStatement::~SwitchCaseStatement() {
     for (auto& case_ : cases) {
         delete case_.first, case_.second;
     }
+}
+
+Statement* SwitchCaseStatement::copy() const {
+    return static_cast<Statement*>(new SwitchCaseStatement(*this));
 }
 
 Expression* SwitchCaseStatement::get_item() const {

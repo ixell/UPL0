@@ -7,9 +7,11 @@ private:
 public:
 	IntegerExpression(int64_t value);
 	IntegerExpression();
+    IntegerExpression(const IntegerExpression& other);
 
 	virtual ExpressionType get_type() const override;
 	virtual ~IntegerExpression();
+	virtual Expression* copy() const override;
 
 	int64_t get_value() const;
 	void change_value(int64_t value);

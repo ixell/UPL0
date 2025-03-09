@@ -20,9 +20,11 @@ public:
         const std::vector<Modificator>& modificators
     );
     TypeStatement(const std::wstring& type);
+    TypeStatement(const TypeStatement& other);
 
 	virtual StatementType get_type() const override;
     virtual ~TypeStatement();
+	virtual Statement* copy() const override;
 
     const std::vector<Modificator>& get_modificators() const;
     const std::vector<Statement*>& get_template() const;

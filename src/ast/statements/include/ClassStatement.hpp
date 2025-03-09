@@ -25,9 +25,11 @@ public:
             const std::vector<Statement*>& args,
             BlockStatement* code
         );
+        MethodStatement(const MethodStatement& other);
 
         virtual StatementType get_type() const override;
         virtual ~MethodStatement();
+        virtual Statement* copy() const override;
 
         Access get_access() const;
     };
@@ -37,9 +39,11 @@ public:
         Access access;
     public:
         ClassVariableStatement(Access access, TypeStatement* type, const std::wstring& name);
+        ClassVariableStatement(const ClassVariableStatement& other);
         
         virtual StatementType get_type() const override;
         virtual ~ClassVariableStatement();
+        virtual Statement* copy() const override;
 
         Access get_access() const;
     };
@@ -58,9 +62,11 @@ public:
         MethodStatement* constructor,
         MethodStatement* destructor
     );
+    ClassStatement(const ClassStatement& other);
 
     virtual StatementType get_type() const override;
     virtual ~ClassStatement();
+	virtual Statement* copy() const override;
 
     std::wstring get_name() const;
     const std::vector<ClassVariableStatement*>& get_variables() const;

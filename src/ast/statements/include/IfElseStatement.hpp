@@ -11,9 +11,11 @@ private:
 public:
     IfElseStatement(Expression* condition, BlockStatement* if_);
     IfElseStatement(Expression* condition, BlockStatement* if_, BlockStatement* else_);
+    IfElseStatement(const IfElseStatement& other);
 
     virtual StatementType get_type() const override;
     virtual ~IfElseStatement();
+	virtual Statement* copy() const override;
 
     Expression* get_condition() const;
     BlockStatement* get_if_code() const;

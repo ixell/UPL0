@@ -16,6 +16,19 @@ FunctionStatement::FunctionStatement(
     BlockStatement* code
 ) : FunctionStatement(type, name, args, code, {}) {}
 
+FunctionStatement::FunctionStatement(const FunctionStatement& other)
+	    : type(new TypeStatement(*other.type)), name(other.name),
+            args(), code(new BlockStatement(*other.code)), template_() {
+    args.reserve(other.args.size());
+    template_.reserve(other.template_.size());
+    for (Statement* statement : other.args) {
+        args.push_back(statement->copy());
+    }
+    for (Statement* statement : other.template_) {
+        template_.push_back(statement->copy());
+    }
+}
+
 StatementType FunctionStatement::get_type() const {
     return StatementType::FunctionStatement;
 }
@@ -25,6 +38,10 @@ FunctionStatement::~FunctionStatement() {
     for (Statement* expr : args)
         delete expr;
     delete code;
+}
+
+Statement* FunctionStatement::copy() const {
+    return static_cast<Statement*>(new FunctionStatement(*this));
 }
 
 Statement* FunctionStatement::get_return_type() const {
