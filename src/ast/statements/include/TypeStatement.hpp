@@ -30,5 +30,7 @@ public:
     const std::vector<Statement*>& get_template() const;
     const std::wstring& get_type_value() const;
     
-    virtual void exec() override;
+    bool operator==(const TypeStatement& other) const;
+    bool operator!=(const TypeStatement& other) const;
+    virtual Jump exec(Variables& variables) override;
 };

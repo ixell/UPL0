@@ -18,7 +18,3 @@ Expression* FloatExpression::copy() const {
 float FloatExpression::get_value() const {
     return value;
 }
-    
-Expression* FloatExpression::eval() const {
-    return new FloatExpression(*this);
-}

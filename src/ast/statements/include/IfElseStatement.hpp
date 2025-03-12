@@ -21,7 +21,7 @@ public:
     BlockStatement* get_if_code() const;
     BlockStatement* get_else_code() const;
     
-    virtual void exec() override;
+    virtual Jump exec(Variables& variables) override;
 };
 
 using IfStatement = IfElseStatement;

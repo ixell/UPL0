@@ -39,8 +39,3 @@ Expression* ArgumentedExpression::get_main() const {
 const std::vector<Expression*>& ArgumentedExpression::get_args() const {
     return args;
 }
-    
-Expression* ArgumentedExpression::eval() const {
-    //...
-}
-

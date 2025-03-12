@@ -30,7 +30,7 @@ Expression* VariableGetterExpression::copy() const {
     return static_cast<Expression*>(new VariableGetterExpression(*this));
 };
 
-const std::wstring& VariableGetterExpression::get_variable() const {
+const std::wstring& VariableGetterExpression::get_name() const {
     return variable;
 }
 
@@ -42,6 +42,6 @@ const std::vector<Expression*>& VariableGetterExpression::get_template() const {
     return template_;
 }
 
-Expression* VariableGetterExpression::eval() const {
-    //...
+Space::Variable& VariableGetterExpression::get_variable(Variables& variables) const {
+    return variables.find_variable(get_name());
 }

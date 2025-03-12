@@ -18,7 +18,3 @@ Expression* StringExpression::copy() const {
 const std::wstring& StringExpression::get_value() const {
     return value;
 }
-    
-Expression* StringExpression::eval() const {
-    return new StringExpression(*this);
-}

@@ -20,6 +20,10 @@ StatementType ClassStatement::MethodStatement::get_type() const {
 
 ClassStatement::MethodStatement::~MethodStatement() = default;
 
+Statement* ClassStatement::MethodStatement::copy() const {
+    return static_cast<Statement*>(new ClassStatement::MethodStatement(*this));
+}
+
 ClassStatement::Access ClassStatement::MethodStatement::get_access() const {
     return access;
 }
@@ -39,6 +43,10 @@ StatementType ClassStatement::ClassVariableStatement::get_type() const {
 }
 
 ClassStatement::ClassVariableStatement::~ClassVariableStatement() = default;
+
+Statement* ClassStatement::ClassVariableStatement::copy() const {
+    return static_cast<Statement*>(new ClassStatement::ClassVariableStatement(*this));
+}
 
 ClassStatement::Access ClassStatement::ClassVariableStatement::get_access() const {
     return access;

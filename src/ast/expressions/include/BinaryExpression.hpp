@@ -18,5 +18,5 @@ public:
 	const Expression* get_left() const;
 	const Expression* get_right() const;
     
-    virtual Expression* eval() const override;
+    virtual Expression* eval(Variables& variables) const override;
 };

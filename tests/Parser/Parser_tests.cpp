@@ -324,7 +324,7 @@ void check(const Expression* expr, const Expression* correct) {
 	case ExpressionType::VariableGetterExpression: {
 		const VariableGetterExpression* var0 = static_cast<const VariableGetterExpression*>(expr);
 		const VariableGetterExpression* var1 = static_cast<const VariableGetterExpression*>(correct);
-		ASSERT_EQ(var0->get_variable(),	var1->get_variable());
+		ASSERT_EQ(var0->get_name(),	var1->get_name());
 		ASSERT_EQ(var0->get_path(), var1->get_path());
 		{
 			const std::vector<Expression*>& template0 = var0->get_template();

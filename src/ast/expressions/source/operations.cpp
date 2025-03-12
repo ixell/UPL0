@@ -53,7 +53,6 @@ Operation to_operation(Token::Type token, OperationType type) {
 		case Token::operator_star:						return Operation::indirection;
 		case Token::operator_binary_not:				return Operation::binary_not;
 		case Token::operator_binary_and:				return Operation::addressOf;
-		case Token::operator_dot:						return Operation::dot;
 		default:										return Operation::none;
 		}
 	case unary_postfix:
@@ -99,6 +98,7 @@ Operation to_operation(Token::Type token, OperationType type) {
 		case Token::operator_assign_binary_and:			return Operation::binary_and_assign;
 		case Token::operator_assign_binary_or:			return Operation::binary_or_assign;
 		case Token::operator_assign_binary_xor:			return Operation::binary_xor_assign;
+		case Token::operator_dot:						return Operation::dot;
 		default:										return Operation::none;
 		}
 	default:											return Operation::none;

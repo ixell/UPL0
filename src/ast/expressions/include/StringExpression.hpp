@@ -15,5 +15,5 @@ public:
 
     const std::wstring& get_value() const;
     
-    virtual Expression* eval() const override;
+    virtual Expression* eval(Variables& variables) const override;
 };

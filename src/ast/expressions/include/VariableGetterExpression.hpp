@@ -22,9 +22,10 @@ public:
     virtual ~VariableGetterExpression();
 	virtual Expression* copy() const override;
 
-    const std::wstring& get_variable() const;
+    const std::wstring& get_name() const;
     const std::vector<std::wstring>& get_path() const;
     const std::vector<Expression*>& get_template() const;
     
-    virtual Expression* eval() const override;
+    Space::Variable& get_variable(Variables& variables) const;
+    virtual Expression* eval(Variables& variables) const override;
 };

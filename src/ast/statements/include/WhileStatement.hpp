@@ -4,7 +4,7 @@
 #include "BlockStatement.hpp"
 
 class WhileStatement : public Statement {
-private:
+protected:
     Expression* condition;
     BlockStatement* code;
 public:
@@ -18,7 +18,7 @@ public:
     Expression* get_condition() const;
     BlockStatement* get_code() const;
     
-    virtual void exec() override;
+    virtual Jump exec(Variables& variables) override;
 };
 
 class DoWhileStatement : public WhileStatement {
@@ -28,5 +28,5 @@ public:
     virtual StatementType get_type() const override;
     virtual ~DoWhileStatement() = default;
     
-    virtual void exec() override;
+    virtual Jump exec(Variables& variables) override;
 };

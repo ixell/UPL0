@@ -19,5 +19,7 @@ public:
     TypeStatement* get_variable_type() const;
     const std::wstring& get_name() const;
     
-    virtual void exec() override;
+    bool operator==(const VariableStatement& other) const;
+    bool operator!=(const VariableStatement& other) const;
+    virtual Jump exec(Variables& variables) override;
 };

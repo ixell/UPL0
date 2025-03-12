@@ -26,5 +26,5 @@ public:
     const std::vector<std::pair<Expression*, BlockStatement*>>& get_cases() const;
     BlockStatement* get_default_case();
     
-    virtual void exec() override;
+    virtual Jump exec(Variables& variables) override;
 };

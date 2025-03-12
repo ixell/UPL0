@@ -1,13 +1,12 @@
 #pragma once
 #include <map>
-#include "all_expressions.hpp"
-#include "all_statements.hpp"
+#include <vector>
+#include "Statement.hpp"
+#include "Expression.hpp"
 
 class Interpreter {
 private:
-    std::map<std::wstring, Statement*> structs{};
-    std::map<std::wstring, Statement*> variables{};
-    FunctionStatement* main;
+    Variables variables;
 public:
     Interpreter(const std::vector<Statement*>& ast);
 

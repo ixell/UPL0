@@ -15,5 +15,5 @@ public:
     bool get_value() const;
     void change_value(bool value);
 
-    virtual Expression* eval() const override;
+    virtual Expression* eval(Variables& variables) const override;
 };

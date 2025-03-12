@@ -17,5 +17,5 @@ public:
     const std::vector<Statement*> get_statements() const;
     const Statement* get_statement(size_t index) const;
 
-    virtual void exec() override;
+    virtual Jump exec(Variables& variables) override;
 };

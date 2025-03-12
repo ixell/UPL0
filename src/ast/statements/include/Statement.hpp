@@ -1,6 +1,8 @@
 #pragma once
+#include "AST.hpp"
 #include "Expression.hpp"
 #include "statementTypesList.hpp"
+#include "jumpControl.hpp"
 
 class Statement {
 public:
@@ -8,5 +10,5 @@ public:
 	virtual ~Statement() = default;
 	virtual Statement* copy() const = 0;
 
-	virtual void exec() = 0;
+	virtual Jump exec(Variables& variables) = 0;
 };

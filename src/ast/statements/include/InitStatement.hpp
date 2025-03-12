@@ -22,5 +22,5 @@ public:
     const VariableStatement* get_variable() const;
     const std::vector<Expression*>& get_args() const;
     
-    virtual void exec() override;
+    virtual Jump exec(Variables& variables) override;
 };

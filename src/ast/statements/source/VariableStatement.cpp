@@ -25,3 +25,12 @@ TypeStatement* VariableStatement::get_variable_type() const {
 const std::wstring& VariableStatement::get_name() const {
 	return name;
 }
+
+bool VariableStatement::operator==(const VariableStatement& other) const {
+	if (name != other.name) return false;
+	return type == other.type;
+}
+
+bool VariableStatement::operator!=(const VariableStatement& other) const {
+	return !(*this == other);
+}

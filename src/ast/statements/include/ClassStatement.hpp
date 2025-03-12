@@ -32,6 +32,7 @@ public:
         virtual Statement* copy() const override;
 
         Access get_access() const;
+        virtual Jump exec(Variables& variables) override;
     };
 
     class ClassVariableStatement : public VariableStatement {
@@ -46,6 +47,7 @@ public:
         virtual Statement* copy() const override;
 
         Access get_access() const;
+        virtual Jump exec(Variables& variables) override;
     };
 private:
     std::wstring name;
@@ -74,5 +76,5 @@ public:
     MethodStatement* get_constructor() const;
     MethodStatement* get_destructor() const;
     
-    virtual void exec() override;
+    virtual Jump exec(Variables& variables) override;
 };

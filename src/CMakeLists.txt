@@ -29,13 +29,7 @@ target_link_libraries (
 add_subdirectory (ast)
 
 target_link_libraries (
-	expressions
-	PRIVATE
-		token
-)
-
-target_link_libraries (
-	statements
+	ast
 	PRIVATE
 		token
 )
@@ -83,9 +77,8 @@ target_link_libraries (
 set_target_properties (
 	token
 	lexer
-	expressions
-	statements
 	parser
+	ast
 	interpreter
 	upl
 	PROPERTIES

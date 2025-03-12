@@ -49,3 +49,22 @@ const std::vector<Statement*>& TypeStatement::get_template() const {
 const std::wstring& TypeStatement::get_type_value() const {
 	return type;
 }
+
+bool TypeStatement::operator==(const TypeStatement& other) const {
+	if (type != other.type) return false;
+	if (modificators.size() != other.modificators.size()) return false;
+	if (template_.size() != other.template_.size()) return false;
+	for (size_t i = 0; i != modificators.size(); ++i) {
+		if (modificators[i] != other.modificators[i])
+			return false;
+	}
+	for (size_t i = 0; i != template_.size(); ++i) {
+		if (template_[i] != other.template_[i])
+			return false;
+	}
+	return true;
+}
+
+bool TypeStatement::operator!=(const TypeStatement& other) const {
+	return !(*this == other);
+}

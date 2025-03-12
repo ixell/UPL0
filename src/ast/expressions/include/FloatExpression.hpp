@@ -14,5 +14,5 @@ public:
 
     float get_value() const;
 
-    virtual Expression* eval() const override;
+    virtual Expression* eval(Variables& variables) const override;
 };

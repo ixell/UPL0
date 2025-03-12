@@ -16,5 +16,5 @@ public:
 	int64_t get_value() const;
 	void change_value(int64_t value);
 
-	virtual Expression* eval() const override;
+	virtual Expression* eval(Variables& variables) const override;
 };

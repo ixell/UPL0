@@ -17,5 +17,5 @@ public:
 	const Expression* get_value() const;
 	Operation get_operation() const;
     
-    virtual Expression* eval() const override;
+    virtual Expression* eval(Variables& variables) const override;
 };

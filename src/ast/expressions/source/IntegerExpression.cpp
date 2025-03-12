@@ -29,7 +29,3 @@ int64_t IntegerExpression::get_value() const {
 void IntegerExpression::change_value(int64_t value) {
 	this->value = value;
 }
-    
-Expression* IntegerExpression::eval() const {
-    return new IntegerExpression(*this);
-}

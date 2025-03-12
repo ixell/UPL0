@@ -22,7 +22,3 @@ bool BooleanExpression::get_value() const {
 void BooleanExpression::change_value(bool value) {
     this->value = value;
 }
-    
-Expression* BooleanExpression::eval() const {
-    return new BooleanExpression(*this);
-}
