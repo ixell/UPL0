@@ -12,17 +12,20 @@ int main(int argc, char* argv[]) {
 	{
 		std::vector<Token> tokens;
 		{
-			std::ifstream stream {argv[1]};
-			Lexer lexer { stream };
-			tokens = lexer.tokenize();
+			std::wifstream stream(argv[1]);
+			Lexer lexer(&stream);
+			lexer.tokenize(&tokens);
+			stream.close();
 		}
 		{
-			Parser parser {tokens};
-			ast = parser.parse();
+			Parser parser(tokens);
+			parser.parse(ast);
 		}
 	}
 	{
 		Interpreter interpreter {ast};
 		interpreter.run();
+		for (Statement* statement : ast)
+			delete statement;
 	}
 }
