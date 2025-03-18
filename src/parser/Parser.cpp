@@ -317,9 +317,9 @@ Statement* Parser::parse_statement() {
 		next();
 		return new ReturnStatement(parse_expression());
 	case Token::endcommand:
-		next();
-		[[fallthrough]];
 	case Token::endline:
+		next();
+		ended_line = true;
 		return nullptr;
 	default:
 		switch (getSubgroup(get().get_type())) {

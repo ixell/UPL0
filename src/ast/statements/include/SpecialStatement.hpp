@@ -12,7 +12,7 @@ public:
     virtual ~SpecialStatement() override;
     virtual Statement* copy() const override;
 
-    const std::wstring& get_messgae();
+    const std::wstring& get_messgae() const;
 
     virtual Jump exec(Variables& variables) override;
 };

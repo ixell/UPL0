@@ -45,14 +45,22 @@ Space::Variable& Space::operator[](const std::wstring& variable) {
     return top()[variable];
 }
 
-Space::Variable Space::find_variable(const std::wstring& name) const {
-    //static Variable none(nullptr, nullptr);
-    for (auto subspace : variables) {
+Space::Variable* Space::find_variable(const std::wstring& name) {
+    for (auto& subspace : variables) {
         if (subspace.find(name) != subspace.end()) {
-            return subspace[name];
+            return &subspace[name];
         }
     }
-    return Variable(nullptr, nullptr);
+    return nullptr;
+}
+
+const Space::Variable* Space::find_variable(const std::wstring& name) const {
+    for (auto& subspace : variables) {
+        if (subspace.find(name) != subspace.end()) {
+            return &subspace.at(name);
+        }
+    }
+    return nullptr;
 }
 
 void Space::add_subspace(std::map<std::wstring, Variable>&& variables) {
@@ -104,11 +112,11 @@ void Variables::pop_local() {
     _locals.pop();
 }
 
-Space::Variable& Variables::find_variable(const std::wstring& name) {
-    Space::Variable var = _locals.empty() ? Space::Variable() : local().find_variable(name);
-    if (var.var != nullptr) return var;
+Space::Variable* Variables::find_variable(const std::wstring& name) {
+    Space::Variable* var = _locals.empty() ? nullptr : local().find_variable(name);
+    if (var != nullptr) return var;
     if (global().find(name) != global().end())
-        return global()[name];
-    return var;
+        return &global()[name];
+    return nullptr;
 }
 

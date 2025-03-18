@@ -16,6 +16,6 @@ Statement* SpecialStatement::copy() const {
     return static_cast<Statement*>(new SpecialStatement(message));
 }
 
-const std::wstring& SpecialStatement::get_messgae() {
+const std::wstring& SpecialStatement::get_messgae() const {
     return message;
 }

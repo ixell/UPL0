@@ -43,5 +43,7 @@ const std::vector<Expression*>& VariableGetterExpression::get_template() const {
 }
 
 Space::Variable& VariableGetterExpression::get_variable(Variables& variables) const {
-    return variables.find_variable(get_name());
+    Space::Variable* var = variables.find_variable(get_name());
+    if (var == nullptr) throw;
+    return *var;
 }

@@ -222,26 +222,29 @@ Expression* SystemFunctionStatement::call(Variables& variables, const std::vecto
     std::vector<Expression*> arguments;
     variables.local().add_subspace();
     variables.add_local();
-    if (count > get_args().size()) {
-        //if (get_args().back()->get_type() == ExpressionType::)
-        throw;
-    } else {
-        for (size_t i = 0; i != count; ++i) {
-            const Statement* f_arg = get_args()[i];
-            Expression* arg = args[i]->eval(variables);
-            switch (f_arg->get_type()) {
-            case StatementType::InitStatement:
-                f_arg = static_cast<const Statement*>(static_cast<const InitStatement*>(f_arg)->get_variable());
-                [[fallthrough]];
-            case StatementType::VariableStatement:
-                if (static_cast<const VariableStatement*>(f_arg)->get_variable_type()->get_type_value() != to_type(arg)) throw;
+    for (size_t i = 0; i < count; ++i) {
+        if (i == count) throw;
+        const Statement* f_arg = get_args()[i];
+        Expression* arg = args[i]->eval(variables);
+        switch (f_arg->get_type()) {
+        case StatementType::InitStatement:
+            f_arg = static_cast<const Statement*>(static_cast<const InitStatement*>(f_arg)->get_variable());
+            [[fallthrough]];
+        case StatementType::VariableStatement:
+            if (static_cast<const VariableStatement*>(f_arg)->get_variable_type()->get_type_value() != to_type(arg)) throw;
+            arguments.push_back(arg);
+            continue;
+        case StatementType::TypeStatement:
+            if (static_cast<const VariableStatement*>(f_arg)->get_variable_type()->get_type_value() != to_type(arg)) throw;
+            continue;
+        case StatementType::SpecialStatement:
+            if (static_cast<const SpecialStatement*>(f_arg)->get_messgae() != L"...") throw;
+            if (count < get_args().size()) throw;
+            for (; i != args.size(); ++i) {
                 arguments.push_back(arg);
-                continue;
-            case StatementType::TypeStatement:
-                if (static_cast<const VariableStatement*>(f_arg)->get_variable_type()->get_type_value() != to_type(arg)) throw;
-                continue;
-            default: throw;
             }
+            continue;
+        default: throw;
         }
         //...
     }

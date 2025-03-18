@@ -406,15 +406,15 @@ void Lexer::tokenize_tabs() { //...
 					}
 					goto out;
 				}
+				next();
 			}
 			++tabs;
-			next();
 			continue;
 		}
 		break;
 	}
 	out:
-	if (get() == '\n'  || get() == '//' || get() == 0xffff)
+	if (get() == '\n' || get() == '//' || get() == 0xffff)
 		return;
 	if (tabs < this->tabs) {
 		for (int i = this->tabs - tabs; i != 0; --i) {

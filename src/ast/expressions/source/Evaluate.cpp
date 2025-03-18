@@ -306,12 +306,12 @@ Expression* ArgumentedExpression::eval(Variables& variables) const {
 	case Operation::call: {
 		if (this->main->get_type() != ExpressionType::VariableGetterExpression) throw;
 		VariableGetterExpression* main = static_cast<VariableGetterExpression*>(this->main);
-		switch (variables.find_variable(main->get_name()).var->get_type()) {
+		switch (variables.find_variable(main->get_name())->var->get_type()) {
 		case StatementType::FunctionStatement:
-			return static_cast<FunctionStatement*>(variables.find_variable(main->get_name()).var
+			return static_cast<FunctionStatement*>(variables.find_variable(main->get_name())->var
 				)->call(variables, get_args());
 		case StatementType::SystemFunctionStatement:
-			return static_cast<SystemFunctionStatement*>(variables.find_variable(main->get_name()).var
+			return static_cast<SystemFunctionStatement*>(variables.find_variable(main->get_name())->var
 				)->call(variables, get_args());
 		}}
 		default: throw;

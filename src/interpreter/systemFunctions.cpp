@@ -2,7 +2,7 @@
 #include "SpecialStatement.hpp"
 
 namespace systemFunctions {
-    Expression* print(std::vector<Expression*> args) {
+    Expression* print_function(std::vector<Expression*> args) {
         for (auto iter = args.begin(); iter != args.end() - 1; ++iter) {
             switch ((*iter)->get_type()) {
             case ExpressionType::IntegerExpression:
@@ -42,11 +42,14 @@ namespace systemFunctions {
         return nullptr;
     }
 
-    std::vector<SystemFunctionStatement*> system_functions = {
-        new SystemFunctionStatement(
-            static_cast<TypeStatement*>(nullptr),
-            L"print",
-            {static_cast<Statement*>(new SpecialStatement(L"..."))},
-            &print)
-    };
+    SystemFunctionStatement print (
+        static_cast<TypeStatement*>(nullptr),
+        L"print",
+        {static_cast<Statement*>(new SpecialStatement(L"..."))},
+        &print_function
+    );
 }
+
+std::vector<SystemFunctionStatement*> system_functions = {
+    &systemFunctions::print
+};

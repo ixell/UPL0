@@ -6,7 +6,7 @@
 
 Interpreter::Interpreter(std::vector<Statement*>&& ast)
         : variables() {
-    for (SystemFunctionStatement* func : systemFunctions::system_functions) {
+    for (SystemFunctionStatement* func : system_functions) {
         variables.global()[static_cast<SystemFunctionStatement*>(func)->get_name()]
             = new SystemFunctionStatement(*func);
     }
