@@ -34,6 +34,8 @@ add_library(
         ${statement}/DoStatement.cpp
         ${statement}/TypeStatement.cpp
         ${statement}/ReturnStatement.cpp
+        ${statement}/SystemFunctionStatement.cpp
+        ${statement}/SpecialStatement.cpp
 
         ${statement}/Execute.cpp
 )

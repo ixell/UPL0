@@ -6,13 +6,13 @@
 
 class ForStatement : public Statement {
 private:
-    Expression* initializer;
+    Statement* initializer;
     Expression* condition;
     Expression* changer;
     BlockStatement* code;
 public:
     ForStatement(
-        Expression* initializer,
+        Statement* initializer,
         Expression* condition,
         Expression* changer,
         BlockStatement* code
@@ -23,7 +23,7 @@ public:
     virtual ~ForStatement();
 	virtual Statement* copy() const override;
 
-    Expression* get_initializer() const;
+    Statement* get_initializer() const;
     Expression* get_condition() const;
     Expression* get_changer() const;
     BlockStatement* get_code() const;

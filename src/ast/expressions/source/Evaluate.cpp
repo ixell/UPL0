@@ -16,7 +16,6 @@
 #define FLOAT(VARIABLE) GET_VALUE(FloatExpression, VARIABLE)
 #define BOOL(VARIABLE) GET_VALUE(BooleanExpression, VARIABLE)
 #define STRING(VARIABLE) GET_VALUE(StringExpression, VARIABLE)
-#define VARIABLE(VARIABLE) ()
 
 #define COMBINE_TYPES(LEFT, RIGHT) (uint64_t(LEFT) << 32 & (RIGHT))
 #define CT(LEFT, RIGHT) COMBINE_TYPES(LEFT, RIGHT)
@@ -173,6 +172,28 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 			default: throw;
 			} break;
 		} break;
+	case Operation::notEqual:
+		SWITCH_LEFT {
+		case INT_ET:
+			SWITCH_RIGHT {
+			case INT_ET: result = new BOOL_E(INT(left) != INT(right)); break;
+			case FLOAT_ET: result = new BOOL_E(INT(left) != FLOAT(right)); break;
+			case BOOL_ET: result = new BOOL_E(bool(INT(left)) != BOOL(right)); break;
+			default: throw;
+			} break;
+		case FLOAT_ET:
+			SWITCH_RIGHT {
+			case INT_ET: result = new BOOL_E(FLOAT(left) != INT(right)); break;
+			case FLOAT_ET: result = new BOOL_E(FLOAT(left) != FLOAT(right)); break;
+			default: throw;
+			} break;
+		case BOOL_ET:
+			SWITCH_RIGHT {
+			case BOOL_ET: result = new BOOL_E(BOOL(left) != BOOL(right)); break;
+			case INT_ET: result = new BOOL_E(BOOL(left) != bool(INT(right))); break;
+			default: throw;
+			} break;
+		} break;
 	case Operation::lessThan:
 		SWITCH_LEFT {
 		case INT_ET:
@@ -234,10 +255,10 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 			} break;
 		} break;
 	case Operation::assign: {
-		if (left->get_type() != ExpressionType::VariableGetterExpression)
+		if (this->left->get_type() != ExpressionType::VariableGetterExpression)
 			throw;
 		result = right;
-		Space::Variable& var = static_cast<VariableGetterExpression*>(left)->get_variable(variables);
+		Space::Variable& var = static_cast<VariableGetterExpression*>(this->left)->get_variable(variables);
 		delete var.value;
 		var.value = right->copy();
 		break;
@@ -251,6 +272,7 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 	case Operation::leftShift_assign:
 	case Operation::rightShift_assign:
 		throw; //...
+	default: throw;
 	}
 	delete left, right;
 	return result;
@@ -258,7 +280,7 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 
 Expression* UnaryExpression::eval(Variables& variables) const {
     Expression* result;
-    Expression* value = value->eval(variables);
+    Expression* value = expr->eval(variables);
     switch (operation) {
     case Operation::plus:
         SWITCH_VALUE {
@@ -269,59 +291,30 @@ Expression* UnaryExpression::eval(Variables& variables) const {
         } break;
     case Operation::minus:
         SWITCH_VALUE {
-        case INT_ET: result = new INT_E(-INT(value));
-        case FLOAT_ET: result = new FLOAT_E(-FLOAT(value));
+        case INT_ET: result = new INT_E(-INT(value)); break;
+        case FLOAT_ET: result = new FLOAT_E(-FLOAT(value)); break;
         default: throw;
         } break;
+	default: throw;
     }
     delete value;
     return result;
 }
 
 Expression* ArgumentedExpression::eval(Variables& variables) const {
-    Expression* result;
 	switch (get_operation()) {
 	case Operation::call: {
 		if (this->main->get_type() != ExpressionType::VariableGetterExpression) throw;
 		VariableGetterExpression* main = static_cast<VariableGetterExpression*>(this->main);
-		FunctionStatement* function = nullptr;
-		function = static_cast<FunctionStatement*>(variables.find_variable(main->get_name()).var);
-		if (function == nullptr) throw;
-		size_t count = get_args().size();
-		if (count > function->get_args().size()) throw;
-		variables.local().add_subspace();
-		std::map<std::wstring, Space::Variable>& subspace = variables.local().top();
-		for (size_t i = 0; i != count; ++i) {
-			const Statement* f_arg = function->get_args()[i];
-			const Expression* arg = get_args()[i];
-			switch (f_arg->get_type()) {
-			case StatementType::InitStatement:
-				f_arg = static_cast<const Statement*>(static_cast<const InitStatement*>(f_arg)->get_variable());
-				[[fallthrough]];
-			case StatementType::VariableStatement:
-				const VariableStatement* var = static_cast<const VariableStatement*>(
-					static_cast<const VariableGetterExpression*>(arg)->get_variable(variables).var);
-				if (static_cast<const VariableStatement*>(f_arg) != var) throw;
-				subspace[static_cast<const VariableStatement*>(f_arg)->get_name()]
-					= Space::Variable(var->copy(), arg->copy());
-			}
-		}
-		//...
-		function->get_code()->exec(variables);
-		if (
-			function->get_return_type() != nullptr &&
-			variables.local().get_return() != nullptr//...
-			//static_cast<TypeStatement*>(function->get_return_type()) !=
-			//	static_cast<VariableStatement*>(variables.local().get_return().first)->get_variable_type()
-		) throw;
-		result = variables.local().get_return();
-		variables.local().set_return(nullptr);
-		for (std::pair<const std::wstring, Space::Variable>& var : variables.local().top()) {//...
-			delete var.second.var;
-			if (var.second.value != nullptr)
-				delete var.second.value;
-		}
-	}
+		switch (variables.find_variable(main->get_name()).var->get_type()) {
+		case StatementType::FunctionStatement:
+			return static_cast<FunctionStatement*>(variables.find_variable(main->get_name()).var
+				)->call(variables, get_args());
+		case StatementType::SystemFunctionStatement:
+			return static_cast<SystemFunctionStatement*>(variables.find_variable(main->get_name()).var
+				)->call(variables, get_args());
+		}}
+		default: throw;
 	}
 }
 

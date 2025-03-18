@@ -32,9 +32,23 @@ if (GTEST_FOUND)
             .
     )
 
+    add_executable (
+        interpreter_tests
+            pch.hpp
+            Interpreter/Interpreter_tests.cpp
+    )
+
+    target_include_directories (
+        interpreter_tests
+        PRIVATE
+            Parser
+            .
+    )
+
     set_target_properties (
         lexer_tests
         parser_tests
+        interpreter_tests
         PROPERTIES
             CXX_STANDARD 20
     )
@@ -48,7 +62,7 @@ if (GTEST_FOUND)
     )
 
     add_test (
-        NAME "check_lexer"
+        NAME "lexer"
         COMMAND lexer_tests
     )
 
@@ -61,8 +75,22 @@ if (GTEST_FOUND)
     )
 
     add_test (
-        NAME "check_parser"
+        NAME "parser"
         COMMAND parser_tests
+    )
+
+    target_link_libraries (
+        interpreter_tests
+        PUBLIC
+            ${GTEST_BOTH_LIBRARIES}
+            lexer
+            parser
+            interpreter
+    )
+
+    add_test (
+        NAME "interpreter"
+        COMMAND interpreter_tests
     )
 else (GTEST_FOUND)
 message (STATUS "GTest not found. Tests will not run.")

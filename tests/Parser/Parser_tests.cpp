@@ -182,8 +182,8 @@ void check(const Statement* statement, const Statement* correct) {
 	case StatementType::ForStatement: {
 		const ForStatement* statement0 = static_cast<const ForStatement*>(statement);
 		const ForStatement* statement1 = static_cast<const ForStatement*>(correct);
-		check(static_cast<const Expression*>(statement0->get_initializer()),
-			static_cast<const Expression*>(statement1->get_initializer()));
+		check(static_cast<const Statement*>(statement0->get_initializer()),
+			static_cast<const Statement*>(statement1->get_initializer()));
 		check(static_cast<const Expression*>(statement0->get_condition()),
 			static_cast<const Expression*>(statement1->get_condition()));
 		check(static_cast<const Expression*>(statement0->get_changer()),

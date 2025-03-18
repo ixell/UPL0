@@ -4,7 +4,7 @@ VariableStatement::VariableStatement(TypeStatement* type, const std::wstring& na
 	: type(type), name(name) {}
 
 VariableStatement::VariableStatement(const VariableStatement& other)
-	: type(other.type), name(name) {}
+	: type(new TypeStatement(*other.type)), name(name) {}
 
 StatementType VariableStatement::get_type() const {
 	return StatementType::VariableStatement;

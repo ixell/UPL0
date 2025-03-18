@@ -4,15 +4,17 @@
 #include "Parser.hpp"
 #include "Interpreter.hpp"
 
-int main(int argc, char* argv[]) {
+int wmain(const int argc, const wchar_t* argv[]) {
 #ifdef DEBUG
 	std::cout << "DEBUG\n";
 #endif
+	if (argc <= 1) return 1;
 	std::vector<Statement*> ast;
 	{
 		std::vector<Token> tokens;
 		{
 			std::wifstream stream(argv[1]);
+			if (stream.fail()) return 1;
 			Lexer lexer(&stream);
 			lexer.tokenize(&tokens);
 			stream.close();
@@ -23,9 +25,10 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	{
-		Interpreter interpreter {ast};
+		Interpreter interpreter(std::move(ast));
 		interpreter.run();
 		for (Statement* statement : ast)
 			delete statement;
 	}
+	return 0;
 }

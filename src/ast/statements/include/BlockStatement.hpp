@@ -7,6 +7,7 @@ private:
     std::vector<Statement*> statements;
 public:
     BlockStatement(const std::vector<Statement*>& statements);
+    BlockStatement(std::vector<Statement*>&& statements);
     BlockStatement(const BlockStatement& other);
     
 	virtual StatementType get_type() const override;

@@ -1,7 +1,7 @@
 #include "ForStatement.hpp"
 
 ForStatement::ForStatement(
-    Expression* initializer,
+    Statement* initializer,
     Expression* condition,
     Expression* changer,
     BlockStatement* code
@@ -31,7 +31,7 @@ Statement* ForStatement::copy() const {
     return static_cast<Statement*>(new ForStatement(*this));
 }
 
-Expression* ForStatement::get_initializer() const {
+Statement* ForStatement::get_initializer() const {
     return initializer;
 }
 

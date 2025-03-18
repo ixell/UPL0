@@ -6,4 +6,5 @@ add_library(
     interpreter
     STATIC
         Interpreter.cpp
+        systemFunctions.cpp
 )

@@ -19,5 +19,7 @@ enum class StatementType {
     ForStatement,
     EnumStatement,
     UnionStatement,
-    ReturnStatement
+    ReturnStatement,
+    SystemFunctionStatement,
+    SpecialStatement
 };

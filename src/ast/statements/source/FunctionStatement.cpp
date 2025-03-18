@@ -44,7 +44,7 @@ Statement* FunctionStatement::copy() const {
     return static_cast<Statement*>(new FunctionStatement(*this));
 }
 
-Statement* FunctionStatement::get_return_type() const {
+TypeStatement* FunctionStatement::get_return_type() const {
     return type;
 }
 

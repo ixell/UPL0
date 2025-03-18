@@ -14,6 +14,7 @@ private:
 	std::vector<Token>& tokens;
 	Token* this_token;
 	size_t pos;
+	bool ended_line{false};
 public:
 	Parser(std::vector<Token>& tokens);
 

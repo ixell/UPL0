@@ -3,6 +3,9 @@
 BlockStatement::BlockStatement(const std::vector<Statement*>& statements)
     : statements(statements) {}
 
+BlockStatement::BlockStatement(std::vector<Statement*>&& statements)
+    : statements(statements) {}
+
 BlockStatement::BlockStatement(const BlockStatement& other)
         : statements() {
     statements.reserve(other.get_count());

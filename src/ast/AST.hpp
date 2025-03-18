@@ -32,7 +32,7 @@ public:
     std::map<std::wstring, Variable>& top();
     const std::map<std::wstring, Variable>& top() const;
     Variable& operator[](const std::wstring& variable);
-    Variable& find_variable(const std::wstring& name) const;
+    Variable find_variable(const std::wstring& name) const;
     void add_subspace(std::map<std::wstring, Variable>&& variables);
     void add_subspace();
     void pop_subspace();
@@ -49,7 +49,9 @@ public:
     Variables();
     std::map<std::wstring, Space::Variable>& global();
     Space& local();
+    std::map<std::wstring, Space::Variable>& top();
 
+    bool locals_empty();
     void add_local();
     void pop_local();
 

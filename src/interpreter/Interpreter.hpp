@@ -8,7 +8,13 @@ class Interpreter {
 private:
     Variables variables;
 public:
-    Interpreter(const std::vector<Statement*>& ast);
+    Interpreter(std::vector<Statement*>&& ast);
 
     void run();
+
+#ifdef DEBUG
+    Variables& get_variables();
+    void debug_run();
+    void delete_variables();
+#endif
 };

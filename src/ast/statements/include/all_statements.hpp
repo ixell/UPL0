@@ -14,3 +14,5 @@
 #include "WhileStatement.hpp"
 #include "IfElseStatement.hpp"
 #include "ReturnStatement.hpp"
+#include "SystemFunctionStatement.hpp"
+#include "SpecialStatement.hpp"

@@ -45,14 +45,14 @@ Space::Variable& Space::operator[](const std::wstring& variable) {
     return top()[variable];
 }
 
-Space::Variable& Space::find_variable(const std::wstring& name) const {
-    static Variable none(nullptr, nullptr);
+Space::Variable Space::find_variable(const std::wstring& name) const {
+    //static Variable none(nullptr, nullptr);
     for (auto subspace : variables) {
         if (subspace.find(name) != subspace.end()) {
             return subspace[name];
         }
     }
-    return none;
+    return Variable(nullptr, nullptr);
 }
 
 void Space::add_subspace(std::map<std::wstring, Variable>&& variables) {
@@ -86,6 +86,16 @@ Space& Variables::local() {
     return _locals.top();
 }
 
+std::map<std::wstring, Space::Variable>& Variables::top() {
+    if (locals_empty())
+        return global();
+    return local().top();
+}
+
+bool Variables::locals_empty() {
+    return _locals.empty();
+}
+
 void Variables::add_local() {
     _locals.push({});
 }
@@ -95,7 +105,7 @@ void Variables::pop_local() {
 }
 
 Space::Variable& Variables::find_variable(const std::wstring& name) {
-    Space::Variable var = local().find_variable(name);
+    Space::Variable var = _locals.empty() ? Space::Variable() : local().find_variable(name);
     if (var.var != nullptr) return var;
     if (global().find(name) != global().end())
         return global()[name];

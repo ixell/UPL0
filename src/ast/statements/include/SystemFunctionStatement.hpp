@@ -5,38 +5,28 @@
 #include "TypeStatement.hpp"
 #include "BlockStatement.hpp"
 
-class FunctionStatement : public Statement {
+class SystemFunctionStatement : public Statement {
 private:
     TypeStatement* type;
     std::wstring name;
-    std::vector<Statement*> template_;
     std::vector<Statement*> args;
-    BlockStatement* code;
+    Expression*(*code)(std::vector<Expression*>);
 public:
-    FunctionStatement(
+    SystemFunctionStatement(
         TypeStatement* type,
         const std::wstring& name,
         const std::vector<Statement*>& args,
-        BlockStatement* code,
-        const std::vector<Statement*>& template_
+        Expression*(*code)(std::vector<Expression*>)
     );
-    FunctionStatement(
-        TypeStatement* type,
-        const std::wstring& name,
-        const std::vector<Statement*>& args,
-        BlockStatement* code
-    );
-    FunctionStatement(const FunctionStatement& other);
+    SystemFunctionStatement(const SystemFunctionStatement& other);
     
     virtual StatementType get_type() const override;
-    virtual ~FunctionStatement();
+    virtual ~SystemFunctionStatement();
 	virtual Statement* copy() const override;
 
-    TypeStatement* get_return_type() const;
+    const Statement* get_return_type() const;
     const std::wstring& get_name() const;
-    const std::vector<Statement*>& get_template() const;
     const std::vector<Statement*>& get_args() const;
-    BlockStatement* get_code() const;
     
     virtual Jump exec(Variables& variables) override;
     Expression* call(Variables& variables, const std::vector<Expression*>& args);
