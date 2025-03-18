@@ -36,28 +36,28 @@ enum class Operation {
 	indirection,					// *
 	call,							// ()
 	subscript,						// []
+	binary_not,						// ~
 	assign,							// =
 	plus,							// +
-	minus,							// -
-	multiply,						// *
-	divide,							// /
-	modulus,						// %
-	binary_and,						// &
-	binary_or,						// |
-	binary_not,						// ~
-	binary_xor,						// ^
-	leftShift,						// <<
-	rightShift,						// >>
 	plus_assign,					// +=
+	minus,							// -
 	minus_assign,					// -=
+	multiply,						// *
 	multiply_assign,				// *=
+	divide,							// /
 	divide_assign,					// /=
+	modulus,						// %
 	modulus_assign,					// %=
-	leftShift_assign,				// <<=
-	rightShift_assign,				// >>=
+	binary_and,						// &
 	binary_and_assign,				// &=
+	binary_or,						// |
 	binary_or_assign,				// |=
-	binary_xor_assign				// ^=
+	binary_xor,						// ^
+	binary_xor_assign,				// ^=
+	leftShift,						// <<
+	leftShift_assign,				// <<=
+	rightShift,						// >>
+	rightShift_assign				// >>=
 };
 
 std::wstring to_wstring(Operation operation);

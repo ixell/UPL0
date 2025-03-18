@@ -43,9 +43,6 @@ static const wchar_t* to_type(const Expression* expr) {
 
 Jump BlockStatement::exec(Variables& variables) {
     for (Statement* statement : statements) {
-        if (statement->get_type() == StatementType::ReturnStatement) {
-            return statement->exec(variables);
-        }
         Jump jump = statement->exec(variables);
         if (jump != Jump::none) return jump;
     }
@@ -53,30 +50,36 @@ Jump BlockStatement::exec(Variables& variables) {
 }
 
 Jump DoStatement::exec(Variables& variables) {
-    expr->eval(variables);
+    delete expr->eval(variables);
     return Jump::none;
 }
 
 Jump ForStatement::exec(Variables& variables) {
-    for (initializer->exec(variables);
-         to_bool(condition->eval(variables));
-         changer->eval(variables)) {
+    initializer->exec(variables);
+    for (Expression* expr = condition->eval(variables);
+         to_bool(expr);
+         expr = condition->eval(variables)) {
+        delete expr;
         Jump jump = code->exec(variables);
         switch (jump) {
         case Jump::none:
         case Jump::continue_:
-            continue;
-        case Jump::break_:
             break;
+        case Jump::break_:
+            return Jump::none;
         case Jump::return_:
             return jump;
         }
+        delete changer->eval(variables);
     }
     return Jump::none;
 }
 
 Jump IfElseStatement::exec(Variables& variables) {
-    if (to_bool(condition->eval(variables)))
+    Expression* expr = condition->eval(variables);
+    bool value = to_bool(expr);
+    delete expr;
+    if (value)
         return condition_met->exec(variables);
     else if (condition_not_met != nullptr)
         return condition_not_met->exec(variables);
@@ -94,42 +97,51 @@ Jump InitStatement::exec(Variables& variables) {
 
 Jump SwitchCaseStatement::exec(Variables& variables) {
     //...
+    Expression* item = get_item()->eval(variables);
     for (std::pair<Expression*, BlockStatement*> case_ : cases) {
-        Expression* item = get_item()->eval(variables);
         Expression* value = case_.first->eval(variables);
         if (value->get_type() != item->get_type()) throw;
         switch (item->get_type()) {
         case ExpressionType::IntegerExpression:
             if (static_cast<IntegerExpression*>(item)->get_value() ==
                     static_cast<IntegerExpression*>(item)->get_value()) {
+                delete item, value;
                 return case_.second->exec(variables);
             }
             continue;
         case ExpressionType::FloatExpression:
             if (static_cast<FloatExpression*>(item)->get_value() ==
                     static_cast<FloatExpression*>(item)->get_value()) {
+                delete item, value;
                 return case_.second->exec(variables);
             }
             continue;
         case ExpressionType::BooleanExpression:
             if (static_cast<BooleanExpression*>(item)->get_value() ==
                     static_cast<BooleanExpression*>(item)->get_value()) {
+                delete item, value;
                 return case_.second->exec(variables);
             }
             continue;
         case ExpressionType::StringExpression:
             if (static_cast<StringExpression*>(item)->get_value() ==
                     static_cast<StringExpression*>(item)->get_value()) {
+                delete item, value;
                 return case_.second->exec(variables);
             }
             continue;
         }
+        delete value;
     }
+    delete item;
     return Jump::none;
 }
 
 Jump WhileStatement::exec(Variables& variables) {
-    while (to_bool(condition->eval(variables))) {
+    for (Expression* expr = condition->eval(variables);
+         to_bool(expr);
+         expr = condition->eval(variables)) {
+        delete expr;
         Jump jump = code->exec(variables);
         switch (jump) {
         case Jump::none:
@@ -145,7 +157,20 @@ Jump WhileStatement::exec(Variables& variables) {
 }
 
 Jump DoWhileStatement::exec(Variables& variables) {
-    do {
+    Jump jump = code->exec(variables);
+    switch (jump) {
+    case Jump::none:
+    case Jump::continue_:
+        break;
+    case Jump::break_:
+        return Jump::none;
+    case Jump::return_:
+        return jump;
+    }
+    for (Expression* expr = condition->eval(variables);
+         to_bool(expr);
+         expr = condition->eval(variables)) {
+        delete expr;
         Jump jump = code->exec(variables);
         switch (jump) {
         case Jump::none:
@@ -156,7 +181,7 @@ Jump DoWhileStatement::exec(Variables& variables) {
         case Jump::return_:
             return jump;
         }
-    } while (to_bool(condition->eval(variables)));
+    }
     return Jump::none;
 }
 

@@ -255,13 +255,11 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 			} break;
 		} break;
 	case Operation::assign: {
-		if (this->left->get_type() != ExpressionType::VariableGetterExpression)
-			throw;
-		result = right;
+		if (this->left->get_type() != ExpressionType::VariableGetterExpression) throw;
 		Space::Variable& var = static_cast<VariableGetterExpression*>(this->left)->get_variable(variables);
-		delete var.value;
+		delete var.value, left;
 		var.value = right->copy();
-		break;
+		return right;
 		}
 	case Operation::plus_assign:
 	case Operation::minus_assign:
@@ -270,8 +268,18 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 	case Operation::binary_and_assign:
 	case Operation::binary_xor_assign:
 	case Operation::leftShift_assign:
-	case Operation::rightShift_assign:
-		throw; //...
+	case Operation::rightShift_assign: {
+		if (this->left->get_type() != ExpressionType::VariableGetterExpression) throw;
+		Space::Variable& var = static_cast<VariableGetterExpression*>(this->left)->get_variable(variables);
+		result = BinaryExpression(
+			(Operation)((int)(operation) - 1),
+			var.value,
+			right
+		).eval(variables);
+		var.value = result->copy();
+		delete left;
+		return result;
+		}
 	default: throw;
 	}
 	delete left, right;

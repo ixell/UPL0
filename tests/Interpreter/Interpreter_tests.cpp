@@ -385,10 +385,11 @@ TEST(EvalTests, Calculations) {
 		"void main():\n"
 		"\tfloat a = -1.0\n"
 		"\tc = a * (d + b - c)\n"
+		"\tb += 4\n"
 	);
 	RUN();
 	CHECK_VALUE(a, 1);
-	CHECK_VALUE(b, 2);
+	CHECK_VALUE(b, 6);
 	CHECK_VALUE(c, -4.0f);
 	CHECK_VALUE(d, 2.5f);
 	CHECK_VALUE(e, true);
