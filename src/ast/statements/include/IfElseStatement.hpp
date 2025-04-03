@@ -7,10 +7,10 @@ class IfElseStatement : public Statement {
 private:
     Expression* condition;
     BlockStatement* condition_met;
-    BlockStatement* condition_not_met;
+    Statement* condition_not_met;
 public:
     IfElseStatement(Expression* condition, BlockStatement* if_);
-    IfElseStatement(Expression* condition, BlockStatement* if_, BlockStatement* else_);
+    IfElseStatement(Expression* condition, BlockStatement* if_, Statement* else_);
     IfElseStatement(const IfElseStatement& other);
 
     virtual StatementType get_type() const override;
@@ -19,7 +19,7 @@ public:
 
     Expression* get_condition() const;
     BlockStatement* get_if_code() const;
-    BlockStatement* get_else_code() const;
+    Statement* get_else_code() const;
     
     virtual Jump exec(Variables& variables) override;
 };

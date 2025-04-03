@@ -1,6 +1,6 @@
 #include "IfElseStatement.hpp"
 
-IfElseStatement::IfElseStatement(Expression* condition, BlockStatement* if_, BlockStatement* else_)
+IfElseStatement::IfElseStatement(Expression* condition, BlockStatement* if_, Statement* else_)
     : condition(condition), condition_met(if_), condition_not_met(else_) {}
 
 IfElseStatement::IfElseStatement(Expression* condition, BlockStatement* if_)
@@ -10,7 +10,7 @@ IfElseStatement::IfElseStatement(const IfElseStatement& other)
     : IfElseStatement(
         other.condition->copy(),
         new BlockStatement(*other.condition_met),
-        new BlockStatement(*other.condition_not_met)
+        other.condition_not_met->copy()
     ) {}
 
 StatementType IfElseStatement::get_type() const {
@@ -33,6 +33,6 @@ BlockStatement* IfElseStatement::get_if_code() const {
     return condition_met;
 }
 
-BlockStatement* IfElseStatement::get_else_code() const {
+Statement* IfElseStatement::get_else_code() const {
     return condition_not_met;
 }

@@ -104,28 +104,28 @@ Jump SwitchCaseStatement::exec(Variables& variables) {
         switch (item->get_type()) {
         case ExpressionType::IntegerExpression:
             if (static_cast<IntegerExpression*>(item)->get_value() ==
-                    static_cast<IntegerExpression*>(item)->get_value()) {
+                    static_cast<IntegerExpression*>(value)->get_value()) {
                 delete item, value;
                 return case_.second->exec(variables);
             }
             continue;
         case ExpressionType::FloatExpression:
             if (static_cast<FloatExpression*>(item)->get_value() ==
-                    static_cast<FloatExpression*>(item)->get_value()) {
+                    static_cast<FloatExpression*>(value)->get_value()) {
                 delete item, value;
                 return case_.second->exec(variables);
             }
             continue;
         case ExpressionType::BooleanExpression:
             if (static_cast<BooleanExpression*>(item)->get_value() ==
-                    static_cast<BooleanExpression*>(item)->get_value()) {
+                    static_cast<BooleanExpression*>(value)->get_value()) {
                 delete item, value;
                 return case_.second->exec(variables);
             }
             continue;
         case ExpressionType::StringExpression:
             if (static_cast<StringExpression*>(item)->get_value() ==
-                    static_cast<StringExpression*>(item)->get_value()) {
+                    static_cast<StringExpression*>(value)->get_value()) {
                 delete item, value;
                 return case_.second->exec(variables);
             }

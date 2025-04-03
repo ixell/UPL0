@@ -4,7 +4,7 @@ SystemFunctionStatement::SystemFunctionStatement(
     TypeStatement* type,
     const std::wstring& name,
     const std::vector<Statement*>& args,
-    Expression*(*code)(std::vector<Expression*>)
+    Expression*(*code)(std::vector<Expression*>&)
 ) : type(type), name(name), args(args), code(code) {}
 
 SystemFunctionStatement::SystemFunctionStatement(const SystemFunctionStatement& other)

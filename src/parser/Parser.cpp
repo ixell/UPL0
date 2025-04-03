@@ -335,8 +335,10 @@ Statement* Parser::parse_if_statement() {
 	next();
 	Expression* condition = parse_expression();
 	BlockStatement* if_code = parse_code();
-	BlockStatement* else_code = nullptr;
-	if (match(Token::keyword_else)) {
+	Statement* else_code = nullptr;
+	if (match(Token::keyword_elif)) {
+		else_code = parse_if_statement();
+	} else if (match(Token::keyword_else)) {
 		next();
 		else_code = parse_code();
 	}
@@ -360,6 +362,7 @@ Statement* Parser::parse_switch_statement() {
 		BlockStatement* code = this->parse_code();
 		cases.push_back(std::pair(item2, code));
 	}
+	next();
 	return static_cast<Statement*>(new SwitchCaseStatement(item, cases, default_case));
 }
 

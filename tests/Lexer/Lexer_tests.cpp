@@ -127,12 +127,13 @@ TEST(Words, Variables) {
 
 TEST(Words, Keywords) {
 	SET_CODE(
-		"if else switch case while for do class enum union "
+		"if elif else switch case while for do class enum union "
 		"import int float string bool auto const friend true false "
 		"public protected private"
 	);
 	SET_CORRECT(
 		T(keyword_if),
+		T(keyword_elif),
 		T(keyword_else),
 		T(keyword_switch),
 		T(keyword_case),

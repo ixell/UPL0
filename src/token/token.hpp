@@ -133,6 +133,7 @@ BEGIN_TOKENS
 			KEYWORD(template)
 			KEYWORD(namespace)
 			KEYWORD(return)
+			KEYWORD(elif)
 		SUBGROUP(keyword_types, 3, 1)
 			KEYWORD(type)
 		SUBGROUP(keyword_modificators, 3, 2)

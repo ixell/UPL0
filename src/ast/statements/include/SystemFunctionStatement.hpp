@@ -10,13 +10,13 @@ private:
     TypeStatement* type;
     std::wstring name;
     std::vector<Statement*> args;
-    Expression*(*code)(std::vector<Expression*>);
+    Expression*(*code)(std::vector<Expression*>&);
 public:
     SystemFunctionStatement(
         TypeStatement* type,
         const std::wstring& name,
         const std::vector<Statement*>& args,
-        Expression*(*code)(std::vector<Expression*>)
+        Expression*(*code)(std::vector<Expression*>&)
     );
     SystemFunctionStatement(const SystemFunctionStatement& other);
     

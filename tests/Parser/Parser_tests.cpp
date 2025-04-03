@@ -579,6 +579,36 @@ TEST(CodeStatements, IfElseStatement) {
 	CHECK_ALL();
 }
 
+TEST(CodeStatements, IfElifElse) {
+	SET_CODE("if x == 1: 1\nelif x == 2: 2\nelse: 3\n");
+	SET_CORRECT_STATEMENTS(
+		STATEMENT(IfElseStatement,
+			new BinaryExpression(
+				Operation::equal,
+				EXPRESSION(VariableGetterExpression, L"x"),
+				EXPRESSION(IntegerExpression, 1)
+			),
+			new BlockStatement({
+				STATEMENT(DoStatement, EXPRESSION(IntegerExpression, 1))
+			}),
+			STATEMENT(IfElseStatement,
+				new BinaryExpression(
+					Operation::equal,
+					EXPRESSION(VariableGetterExpression, L"x"),
+					EXPRESSION(IntegerExpression, 2)
+				),
+				new BlockStatement({
+					STATEMENT(DoStatement, EXPRESSION(IntegerExpression, 2))
+				}),
+				new BlockStatement({
+					STATEMENT(DoStatement, EXPRESSION(IntegerExpression, 3))
+				})
+			)
+		)
+	);
+	PREPARE_SEGMENT_PART(parse_statement, Statement, 1)
+}
+
 TEST(CodeStatements, SwitchCaseStatement) {
 	SET_CODE("switch x:\n\tcase 1:\n\t\t1\n\tcase 2:\n\t\t2\n" /*"..."*/);
 	SET_CORRECT_STATEMENTS(

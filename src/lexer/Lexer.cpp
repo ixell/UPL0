@@ -470,6 +470,8 @@ void Lexer::typify_word(Token& token) {
 
 	if (word == L"if")
 		token.set_type(Token::keyword_if);
+	else if (word == L"elif")
+		token.set_type(Token::keyword_elif);
 	else if (word == L"else")
 		token.set_type(Token::keyword_else);
 	else if (word == L"while")
