@@ -36,6 +36,8 @@ add_library(
         ${statement}/ReturnStatement.cpp
         ${statement}/SystemFunctionStatement.cpp
         ${statement}/SpecialStatement.cpp
+        ${statement}/ContinueStatement.cpp
+        ${statement}/BreakStatement.cpp
 
         ${statement}/Execute.cpp
 )

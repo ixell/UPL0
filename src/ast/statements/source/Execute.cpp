@@ -190,6 +190,14 @@ Jump ReturnStatement::exec(Variables& variables) {
     return Jump::return_;
 }
 
+Jump ContinueStatement::exec(Variables& variables) {
+    return Jump::continue_;
+}
+
+Jump BreakStatement::exec(Variables& variables) {
+    return Jump::break_;
+}
+
 Jump TypeStatement::exec(Variables& variables) { throw; }
 Jump VariableStatement::exec(Variables& variables) { throw; }
 Jump FunctionStatement::exec(Variables& variables) { throw; }

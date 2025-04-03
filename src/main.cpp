@@ -5,9 +5,6 @@
 #include "Interpreter.hpp"
 
 int wmain(const int argc, const wchar_t* argv[]) {
-#ifdef DEBUG
-	std::cout << "DEBUG\n";
-#endif
 	if (argc <= 1) return 1;
 	std::vector<Statement*> ast;
 	{

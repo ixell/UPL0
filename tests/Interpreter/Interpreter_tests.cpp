@@ -459,3 +459,41 @@ TEST(ExecTests, FunctionStatement) {
 	CHECK_VALUE(a, 7);
 	END();
 }
+
+TEST(ExecTests, SwitchCaseStatement) {
+	SET_CODE(L""
+		"int a = 0\n"
+		"void main():\n"
+		"\tfor (int i = 0; i != 3; i += 1):\n"
+		"\t\tswitch i:\n"
+		"\t\t\tcase 0:\n"
+		"\t\t\t\ta += 1\n"
+		"\t\t\tcase 2:\n"
+		"\t\t\t\ta += 10\n"
+		"\t\t\tcase 3:\n"
+		"\t\t\t\ta += 100\n"
+		"\t\t\tcase 10:\n"
+		"\t\t\t\ta += 1000\n"
+	);
+	RUN();
+	CHECK_VALUE(a, 11);
+	END();
+} 
+
+TEST(ExecTests, JumpStatements) {
+	SET_CODE(L""
+		"int a = 0\n"
+		"void main():\n"
+		"\tfor (int i = 0; i != 5; i += 1):\n"
+		"\t\ta += 1\n"
+		"\t\tswitch i:\n"
+		"\t\t\tcase 1:\n"
+		"\t\t\t\tcontinue\n"
+		"\t\t\tcase 2:\n"
+		"\t\t\t\tbreak\n"
+		"\t\ta += 10\n"
+	);
+	RUN();
+	CHECK_VALUE(a, 13);
+	END();
+}

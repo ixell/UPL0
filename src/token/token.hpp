@@ -134,6 +134,8 @@ BEGIN_TOKENS
 			KEYWORD(namespace)
 			KEYWORD(return)
 			KEYWORD(elif)
+			KEYWORD(continue)
+			KEYWORD(break)
 		SUBGROUP(keyword_types, 3, 1)
 			KEYWORD(type)
 		SUBGROUP(keyword_modificators, 3, 2)

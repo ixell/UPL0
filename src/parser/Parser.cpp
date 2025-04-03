@@ -316,6 +316,12 @@ Statement* Parser::parse_statement() {
 	case Token::keyword_return:
 		next();
 		return new ReturnStatement(parse_expression());
+	case Token::keyword_continue:
+		next();
+		return new ContinueStatement();
+	case Token::keyword_break:
+		next();
+		return new BreakStatement();
 	case Token::endcommand:
 	case Token::endline:
 		next();

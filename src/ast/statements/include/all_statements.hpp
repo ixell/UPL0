@@ -16,3 +16,5 @@
 #include "ReturnStatement.hpp"
 #include "SystemFunctionStatement.hpp"
 #include "SpecialStatement.hpp"
+#include "ContinueStatement.hpp"
+#include "BreakStatement.hpp"

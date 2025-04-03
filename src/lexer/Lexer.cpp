@@ -494,6 +494,10 @@ void Lexer::typify_word(Token& token) {
 		token.set_type(Token::keyword_import);
 	else if (word == L"return")
 		token.set_type(Token::keyword_return);
+	else if (word == L"continue")
+		token.set_type(Token::keyword_continue);
+	else if (word == L"break")
+		token.set_type(Token::keyword_break);
 	else if (word == L"int") {
 		token.set_type(Token::keyword_type);
 		return;

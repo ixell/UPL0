@@ -21,5 +21,7 @@ enum class StatementType {
     UnionStatement,
     ReturnStatement,
     SystemFunctionStatement,
-    SpecialStatement
+    SpecialStatement,
+    ContinueStatement,
+    BreakStatement
 };
