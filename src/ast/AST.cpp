@@ -72,6 +72,10 @@ void Space::add_subspace() {
 }
 
 void Space::pop_subspace() {
+    for (std::pair<const std::wstring, Variable>& var : top()) {
+        delete var.second.var;
+        if (var.second.value != nullptr) delete var.second.value;
+    }
     variables.erase(variables.end()-1);
 }
 

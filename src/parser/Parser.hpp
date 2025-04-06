@@ -43,7 +43,7 @@ private:
 	[[nodiscard]] Expression* parse_binary_and();
 	[[nodiscard]] Expression* parse_comparison();
 	[[nodiscard]] Expression* parse_shift();
-	[[nodiscard]] Expression* parse_logical();
+	//[[nodiscard]] Expression* parse_logical();
 	[[nodiscard]] Expression* parse_multiplicative();
 	[[nodiscard]] Expression* parse_additive();
 	[[nodiscard]] Expression* parse_unary();

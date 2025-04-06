@@ -416,7 +416,7 @@ ExprPtr Parser::parse_assignation() {
 		case Token::operator_assign:
 		case Token::operator_assign_binary_and:
 		case Token::operator_assign_binary_leftShift:
-		case Token::operator_assign_binary_not:
+		//case Token::operator_assign_binary_not:
 		case Token::operator_assign_binary_or:
 		case Token::operator_assign_binary_rightShift:
 		case Token::operator_assign_binary_xor:

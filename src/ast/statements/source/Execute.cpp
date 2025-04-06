@@ -55,6 +55,7 @@ Jump DoStatement::exec(Variables& variables) {
 }
 
 Jump ForStatement::exec(Variables& variables) {
+    variables.local().add_subspace();
     initializer->exec(variables);
     for (Expression* expr = condition->eval(variables);
          to_bool(expr);
@@ -72,18 +73,23 @@ Jump ForStatement::exec(Variables& variables) {
         }
         delete changer->eval(variables);
     }
+    variables.local().pop_subspace();
     return Jump::none;
 }
 
 Jump IfElseStatement::exec(Variables& variables) {
+    Jump jump;
     Expression* expr = condition->eval(variables);
     bool value = to_bool(expr);
     delete expr;
+    variables.local().add_subspace();
     if (value)
-        return condition_met->exec(variables);
+        jump = condition_met->exec(variables);
     else if (condition_not_met != nullptr)
-        return condition_not_met->exec(variables);
-    else return Jump::none;
+        jump = condition_not_met->exec(variables);
+    else jump = Jump::none;
+    variables.local().pop_subspace();
+    return jump;
 }
 
 Jump InitStatement::exec(Variables& variables) {
@@ -106,28 +112,40 @@ Jump SwitchCaseStatement::exec(Variables& variables) {
             if (static_cast<IntegerExpression*>(item)->get_value() ==
                     static_cast<IntegerExpression*>(value)->get_value()) {
                 delete item, value;
-                return case_.second->exec(variables);
+                variables.local().add_subspace();
+                Jump jump = case_.second->exec(variables);
+                variables.local().pop_subspace();
+                return jump;
             }
             continue;
         case ExpressionType::FloatExpression:
             if (static_cast<FloatExpression*>(item)->get_value() ==
                     static_cast<FloatExpression*>(value)->get_value()) {
                 delete item, value;
-                return case_.second->exec(variables);
+                variables.local().add_subspace();
+                Jump jump = case_.second->exec(variables);
+                variables.local().pop_subspace();
+                return jump;
             }
             continue;
         case ExpressionType::BooleanExpression:
             if (static_cast<BooleanExpression*>(item)->get_value() ==
                     static_cast<BooleanExpression*>(value)->get_value()) {
                 delete item, value;
-                return case_.second->exec(variables);
+                variables.local().add_subspace();
+                Jump jump = case_.second->exec(variables);
+                variables.local().pop_subspace();
+                return jump;
             }
             continue;
         case ExpressionType::StringExpression:
             if (static_cast<StringExpression*>(item)->get_value() ==
                     static_cast<StringExpression*>(value)->get_value()) {
                 delete item, value;
-                return case_.second->exec(variables);
+                variables.local().add_subspace();
+                Jump jump = case_.second->exec(variables);
+                variables.local().pop_subspace();
+                return jump;
             }
             continue;
         }
@@ -138,6 +156,7 @@ Jump SwitchCaseStatement::exec(Variables& variables) {
 }
 
 Jump WhileStatement::exec(Variables& variables) {
+    variables.local().add_subspace();
     for (Expression* expr = condition->eval(variables);
          to_bool(expr);
          expr = condition->eval(variables)) {
@@ -153,18 +172,22 @@ Jump WhileStatement::exec(Variables& variables) {
                 return jump;
         }
     }
+    variables.local().pop_subspace();
     return Jump::none;
 }
 
 Jump DoWhileStatement::exec(Variables& variables) {
+    variables.local().add_subspace();
     Jump jump = code->exec(variables);
     switch (jump) {
     case Jump::none:
     case Jump::continue_:
         break;
     case Jump::break_:
+        variables.local().pop_subspace();
         return Jump::none;
     case Jump::return_:
+        variables.local().pop_subspace();
         return jump;
     }
     for (Expression* expr = condition->eval(variables);
@@ -179,9 +202,11 @@ Jump DoWhileStatement::exec(Variables& variables) {
         case Jump::break_:
             break;
         case Jump::return_:
+            variables.local().pop_subspace();
             return jump;
         }
     }
+    variables.local().pop_subspace();
     return Jump::none;
 }
 
@@ -239,13 +264,6 @@ Expression* FunctionStatement::call(Variables& variables, const std::vector<Expr
     ) throw;
     Expression* result = variables.local().get_return();
     variables.local().set_return(nullptr);
-    for (auto& subspace : variables.local()) {
-        for (std::pair<const std::wstring, Space::Variable>& var : subspace) {//...
-            delete var.second.var;
-            if (var.second.value != nullptr)
-                delete var.second.value;
-        }
-    }
     variables.pop_local();
     return result;
 }

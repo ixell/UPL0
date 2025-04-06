@@ -497,3 +497,19 @@ TEST(ExecTests, JumpStatements) {
 	CHECK_VALUE(a, 13);
 	END();
 }
+
+TEST(ExecTests, SpaceUsing) {
+	SET_CODE(L""
+		"int a = 0\n"
+		"void main():\n"
+		"\tint b = 2\n"
+		"\tif true:\n"
+		"\t\tb = 1\n"
+		"\tif true:\n"
+		"\t\tint b = 3\n"
+		"\ta = b\n"
+	)
+	RUN();
+	CHECK_VALUE(a, 1);
+	END();
+}
