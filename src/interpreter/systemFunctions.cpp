@@ -38,7 +38,6 @@ namespace systemFunctions {
             default: throw;
             }
         }
-        std::wcout << L"\n";
         return nullptr;
     }
 

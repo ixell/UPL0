@@ -235,9 +235,7 @@ Jump SpecialStatement::exec(Variables& variables) { throw; }
 Expression* FunctionStatement::call(Variables& variables, const std::vector<Expression*>& args) {
     size_t count = args.size();
     if (count > get_args().size()) throw;
-    variables.add_local();
-    variables.local().add_subspace();
-    std::map<std::wstring, Space::Variable>& subspace = variables.local().top();
+    std::map<std::wstring, Space::Variable> subspace;
     for (size_t i = 0; i != count; ++i) {
         const Statement* f_arg = get_args()[i];
         Expression* arg = args[i]->eval(variables);
@@ -256,6 +254,8 @@ Expression* FunctionStatement::call(Variables& variables, const std::vector<Expr
         }
     }
     //...
+    variables.add_local();
+    variables.local().add_subspace(std::move(subspace));
     get_code()->exec(variables);
     if (
         get_return_type() != nullptr &&
@@ -271,8 +271,6 @@ Expression* FunctionStatement::call(Variables& variables, const std::vector<Expr
 Expression* SystemFunctionStatement::call(Variables& variables, const std::vector<Expression*>& args) {
     size_t count = args.size();
     std::vector<Expression*> arguments;
-    variables.local().add_subspace();
-    variables.add_local();
     for (size_t i = 0; i < count; ++i) {
         if (i == count) throw;
         const Statement* f_arg = get_args()[i];
@@ -292,7 +290,7 @@ Expression* SystemFunctionStatement::call(Variables& variables, const std::vecto
             if (static_cast<const SpecialStatement*>(f_arg)->get_messgae() != L"...") throw;
             if (count < get_args().size()) throw;
             for (; i != args.size(); ++i) {
-                arguments.push_back(arg);
+                arguments.push_back(args[i]->eval(variables));
             }
             continue;
         default: throw;

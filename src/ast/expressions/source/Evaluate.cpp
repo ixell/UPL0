@@ -171,6 +171,11 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 			case INT_ET: result = new BOOL_E(BOOL(left) == bool(INT(right))); break;
 			default: throw;
 			} break;
+		case STRING_ET:
+			SWITCH_RIGHT {
+			case STRING_ET: result = new BOOL_E(STRING(left) == STRING(right)); break;
+			default: throw;
+			} break;
 		} break;
 	case Operation::notEqual:
 		SWITCH_LEFT {
@@ -191,6 +196,11 @@ Expression* BinaryExpression::eval(Variables& variables) const {
 			SWITCH_RIGHT {
 			case BOOL_ET: result = new BOOL_E(BOOL(left) != BOOL(right)); break;
 			case INT_ET: result = new BOOL_E(BOOL(left) != bool(INT(right))); break;
+			default: throw;
+			} break;
+		case STRING_ET:
+			SWITCH_RIGHT {
+			case STRING_ET: result = new BOOL_E(STRING(left) != STRING(right)); break;
 			default: throw;
 			} break;
 		} break;
