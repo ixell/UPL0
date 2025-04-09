@@ -167,9 +167,9 @@ Jump WhileStatement::exec(Variables& variables) {
         case Jump::continue_:
             continue;
         case Jump::break_:
-            break;
-            case Jump::return_:
-                return jump;
+            return Jump::none;
+        case Jump::return_:
+            return jump;
         }
     }
     variables.local().pop_subspace();
@@ -200,7 +200,7 @@ Jump DoWhileStatement::exec(Variables& variables) {
         case Jump::continue_:
             continue;
         case Jump::break_:
-            break;
+            return Jump::none;
         case Jump::return_:
             variables.local().pop_subspace();
             return jump;
